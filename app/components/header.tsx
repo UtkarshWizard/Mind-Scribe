@@ -1,19 +1,21 @@
-"use client";
+'use client'
 
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const session = useSession();
-  const userName = session.data?.user?.name || "Aser"; 
+  const userName = session.data?.user?.name || "User"; 
   const userImage = session.data?.user?.image || ""; 
-  console.log(userName , userImage)
+  const router = useRouter();
+  console.log(userImage)
 
   return (
     <header className="py-4 px-6 md:px-10 bg-gray-900 shadow-sm sticky top-0 z-50">
@@ -51,7 +53,7 @@ export default function Header() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signIn();
+                    router.push("/auth/signIn");
                     setLoading(true);
                   }}
                 >
@@ -137,7 +139,7 @@ export default function Header() {
                   disabled={loading}
                   className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
                   onClick={() => {
-                    signIn();
+                    router.push("/auth/signUp");
                     setLoading(true);
                   }}
                 >
@@ -221,9 +223,11 @@ export default function Header() {
               <li>
                 <Avatar>
                   <AvatarImage className="w-8 h-8 rounded-full"  src={userImage} />
-                  <AvatarFallback className="text-white">
-                    {userName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
+                  <div className="bg-neutral-700 p-2 rounded-full">
+                    <AvatarFallback className="text-white p-2">
+                      {userName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </div>
                 </Avatar>
               </li>
             )}
@@ -234,7 +238,8 @@ export default function Header() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signIn();
+                    signOut({redirect: false})
+                    router.push('/auth/signIn')
                     setLoading(true);
                   }}
                 >
@@ -359,7 +364,7 @@ export default function Header() {
                 variant="outline"
                 className="w-full text-white bg-black border-white hover:bg-white hover:text-gray-900"
                 onClick={() => {
-                  signIn();
+                  router.push("/auth/signIn")
                   setIsMenuOpen(false);
                   setLoading(true);
                 }}
@@ -441,7 +446,7 @@ export default function Header() {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
                 onClick={() => {
-                  signIn();
+                  router.push("/auth/signUp")
                   setIsMenuOpen(false);
                   setLoading(true);
                 }}

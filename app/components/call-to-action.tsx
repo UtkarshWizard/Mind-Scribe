@@ -3,8 +3,10 @@
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function CallToAction() {
+  const router = useRouter()
   return (
     <section className="py-20 px-6 md:px-10 bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 text-white text-center overflow-hidden">
       <motion.div
@@ -34,7 +36,7 @@ export default function CallToAction() {
           transition={{ delay: 0.6, duration: 0.8 }}
         >
           <Button
-            onClick={() => signIn()} 
+            onClick={() =>  router.push('/auth/signUp')} 
             size="lg" 
             className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all duration-300"
           >

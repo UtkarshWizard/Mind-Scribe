@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String          @id @default(uuid())
+  email               String          @unique
+  name                String
+  passwordHash        String?
+  avatar              String?
+  provider            Provider
+  journals            JournalEntry[]
+  mood                moodTracking[]
+}
+
+model JournalEntry {
+  id                String            @id @default(uuid())
+  content           String
+  sentiment         String
+  createdAt         String
+  updatedAt         String
+  user              User              @relation(fields: [userId] , references: [id])
+  userId            String            
+}
+
+model moodTracking {
+  id                   String               @id @default(uuid())
+  user                 User                 @relation(fields: [userId], references: [id])
+  userId               String
+  mood                 String
+  notes                String
+  createdAt            String
+}
+
+model mindfullnessExercise {
+  id                   String               @id @default(uuid())
+  title                String
+  contentUrl           String
+  description          String
+  type                 ExerciseType
+}
+
+enum ExerciseType {
+  Breathing
+  Meditation
+  Music
+}
+
+enum Provider {
+  Google
+  Credentials
+}

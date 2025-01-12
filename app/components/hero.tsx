@@ -5,11 +5,13 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const words = ["daily reflection", "mood tracking", "mindfulness", "personal growth"]
 
 export default function Hero() {
-  const [currentWord, setCurrentWord] = useState(0)
+  const [currentWord, setCurrentWord] = useState(0);
+  const router = useRouter()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,7 +64,7 @@ export default function Hero() {
           transition={{ delay: 0.6, duration: 0.8 }}
         >
           <Button 
-            onClick={() => signIn()}
+            onClick={() => router.push('/auth/signUp')}
             size="lg" 
             className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all duration-300"
           >
