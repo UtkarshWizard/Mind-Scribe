@@ -223,11 +223,9 @@ export default function Header() {
               <li>
                 <Avatar>
                   <AvatarImage className="w-8 h-8 rounded-full"  src={userImage} />
-                  <div className="bg-neutral-700 p-2 rounded-full">
                     <AvatarFallback className="text-white p-2">
                       {userName.charAt(0).toUpperCase()}
                     </AvatarFallback>
-                  </div>
                 </Avatar>
               </li>
             )}

@@ -2,6 +2,14 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
+import jwt , { JwtPayload } from "jsonwebtoken";
+
+
+interface DecodedToken extends JwtPayload {
+  id: string;
+  name: string;
+  email: string;
+}
 
 const prisma = new PrismaClient()
 
@@ -26,7 +34,7 @@ const handler = NextAuth({
       }
       
         const email = params.user.email
-        
+        const avatar = params.user.image
         const name = params.profile?.name
 
         try {
@@ -38,6 +46,7 @@ const handler = NextAuth({
                 name: name || 'User',
                 email: email || '',
                 provider: 'Google',
+                avatar: avatar || ''
               }
             })
           }
@@ -55,18 +64,32 @@ const handler = NextAuth({
       return url;
     },
     async session({ session, token }) {
+      console.log('before pop' , {session, token})
       // Add custom fields to the session
-      session.user.id = token.sub!;
+      session.user.id = token.id;
       session.user.image = token.picture || ""; 
       session.user.name = token.name || "User"; 
+      session.user.email = token.email
+      console.log('after pop' , session)
       return session;
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile , user }) {
       // Add custom fields to the token
-      if (account && profile) {
+      if (account && profile && user) {
         token.picture = (profile as any).picture || ""; 
         token.name = profile.name || "User";
+        token.id = user.id
+        token.name = user.name || 'User'
+        token.email = user.email
       }
+
+      if (user && user.token) { 
+        token.id = user.id;
+        token.name = user.name || 'User';
+        token.email = user.email ;
+      }
+      
+      console.log(token)
       return token;
     },
   },
