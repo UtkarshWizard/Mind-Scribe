@@ -27,9 +27,9 @@ model User {
 model JournalEntry {
   id                String            @id @default(uuid())
   content           String
-  sentiment         String
-  createdAt         String
-  updatedAt         String
+  sentiment         String?
+  createdAt         DateTime
+  updatedAt         DateTime?
   user              User              @relation(fields: [userId] , references: [id])
   userId            String            
 }
@@ -39,15 +39,15 @@ model moodTracking {
   user                 User                 @relation(fields: [userId], references: [id])
   userId               String
   mood                 String
-  notes                String
-  createdAt            String
+  notes                String?
+  createdAt            DateTime
 }
 
 model mindfullnessExercise {
   id                   String               @id @default(uuid())
   title                String
   contentUrl           String
-  description          String
+  description          String?
   type                 ExerciseType
 }
 
