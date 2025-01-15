@@ -76,8 +76,10 @@ export default function SignUp() {
       const response = await axios.post('/api/auth/SignUp' , formData)
       if (response.status === 200) {
         setError("");
-        setSuccess(response.data.message || "Account Created Successfully");
-        router.push("/dashboard");
+        setSuccess(response.data.message || "Account Created Successfully , Please Sign In.");
+        setTimeout(() => {
+            router.push("/auth/signin");    
+        }, 1500 )
       } else {
         setError(response.data.message || "Something went wrong");
         setSuccess("");
@@ -96,6 +98,8 @@ export default function SignUp() {
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
+
+  const [loading , setLoading] = useState(false)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 h-screen">
@@ -162,12 +166,14 @@ export default function SignUp() {
                 <div className="flex flex-col justify-center">
                   {error && <p className="text-red-500">{JSON.stringify(error, null, 2)}</p>}
                   {success && <p className="text-green-500">{success}</p>}
-                  <Button className="mt-4">Sign Up</Button>
+                  <Button className="mt-4">
+                    "Sign Up"
+                    </Button>
                   <div className="flex justify-center my-2">
                     <p className="text-sm">Or</p>
                   </div>
                   <Button variant="outline" onClick={() => signIn("google")}>
-                    Sign Up with
+                    Sign Up With
                     <GoogleIcon className="w-5 h-5" />
                   </Button>
                 </div>
@@ -178,7 +184,7 @@ export default function SignUp() {
             <Label>
               Already have an account?{" "}
               <Link
-                href={"/auth/signIn"}
+                href={"/auth/signin"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
               >
                 Sign In

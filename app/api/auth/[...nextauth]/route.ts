@@ -3,12 +3,20 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
 import jwt , { JwtPayload } from "jsonwebtoken";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from 'bcrypt'
 
 
 interface DecodedToken extends JwtPayload {
   id: string;
   name: string;
   email: string;
+}
+
+interface Credentials {
+  name?: string ;
+  email: string;
+  password: string;
 }
 
 const prisma = new PrismaClient()
@@ -24,7 +32,43 @@ const handler = NextAuth({
         },
       },
     }),
+    CredentialsProvider({
+      name: 'Credential',
+      credentials: {
+        name: { label: "Name", type: "text", placeholder: "jsmith" },
+        email: {label: 'Email' , type:'email'},
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials: Credentials | undefined, req) {
+        if(!credentials) {
+          return null
+        }
+
+        const existingUser = await prisma.user.findFirst({
+          where: {
+            email: credentials?.email
+          }
+        })
+
+        if (existingUser && existingUser.passwordHash) {
+          const passwordValidation = await bcrypt.compare(credentials.password , existingUser.passwordHash);
+
+          if (passwordValidation) {
+            return {
+              id: existingUser.id.toString(),
+              name: existingUser.name,
+              email: existingUser.email
+            }
+          }
+        }
+
+        return null
+      }
+    })
   ],
+  pages: {
+    signIn: "/auth/signin",
+  },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn(params) {
@@ -57,20 +101,30 @@ const handler = NextAuth({
       return true
     },
     async redirect({ url, baseUrl }) {
-      // After successful sign-in or sign-up, redirect to the dashboard
-      if (url === baseUrl || url.startsWith(baseUrl)) {
-        return "/dashboard";
+    // If the URL contains a callbackUrl parameter, use it
+      const callbackUrl = new URL(url).searchParams.get("callbackUrl");
+      if (callbackUrl) {
+        return callbackUrl;
       }
+    // Redirect to dashboard if no callbackUrl is found or URL matches baseUrl
+    if (url === baseUrl || url === `${baseUrl}/auth/signin` || url === `${baseUrl}/auth/signup`) {
+      return `${baseUrl}/dashboard`;
+    }
+
+    // Allow URLs that start with the base URL
+    if (url.startsWith(baseUrl)) {
       return url;
+    }
+
+    // Fallback to dashboard for any external URL
+    return `${baseUrl}/`;
     },
     async session({ session, token }) {
-      console.log('before pop' , {session, token})
       // Add custom fields to the session
       session.user.id = token.id;
       session.user.image = token.picture || ""; 
       session.user.name = token.name || "User"; 
       session.user.email = token.email
-      console.log('after pop' , session)
       return session;
     },
     async jwt({ token, account, profile , user }) {
@@ -89,14 +143,9 @@ const handler = NextAuth({
         token.email = user.email ;
       }
       
-      console.log(token)
       return token;
     },
   },
-  pages: {
-    signIn: "/auth/signIn",
-    signOut: "/auth/signUp",
-  }
 });
 
 export { handler as GET, handler as POST };

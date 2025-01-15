@@ -36,7 +36,7 @@ export default function CallToAction() {
           transition={{ delay: 0.6, duration: 0.8 }}
         >
           <Button
-            onClick={() =>  router.push('/auth/signUp')} 
+            onClick={() =>  router.push('/auth/signup')} 
             size="lg" 
             className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all duration-300"
           >

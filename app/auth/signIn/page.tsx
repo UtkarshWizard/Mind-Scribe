@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +19,6 @@ import Link from "next/link";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 export default function SignIn() {
   const signInSchema = z.object({
@@ -34,7 +33,7 @@ export default function SignIn() {
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({name: '' ,  email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
@@ -72,29 +71,29 @@ export default function SignIn() {
     }
 
     try {
-      const response = await axios.post("/api/auth/SignIn", formData);
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log("SignIn Response:", response);
 
-      if (response.status === 200) {
-        setError("");
-        setSuccess(response.data.message || "Logged In Succesfully");
-        router.push("/dashboard");
-      } else {
-        setError(response.data.message || "Something went Wrong..");
+      if (response?.error) {
+        setError('Wrong Credentials.');
         setSuccess("");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(
-          error.response?.data?.message ||
-            "An error occurred. Please try again."
-        );
       } else {
-        setError("An error occurred.");
+        setError("");
+        setSuccess("Logged in successfully!");
+        router.push("/dashboard");
       }
-
+    } catch(err) {
+      console.error("SignIn Exception:", err);
+      setError("An unexpected error occurred.");
       setSuccess("");
     }
   };
+
+  const [loading , setLoading] = useState(false);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 h-screen">
@@ -127,6 +126,7 @@ export default function SignIn() {
                     id="email"
                     placeholder="Enter your Email"
                     type="email"
+                    name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -139,6 +139,7 @@ export default function SignIn() {
                       id="password"
                       type={passwordVisible ? "text" : "password"}
                       placeholder="Enter your Password"
+                      name="password"
                       value={formData.password}
                       onChange={handleChange}
                       required
@@ -157,14 +158,20 @@ export default function SignIn() {
                   </div>
                 </div>
                 <div className="flex flex-col justify-center">
-                {error && <p className="text-red-500">{JSON.stringify(error, null, 2)}</p>}
-                {success && <p className="text-green-500">{success}</p>}
-                  <Button className="mt-4">Sign In</Button>
+                  {error && (
+                    <p className="text-red-500">
+                      {JSON.stringify(error, null, 2)}
+                    </p>
+                  )}
+                  {success && (<p className="text-green-500">{success}</p>)}
+                  <Button className="mt-4" type="submit">
+                    Sign In
+                  </Button>
                   <div className="flex justify-center my-2">
                     <p className="text-sm">Or</p>
                   </div>
-                  <Button variant="outline" onClick={() => signIn("google")}>
-                    Sign In with
+                  <Button variant="outline" onClick={() => signIn("google")} >
+                    Sign In With
                     <GoogleIcon className="w-5 h-5" />
                   </Button>
                 </div>
@@ -175,7 +182,7 @@ export default function SignIn() {
             <Label>
               Don't have an account?{" "}
               <Link
-                href={"/auth/signUp"}
+                href={"/auth/signup"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
               >
                 Sign Up
