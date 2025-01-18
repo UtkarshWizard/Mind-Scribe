@@ -115,10 +115,10 @@ export async function GET(req: NextRequest) {
         status: 200,
       }
     );
-  } catch {
+  } catch (err) {
     return NextResponse.json(
       {
-        message: "Error finding journal",
+        message: `Error finding journal ${err}`,
       },
       {
         status: 411,
@@ -173,6 +173,7 @@ export async function PUT(req: NextRequest) {
       },
       data: {
         content: content.content,
+        updatedAt: new Date()
       },
     });
 
