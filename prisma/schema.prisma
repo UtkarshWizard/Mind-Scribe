@@ -38,7 +38,7 @@ model moodTracking {
   id                   String               @id @default(uuid())
   user                 User                 @relation(fields: [userId], references: [id])
   userId               String
-  mood                 String
+  mood                 Mood
   notes                String?
   createdAt            DateTime
 }
@@ -55,6 +55,12 @@ enum ExerciseType {
   Breathing
   Meditation
   Music
+}
+
+enum Mood {
+  Happy 
+  Sad
+  Neutral
 }
 
 enum Provider {
