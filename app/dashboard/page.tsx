@@ -53,8 +53,10 @@ export default function DashboardPage() {
   if (!session) return null;
 
   return (
-    <div className="overflow-y-hidden">
-      <NavBar />
+    <div className="">
+      <div className="group relative">
+        <NavBar />
+      </div>
       <div className="flex h-screen bg-background text-foreground">
         <motion.main
           className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6"

@@ -19,7 +19,7 @@ export function MoodTracker() {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <Card>
         <CardHeader className="bg-secondary text-secondary-foreground">
-          <CardTitle className="text-xl">Today's Mood</CardTitle>
+          <CardTitle className="text-xl">Select how you feeling.</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="flex justify-around">

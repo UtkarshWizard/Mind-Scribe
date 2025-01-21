@@ -29,7 +29,7 @@ export function PersonalizedRecommendations() {
             >
               <p className="mb-2">{rec.content}</p>
               {rec.type === "resource" && (
-                <Button variant="link" className="p-0">
+                <Button variant="link" className="p-0 text-blue-700">
                   <a href={rec.link} target="_blank" rel="noopener noreferrer">
                     Check it out
                   </a>

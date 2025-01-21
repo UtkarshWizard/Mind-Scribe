@@ -45,7 +45,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = `Analyze the sentiment of this text and categorize emotions (e.g., happy, sad, neutral): "${content.content}" . Then i want you to act as my friend whom i am sharing my feelings and return me reponse like how was my sentiments overall and if its sad then motivate me and so on `;
+    const prompt = `Analyze the sentiment of this text and categorize emotions (happy, sad, neutral) and return percentage of each of the emotions , then based on percentage give me overall emotion which is highest in percentage: "${content.content}" . Then i want you to act as my friend whom i am sharing my feelings and return me reponse like how was my sentiments overall and if its sad then motivate me and so on. Also return me the 3 things: 
+    i) based on feeling return me a line saying write a journal
+    ii) based on feeling return me a quote.
+    iii) based on feeling return me exercises which i can do like breathing mind exercises.
+    Return the response in json file having a id and value format.`;
     const result = await model.generateContent(prompt);
     console.log(result.response.text());
 
@@ -82,6 +86,33 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession();
+    const date = req.nextUrl.searchParams.get("date") || "";
+
+    const startOfDay = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
+    const endOfDay = new Date(new Date(date).setUTCHours(23, 59, 59, 999));
+
+
+    if (date) {
+      const journal = await prisma.journalEntry.findFirst({
+        where: {
+          id: session?.user.id,
+          createdAt: {
+            gte: startOfDay, // Start of the day (00:00:00 UTC)
+            lt: endOfDay, // End of the day (23:59:59 UTC)
+          },
+        }
+      });
+
+      return NextResponse.json(
+        {
+          message: "Journal Found",
+          journal,
+        },
+        {
+          status: 200,
+        }
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: {

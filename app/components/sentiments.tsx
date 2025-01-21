@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { useState } from 'react'
 
 // This would typically be fetched from your backend
 const mockSentimentData = {
@@ -10,6 +11,15 @@ const mockSentimentData = {
     { name: 'Sad', percentage: 20 },
   ],
 }
+
+const [ Sentiment , setSentiment ] = useState({
+  overall: "",
+  categories: [
+    { name: 'Happy', percentage: 0 },
+    { name: 'Neutral', percentage: 0 },
+    { name: 'Sad', percentage: 0 },
+  ],
+})
 
 export function SentimentInsights() {
   return (
