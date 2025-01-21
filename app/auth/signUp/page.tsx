@@ -166,7 +166,7 @@ export default function SignUp() {
                 <div className="flex flex-col justify-center">
                   {error && <p className="text-red-500">{JSON.stringify(error, null, 2)}</p>}
                   {success && <p className="text-green-500">{success}</p>}
-                  <Button className="mt-4">
+                  <Button className="mt-4 bg-black text-white hover:text-black">
                     Sign Up
                     </Button>
                   <div className="flex justify-center my-2">

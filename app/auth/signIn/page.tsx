@@ -164,7 +164,7 @@ export default function SignIn() {
                     </p>
                   )}
                   {success && (<p className="text-green-500">{success}</p>)}
-                  <Button className="mt-4" type="submit">
+                  <Button className="mt-4 bg-black text-white hover:text-black" type="submit">
                     Sign In
                   </Button>
                   <div className="flex justify-center my-2">
