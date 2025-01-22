@@ -45,20 +45,67 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = `Analyze the sentiment of this text and categorize emotions (happy, sad, neutral) and return percentage of each of the emotions , then based on percentage give me overall emotion which is highest in percentage: "${content.content}" . Then i want you to act as my friend whom i am sharing my feelings and return me reponse like how was my sentiments overall and if its sad then motivate me and so on. Also return me the 3 things: 
-    i) based on feeling return me a line saying write a journal
-    ii) based on feeling return me a quote.
-    iii) based on feeling return me exercises which i can do like breathing mind exercises.
-    Return the response in json file having a id and value format.`;
+    const prompt = `Analyze the sentiment of this text and categorize emotions (Happy, Sad, Neutral) and return the result as a JSON object including the percentages for each emotion and a final overall emotion based on the highest percentage. And based on
+    highest percentage emotion return personalized_recommendation which has three category: (quote : this will include a quote based on emotion , exercise : this will include a exercise like breathing or some mind exercises based on the emotions.). secondly include a 
+    friends_response: this will include a message like a friend talking and cheering user up if he is sad or feeling low i.e. neutral and enjoys if he is happy.
+
+The JSON object should have the following structure:
+
+{
+  "emotions": {
+    "Happy": <percentage>, 
+    "Sad": <percentage>, 
+    "Neutral": <percentage> 
+  },
+  "overallEmotion": "EmotionName",
+  "personalized_recommendation" : {
+    "quote" : <string>,
+    "exercise": <string>
+  },
+  "friends_response" : <string>
+}
+
+Example:
+
+{
+  "emotions": {
+    "Happy": 60, 
+    "Sad": 10, 
+    "Neutral": 30 
+  },
+  "overallEmotion": "Happy",
+  "personalized_recommendation" : {
+    "quote" : "Happiness can be found in the darkest of times , if one remembers to turn on the light",
+    "exercise" : "You are feeling low How about meditating for 5 min"
+  },
+  "friends_response": "Hey its nice to hear your day went well. Tommorow will be much more happier"
+}
+
+remember to not use the json and ''' quotes marking just keep the object as it is shown above. 
+
+Analyze the following text: "${content.content}"`;
     const result = await model.generateContent(prompt);
-    console.log(result.response.text());
+    const sentimentData = result.response.text();
+    console.log("sentiment data", sentimentData);
+
+    let parsedSentiment;
+    try {
+      parsedSentiment = JSON.parse(sentimentData);
+    } catch (error) {
+      return NextResponse.json(
+        {
+          message: "Error parsing sentiment response",
+        },
+        { status: 400 }
+      );
+    }
 
     const journal = await prisma.journalEntry.create({
       data: {
         userId: user.id,
         content: content.content,
         createdAt: new Date(),
-        sentiment: result.response.text(),
+        sentiment: JSON.stringify(parsedSentiment),
       },
     });
 
@@ -88,9 +135,10 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession();
     const date = req.nextUrl.searchParams.get("date") || "";
 
+    // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+
     const startOfDay = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
     const endOfDay = new Date(new Date(date).setUTCHours(23, 59, 59, 999));
-
 
     if (date) {
       const journal = await prisma.journalEntry.findFirst({
@@ -100,12 +148,12 @@ export async function GET(req: NextRequest) {
             gte: startOfDay, // Start of the day (00:00:00 UTC)
             lt: endOfDay, // End of the day (23:59:59 UTC)
           },
-        }
+        },
       });
 
       return NextResponse.json(
         {
-          message: "Journal Found",
+          message: "Journal Found with date",
           journal,
         },
         {
@@ -161,7 +209,7 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const session = await getServerSession();
-    console.log(session)
+    console.log(session);
 
     const url = new URL(req.url);
     const contentId = url.searchParams.get("id");
@@ -200,16 +248,16 @@ export async function PUT(req: NextRequest) {
 
     const updateJournal = await prisma.journalEntry.update({
       where: {
-        id: contentId
+        id: contentId,
       },
       data: {
         content: content.content,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
     });
 
     return NextResponse.json(
-      { message: "Journal updated successfully",updateJournal },
+      { message: "Journal updated successfully", updateJournal },
       { status: 200 }
     );
   } catch (err) {

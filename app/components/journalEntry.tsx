@@ -1,43 +1,70 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { Progress } from "@/components/ui/progress";
 
 export function JournalQuickEntry() {
   const [entry, setEntry] = useState("");
   const [submittedEntry, setSubmittedEntry] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // State to hold the sentiment data
+  const [Sentiment, setSentiment] = useState({
+    overall: "",
+    categories: [
+      { name: "Happy", percentage: 0 },
+      { name: "Neutral", percentage: 0 },
+      { name: "Sad", percentage: 0 },
+    ],
+  });
+
+  useEffect(() => {
+    const fetchSentimentData = async () => {
+      try {
+        const date = new Date().toISOString(); // Current date in ISO format
+        const response = await axios.get(
+          `/api/journal/sentiment`
+        );
+        const sentimentData = response.data?.sentiment_analysis;
+        console.log(sentimentData);
+        const overall_emotion = response.data?.overall_emotion;
+
+        // Map the fetched data into the format needed for the component
+        if (sentimentData) {
+          setSentiment({
+            overall: overall_emotion || "",
+            categories: [
+              { name: "Happy", percentage: sentimentData?.Happy || 0},
+              { name: "Neutral", percentage: sentimentData?.Neutral || 0 },
+              { name: "Sad", percentage: sentimentData?.Sad || 0 },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching sentiment data:", error);
+      }
+    };
+
+    fetchSentimentData();
+  }, []);
+
   useEffect(() => {
     const fetchJournalForToday = async () => {
       try {
         const date = new Date().toISOString(); // Current date in ISO format
-        const response = await axios.get(
-          `/api/journal?date=${encodeURIComponent(date)}`
-        );
+        const response = await axios.get(`/api/journal?date=${encodeURIComponent(date)}`);
         if (response.data.journal) {
           setSubmittedEntry(response.data.journal.content); // Set the journal content if found
         }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
       }
-      //  finally {
-      //   setLoading(false); // Stop the loading state
-      // }
     };
 
     fetchJournalForToday();
-  }, []);
+  }, []); // Fetch on mount
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,11 +74,23 @@ export function JournalQuickEntry() {
 
       if (response.status === 200) {
         const date = new Date().toISOString();
-        const getResponse = await axios.get(
-          `/api/journal?date=${encodeURIComponent(date)}`
-        );
-        setSubmittedEntry(getResponse.data.journal.content);
-        setEntry(""); 
+        const getResponse = await axios.get(`/api/journal?date=${encodeURIComponent(date)}`);
+        setSubmittedEntry(getResponse.data.journal.content); // Set submitted journal
+        setEntry(""); // Clear the textarea
+        const sentimentResponse = await axios.get(`/api/journal/sentiment`);
+        const sentimentData = sentimentResponse.data?.sentiment_analysis;
+        const overall_emotion = sentimentResponse.data?.overall_emotion;
+
+        if (sentimentData) {
+          setSentiment({
+            overall: overall_emotion || "",
+            categories: [
+              { name: "Happy", percentage: sentimentData?.Happy || 0},
+              { name: "Neutral", percentage: sentimentData?.Neutral || 0 },
+              { name: "Sad", percentage: sentimentData?.Sad || 0 },
+            ],
+          });
+        }
       }
     } catch (error) {
       console.error("Error submitting journal:", error);
@@ -67,7 +106,8 @@ export function JournalQuickEntry() {
       transition={{ duration: 0.5 }}
     >
       {submittedEntry ? (
-        <Card className="overflow-hidden">
+        <div>
+          <Card className="overflow-hidden">
           <CardHeader className="bg-primary text-primary-foreground">
             <CardTitle className="text-2xl">Your Journal Entry</CardTitle>
           </CardHeader>
@@ -75,16 +115,36 @@ export function JournalQuickEntry() {
             <p className="text-lg text-gray-800">{submittedEntry}</p>
           </CardContent>
           <CardFooter className="flex justify-end bg-muted p-4">
-              <button
-                className="p-[3px] relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                <div className="px-8 py-2 bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
-                  Update Journal
-                </div>
-              </button>
-            </CardFooter>
+            <button className="p-[3px] relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
+              <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+                Update Journal
+              </div>
+            </button>
+          </CardFooter>
         </Card>
+        <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-xl">Sentiment Insights</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg mb-4">
+            Your mood today is:{" "}
+            <strong>{Sentiment.overall || "Loading..."}</strong>
+          </p>
+          <div className="space-y-4">
+            {Sentiment.categories.map((category) => (
+              <div key={category.name}>
+                <div className="flex justify-between mb-1">
+                  <span>{category.name}</span>
+                  <span>{category.percentage}%</span>
+                </div>
+                <Progress value={category.percentage} className="h-2" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card></div>
       ) : (
         <Card className="overflow-hidden">
           <CardHeader className="bg-primary text-primary-foreground">
@@ -106,7 +166,7 @@ export function JournalQuickEntry() {
                 type="submit"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                <div className="px-8 py-2 bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
+                <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
                   {loading ? "Submitting..." : "Submit"}
                 </div>
               </button>
@@ -117,3 +177,4 @@ export function JournalQuickEntry() {
     </motion.div>
   );
 }
+

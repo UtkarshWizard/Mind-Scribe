@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RecentJournalEntries } from "../components/recentJournal";
 import { MoodTracker } from "../components/todaysmood";
 import { PersonalizedRecommendations } from "../components/personalizedRecomendation";
-import { SentimentInsights } from "../components/sentiments";
 import { JournalQuickEntry } from "../components/journalEntry";
 import { WelcomeBanner } from "../components/welcome-banner";
 import NavBar from "../components/NavBar-Dashboard";
@@ -73,11 +72,6 @@ export default function DashboardPage() {
               <motion.div variants={itemVariants}>
                 <JournalQuickEntry />
               </motion.div>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-                <motion.div variants={itemVariants}>
-                  <SentimentInsights />
-                </motion.div>
-              </Suspense>
               <Suspense fallback={<Skeleton className="h-64 w-full" />}>
                 <motion.div variants={itemVariants}>
                   <PersonalizedRecommendations />
