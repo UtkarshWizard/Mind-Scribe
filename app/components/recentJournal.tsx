@@ -47,21 +47,20 @@ export function RecentJournalEntries() {
       try {
         const response = await axios.get("/api/journal");
         // console.log(response.data.journal);
-  
-        if (response.data.journal) {
-          setJournals(response.data.journal);
-        }
 
-        
+        if (response.data.journal) {
+          const recentJournals = response.data.journal.slice(0, 5);
+          setJournals(recentJournals);
+        }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
       }
     };
-  
+
     fetchJournals();
   }, []);
 
-  console.log(Journals)
+  console.log(Journals);
 
   return (
     <Card>
@@ -79,24 +78,33 @@ export function RecentJournalEntries() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-4">
-          {Journals.map((entry) => (
-            <li key={entry.id} className="border-b pb-4 last:border-b-0">
-              <div className="flex justify-between items-start mb-4">
-                <span className="font-semibold">{new Date(entry.createdAt).toLocaleDateString()}</span>
-                <span className="text-sm bg-muted px-2 py-1 rounded">
-                  {entry.sentiment.overallEmotion}
-                </span>
-              </div>
-              <p className="text-sm mb-2">
-                {entry.content.substring(0, 100)}...
-              </p>
-              <Button variant="link" className="p-0 text-blue-700">
-                View Details
-              </Button>
-            </li>
-          ))}
-        </ul>
+        {Journals.length === 0 ? (
+          <div className="text-center">
+            <p className="text-xl font-semibold text-black pb-2">"Every day is a new chapter."</p>
+            <p>Capture your thoughts and memories—begin with your first journal entry!</p>
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {Journals.map((entry) => (
+              <li key={entry.id} className="border-b pb-4 last:border-b-0">
+                <div className="flex justify-between items-start mb-4">
+                  <span className="font-semibold">
+                    {new Date(entry.createdAt).toLocaleDateString()}
+                  </span>
+                  <span className="text-sm bg-muted px-2 py-1 rounded">
+                    {entry.sentiment.overallEmotion}
+                  </span>
+                </div>
+                <p className="text-sm mb-2">
+                  {entry.content.substring(0, 100)}...
+                </p>
+                <Button variant="link" className="p-0 text-blue-700">
+                  View Details
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

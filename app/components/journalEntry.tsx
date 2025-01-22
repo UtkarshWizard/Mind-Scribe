@@ -145,17 +145,11 @@ export function JournalQuickEntry() {
             <CardContent className="p-6">
               <p className="text-lg text-gray-800">{submittedEntry}</p>
             </CardContent>
-            <CardFooter className="flex justify-between bg-muted p-4">
-              <button className="p-[3px] relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                <div className="md:px-8 px-4 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                  Update Journal
-                </div>
-              </button>
+            <CardFooter className="flex justify-end bg-muted p-4">
               <button className="p-[3px] relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                 <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                  View More
+                  Update Journal
                 </div>
               </button>
             </CardFooter>
@@ -264,8 +258,8 @@ export function JournalQuickEntry() {
               </CardHeader>
               <CardContent>
                 <p className="mb-4 text-gray-600 dark:text-gray-300 text-lg">
-                  Enter today's journal to unlock your personalized sentiment
-                  analysis and recommendations.
+                  Enter today's journal to unlock your <span className="font-semibold italic">Personalized Sentiment
+                  Analysis</span> and <span className="font-semibold italic">Recommendations</span>.
                 </p>
               </CardContent>
             </Card>
