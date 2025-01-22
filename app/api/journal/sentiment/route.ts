@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession();
+
   try {
     // Fetch the current date in IST
     const IST_OFFSET = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
@@ -23,11 +24,11 @@ export async function GET(req: NextRequest) {
       select: {
         id: true,
         content: true,
-        sentiment: true, // Fetch the sentiment JSON column
+        sentiment: true,
       },
     });
 
-    console.log(journalEntry)
+    // console.log("Journal Entry:", journalEntry);
 
     if (!journalEntry || !journalEntry.sentiment) {
       return NextResponse.json(
@@ -36,36 +37,42 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const sentimentString = journalEntry?.sentiment;
-    // console.log("sentimentstring" ,sentimentString)
+    let sentimentObject;
 
-    if (typeof sentimentString === "string") {
-        const cleanedString = sentimentString
-        .replace(/^"```json\\n/, "") // Remove the start of the markdown and extra escape sequences
-        .replace(/\\n$/, "")         // Remove the trailing newlines
-        .replace(/\\n/g, "")         // Remove all the newline escape sequences
-        .replace(/\\"/g, '"')
-        .replace(/```"$/, ""); 
-        
-        // console.log( "cleaned" , cleanedString)
-
-      const sentimentData = JSON.parse(cleanedString);
-
-      console.log(sentimentData)
-
-      return NextResponse.json({
-        message: "Journal found",
-        id: journalEntry?.id,
-        content: journalEntry?.content,
-        sentiment_analysis: sentimentData.emotions,
-        overall_emotion: sentimentData.overallEmotion
-      });
+    if (typeof journalEntry.sentiment === "string") {
+      try {
+        sentimentObject = JSON.parse(journalEntry.sentiment);
+      } catch (error) {
+        console.error("Error parsing sentiment string:", error);
+        return NextResponse.json(
+          { message: "Error parsing sentiment data." },
+          { status: 400 }
+        );
+      }
+    } else if (typeof journalEntry.sentiment === "object" && journalEntry.sentiment !== null) {
+      sentimentObject = journalEntry.sentiment;
+    } else {
+      return NextResponse.json(
+        { message: "Invalid sentiment data structure." },
+        { status: 400 }
+      );
     }
+
+    // console.log("Parsed Sentiment Object:", sentimentObject);
+
+    return NextResponse.json({
+      message: "Journal found",
+      id: journalEntry.id,
+      content: journalEntry.content,
+      sentiment_analysis: sentimentObject.emotions,
+      overall_emotion: sentimentObject.overallEmotion,
+      recommendations: sentimentObject.personalized_recommendation
+    });
   } catch (error) {
     console.error("Error fetching today's journal entry:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
-      { status: 411 }
+      { status: 500 }
     );
   }
 }

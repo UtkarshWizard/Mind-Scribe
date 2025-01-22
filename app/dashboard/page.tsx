@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RecentJournalEntries } from "../components/recentJournal";
 import { MoodTracker } from "../components/todaysmood";
-import { PersonalizedRecommendations } from "../components/personalizedRecomendation";
 import { JournalQuickEntry } from "../components/journalEntry";
 import { WelcomeBanner } from "../components/welcome-banner";
 import NavBar from "../components/NavBar-Dashboard";
@@ -58,7 +57,7 @@ export default function DashboardPage() {
       </div>
       <div className="flex h-screen bg-background text-foreground">
         <motion.main
-          className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6"
+          className="flex-1 overflow-y-auto p-4 md:py-6 md:px-12 space-y-6"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -72,11 +71,6 @@ export default function DashboardPage() {
               <motion.div variants={itemVariants}>
                 <JournalQuickEntry />
               </motion.div>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-                <motion.div variants={itemVariants}>
-                  <PersonalizedRecommendations />
-                </motion.div>
-              </Suspense>
             </div>
             <div className="space-y-6">
               <motion.div variants={itemVariants}>
