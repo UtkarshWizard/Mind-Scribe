@@ -27,9 +27,9 @@ export function JournalQuickEntry() {
     ],
   });
 
-  const [Recommendation , setRecommendation] = useState({
-    quote : "",
-    exercise : ""
+  const [Recommendation, setRecommendation] = useState({
+    quote: "",
+    exercise: "",
   });
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export function JournalQuickEntry() {
         console.log(sentimentData);
         const overall_emotion = response.data?.overall_emotion;
         const recommendation = response.data?.recommendations;
-        console.log(recommendation)
+        console.log(recommendation);
 
         // Map the fetched data into the format needed for the component
         if (sentimentData) {
@@ -58,7 +58,7 @@ export function JournalQuickEntry() {
         if (recommendation) {
           setRecommendation({
             quote: recommendation.quote,
-            exercise: recommendation.exercise
+            exercise: recommendation.exercise,
           });
         }
       } catch (error) {
@@ -116,11 +116,11 @@ export function JournalQuickEntry() {
           });
         }
 
-        if ( recommendation) {
+        if (recommendation) {
           setRecommendation({
             quote: recommendation.quote,
-            exercise: recommendation.exercise
-          })
+            exercise: recommendation.exercise,
+          });
         }
       }
     } catch (error) {
@@ -145,11 +145,17 @@ export function JournalQuickEntry() {
             <CardContent className="p-6">
               <p className="text-lg text-gray-800">{submittedEntry}</p>
             </CardContent>
-            <CardFooter className="flex justify-end bg-muted p-4">
+            <CardFooter className="flex justify-between bg-muted p-4">
+              <button className="p-[3px] relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
+                <div className="md:px-8 px-4 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+                  Update Journal
+                </div>
+              </button>
               <button className="p-[3px] relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                 <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                  Update Journal
+                  View More
                 </div>
               </button>
             </CardFooter>
@@ -189,60 +195,82 @@ export function JournalQuickEntry() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-center gap-4">
-                  <motion.div
-                    className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <p className="mb-2">{Recommendation.quote || "Loading..."}</p>
-                  </motion.div>
-                  <motion.div
-                    className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <p className="mb-2">{Recommendation.exercise || "Loading..."}</p>
-                    <Button variant="link" className="p-0 text-blue-700">
-                        <a
-                          href={"/"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Explore More
-                        </a>
-                      </Button>
-                  </motion.div>
+              <motion.div
+                className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <p className="mb-2">{Recommendation.quote || "Loading..."}</p>
+              </motion.div>
+              <motion.div
+                className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <p className="mb-2">
+                  {Recommendation.exercise || "Loading..."}
+                </p>
+                <Button variant="link" className="p-0 text-blue-700">
+                  <a href={"/"} target="_blank" rel="noopener noreferrer">
+                    Explore More
+                  </a>
+                </Button>
+              </motion.div>
             </CardContent>
           </Card>
         </div>
       ) : (
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-primary text-primary-foreground">
-            <CardTitle className="text-2xl">Quick Journal Entry</CardTitle>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="p-6">
-              <Textarea
-                placeholder="Write about your day, emotions, or anything on your mind..."
-                value={entry}
-                onChange={(e) => setEntry(e.target.value)}
-                className="min-h-[160px] mb-4"
-              />
-            </CardContent>
-            <CardFooter className="flex justify-end bg-muted p-4">
-              <button
-                disabled={loading}
-                className="p-[3px] relative"
-                type="submit"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                  {loading ? "Submitting..." : "Submit"}
-                </div>
-              </button>
-            </CardFooter>
-          </form>
-        </Card>
+        <>
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-primary text-primary-foreground">
+              <CardTitle className="text-2xl">Quick Journal Entry</CardTitle>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+              <CardContent className="p-6">
+                <Textarea
+                  placeholder="Write about your day, emotions, or anything on your mind..."
+                  value={entry}
+                  onChange={(e) => setEntry(e.target.value)}
+                  className="min-h-[160px] mb-4"
+                />
+              </CardContent>
+              <CardFooter className="flex justify-end bg-muted p-4">
+                <button
+                  disabled={loading}
+                  className="p-[3px] relative"
+                  type="submit"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
+                  <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+                    {loading ? "Submitting..." : "Submit"}
+                  </div>
+                </button>
+              </CardFooter>
+            </form>
+          </Card>
+          <motion.div
+            className="transition-shadow duration-300 ease-in-out hover:shadow-lg"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            // transition={{ duration: 0.5 }}
+          >
+            <Card className="mt-6 bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-900 dark:to-pink-900">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-purple-800 dark:text-purple-200">
+                  Ready for Today's Insights?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4 text-gray-600 dark:text-gray-300 text-lg">
+                  Enter today's journal to unlock your personalized sentiment
+                  analysis and recommendations.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </>
       )}
     </motion.div>
   );

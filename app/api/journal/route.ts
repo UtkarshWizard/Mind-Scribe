@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await getServerSession();
+    console.log("postsession" , session)
 
     const user = await prisma.user.findFirst({
       where: {
@@ -81,7 +82,7 @@ Example:
   "friends_response": "Hey its nice to hear your day went well. Tommorow will be much more happier"
 }
 
-Remember to not use the json and ''' quotes marking just keep the object as it is shown above. 
+strictly Remember to not use the json and ''' quotes marking , just keep the object as it is shown above. 
 
 Analyze the following text: "${content.content}"`;
     const result = await model.generateContent(prompt);
@@ -95,6 +96,7 @@ Analyze the following text: "${content.content}"`;
       return NextResponse.json(
         {
           message: "Error parsing sentiment response",
+          error
         },
         { status: 400 }
       );
@@ -164,7 +166,7 @@ export async function GET(req: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: {
-        id: session?.user.id,
+        email: session?.user.email,
       },
     });
 
@@ -181,7 +183,7 @@ export async function GET(req: NextRequest) {
 
     const journal = await prisma.journalEntry.findMany({
       where: {
-        id: user.id,
+        userId: user.id,
       },
     });
 
