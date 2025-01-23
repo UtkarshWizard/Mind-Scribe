@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function JournalQuickEntry() {
   const [entry, setEntry] = useState("");
@@ -129,6 +130,8 @@ export function JournalQuickEntry() {
       setLoading(false);
     }
   };
+  
+  const router = useRouter();
 
   return (
     <motion.div
@@ -146,7 +149,7 @@ export function JournalQuickEntry() {
               <p className="text-lg text-gray-800">{submittedEntry}</p>
             </CardContent>
             <CardFooter className="flex justify-end bg-muted p-4">
-              <button className="p-[3px] relative">
+              <button className="p-[3px] relative" onClick={() => (router.push(`/update-journal?${"journalId"}`))}>
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                 <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
                   Update Journal

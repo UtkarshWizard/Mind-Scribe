@@ -4,30 +4,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// This would typically be fetched from your backend
-const mockEntries = [
-  {
-    id: 1,
-    date: "2023-06-15",
-    content:
-      "Today was a productive day. I managed to complete most of my tasks...",
-    sentiment: "Happy",
-  },
-  {
-    id: 2,
-    date: "2023-06-14",
-    content: "Feeling a bit stressed about the upcoming project deadline...",
-    sentiment: "Stressed",
-  },
-  {
-    id: 3,
-    date: "2023-06-13",
-    content:
-      "Had a great conversation with an old friend today. It reminded me of...",
-    sentiment: "Reflective",
-  },
-];
-
 interface JournalEntry {
   id: string;
   content: string;
@@ -45,11 +21,19 @@ export function RecentJournalEntries() {
   useEffect(() => {
     const fetchJournals = async () => {
       try {
-        const response = await axios.get("/api/journal");
+        const response = await axios.get<{journal : JournalEntry[]}>("/api/journal");
         // console.log(response.data.journal);
 
+        // if (response.data.journal) {
+        //   const recentJournals = response.data.journal.slice(0, 5);
+        //   setJournals(recentJournals);
+
         if (response.data.journal) {
-          const recentJournals = response.data.journal.slice(0, 5);
+          const sortedJournals = response.data.journal.sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          console.log(sortedJournals)
+          const recentJournals = sortedJournals.slice(0, 5);
           setJournals(recentJournals);
         }
       } catch (error) {
@@ -60,7 +44,7 @@ export function RecentJournalEntries() {
     fetchJournals();
   }, []);
 
-  console.log(Journals);
+  // console.log(Journals);
 
   return (
     <Card>
@@ -80,29 +64,38 @@ export function RecentJournalEntries() {
       <CardContent>
         {Journals.length === 0 ? (
           <div className="text-center">
-            <p className="text-xl font-semibold text-black pb-2">"Every day is a new chapter."</p>
-            <p>Capture your thoughts and memories—begin with your first journal entry!</p>
+            <p className="text-xl font-semibold text-black pb-2">
+              "Every day is a new chapter."
+            </p>
+            <p>
+              Capture your thoughts and memories—begin with your first journal
+              entry!
+            </p>
           </div>
         ) : (
           <ul className="space-y-4">
-            {Journals.map((entry) => (
-              <li key={entry.id} className="border-b pb-4 last:border-b-0">
-                <div className="flex justify-between items-start mb-4">
-                  <span className="font-semibold">
-                    {new Date(entry.createdAt).toLocaleDateString()}
-                  </span>
-                  <span className="text-sm bg-muted px-2 py-1 rounded">
-                    {entry.sentiment.overallEmotion}
-                  </span>
-                </div>
-                <p className="text-sm mb-2">
-                  {entry.content.substring(0, 100)}...
-                </p>
-                <Button variant="link" className="p-0 text-blue-700">
-                  View Details
-                </Button>
-              </li>
-            ))}
+            {Journals.map((entry) => {
+              const dateString = entry.createdAt.split("T")[0];
+
+              return (
+                <li key={entry.id} className="border-b pb-4 last:border-b-0">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="font-semibold">
+                      {new Date(dateString).toLocaleDateString()}
+                    </span>
+                    <span className="text-sm bg-muted px-2 py-1 rounded">
+                      {entry.sentiment.overallEmotion}
+                    </span>
+                  </div>
+                  <p className="text-sm mb-2">
+                    {entry.content.substring(0, 100)}...
+                  </p>
+                  <Button variant="link" className="p-0 text-blue-700">
+                    View Details
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </CardContent>

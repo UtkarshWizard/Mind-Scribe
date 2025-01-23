@@ -82,12 +82,12 @@ Example:
   "friends_response": "Hey its nice to hear your day went well. Tommorow will be much more happier"
 }
 
-strictly Remember to not use the json and ''' quotes marking , just keep the object as it is shown above. 
+strictly Remember to not include the json and ''' quotes marking in the response , just keep the object as it is shown above. 
 
 Analyze the following text: "${content.content}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
-    // console.log("sentiment data", sentimentData);
+    console.log("sentiment data", sentimentData);
 
     let parsedSentiment;
     try {
