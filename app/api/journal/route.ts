@@ -27,13 +27,15 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await getServerSession();
-    console.log("postsession" , session)
+    console.log("postsession", session);
 
     const user = await prisma.user.findFirst({
       where: {
-        id: session?.user.id,
+        email: session?.user.email,
       },
     });
+
+    console.log("user", user);
 
     if (!user) {
       return NextResponse.json(
@@ -96,7 +98,7 @@ Analyze the following text: "${content.content}"`;
       return NextResponse.json(
         {
           message: "Error parsing sentiment response",
-          error
+          error,
         },
         { status: 400 }
       );
@@ -135,34 +137,44 @@ Analyze the following text: "${content.content}"`;
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession();
-    const date = req.nextUrl.searchParams.get("date") || "";
+    console.log("getsession", session);
 
-    // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
-
-    const startOfDay = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
-    const endOfDay = new Date(new Date(date).setUTCHours(23, 59, 59, 999));
-
-    if (date) {
-      const journal = await prisma.journalEntry.findFirst({
+    if (session) {
+      const user = await prisma.user.findUnique({
         where: {
-          id: session?.user.id,
-          createdAt: {
-            gte: startOfDay, // Start of the day (00:00:00 UTC)
-            lt: endOfDay, // End of the day (23:59:59 UTC)
-          },
+          email: session.user.email,
         },
       });
 
-      return NextResponse.json(
-        {
-          message: "Journal Found with date",
-          journal,
-        },
-        {
-          status: 200,
-        }
-      );
+      const date = req.nextUrl.searchParams.get("date") || "";
+
+      const startOfDay = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
+      const endOfDay = new Date(new Date(date).setUTCHours(23, 59, 59, 999));
+
+      if (date) {
+        const journal = await prisma.journalEntry.findFirst({
+          where: {
+            userId: user?.id,
+            createdAt: {
+              gte: startOfDay, // Start of the day (00:00:00 UTC)
+              lt: endOfDay, // End of the day (23:59:59 UTC)
+            },
+          },
+        });
+
+        return NextResponse.json(
+          {
+            message: "Journal Found with date",
+            journal,
+          },
+          {
+            status: 200,
+          }
+        );
+      }
     }
+
+    // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
 
     const user = await prisma.user.findUnique({
       where: {
@@ -207,4 +219,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-

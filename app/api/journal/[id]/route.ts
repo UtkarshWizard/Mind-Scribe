@@ -90,6 +90,7 @@ export async function PUT(
     });
 
     if (!user || journal.userId !== user.id) {
+      console.log(user , journal.userId)
       return NextResponse.json(
         { message: "Unauthorized to update this journal" },
         { status: 403 }
