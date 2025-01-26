@@ -25,24 +25,24 @@ export default function NavBar() {
         <nav className="hidden md:block">
           <ul className="flex space-x-4 gap-4 items-center">
             <li>
-              <Link href="#features" className="text-gray-300 hover:text-white">
+              <Link href="/dashboard" className="text-gray-300 hover:text-white">
                 Dashboard
               </Link>
             </li>
             <li>
               <Link
-                href="#how-it-works"
+                href="/journals"
                 className="text-gray-300 hover:text-white"
               >
-                Journal
+                Journals
               </Link>
             </li>
             <li>
               <Link
-                href="#testimonials"
+                href="/exercises"
                 className="text-gray-300 hover:text-white"
               >
-                Sentiments
+                Exercises
               </Link>
             </li>
             {!session.data?.user && (

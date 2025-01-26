@@ -87,7 +87,7 @@ strictly Remember to not include the json and ''' quotes marking in the response
 Analyze the following text: "${content.content}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
-    console.log("sentiment data", sentimentData);
+    // console.log("sentiment data", sentimentData);
 
     let parsedSentiment;
     try {
@@ -208,64 +208,3 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function PUT(req: NextRequest) {
-  try {
-    const session = await getServerSession();
-    console.log(session);
-
-    const url = new URL(req.url);
-    const contentId = url.searchParams.get("id");
-
-    if (!contentId) {
-      return NextResponse.json(
-        { message: "Content ID is required" },
-        { status: 400 }
-      );
-    }
-
-    const content = contentSchema.parse(await req.json());
-
-    if (!content) {
-      return NextResponse.json({
-        message: "Enter what you want to update",
-      });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: session?.user.email,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          message: "Unauthorized",
-        },
-        {
-          status: 411,
-        }
-      );
-    }
-
-    const updateJournal = await prisma.journalEntry.update({
-      where: {
-        id: contentId,
-      },
-      data: {
-        content: content.content,
-        updatedAt: new Date(),
-      },
-    });
-
-    return NextResponse.json(
-      { message: "Journal updated successfully", updateJournal },
-      { status: 200 }
-    );
-  } catch (err) {
-    return NextResponse.json(
-      { message: `Error updating journal: ${err}` },
-      { status: 500 }
-    );
-  }
-}

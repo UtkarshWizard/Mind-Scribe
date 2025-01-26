@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 export function JournalQuickEntry() {
   const [entry, setEntry] = useState("");
   const [submittedEntry, setSubmittedEntry] = useState("");
+  const [id , setId] = useState("")
   const [loading, setLoading] = useState(false);
 
   // State to hold the sentiment data
@@ -73,12 +74,13 @@ export function JournalQuickEntry() {
   useEffect(() => {
     const fetchJournalForToday = async () => {
       try {
-        const date = new Date().toISOString(); // Current date in ISO format
+        const date = new Date().toISOString();
         const response = await axios.get(
           `/api/journal?date=${encodeURIComponent(date)}`
         );
         if (response.data.journal) {
-          setSubmittedEntry(response.data.journal.content); // Set the journal content if found
+          setSubmittedEntry(response.data.journal.content);
+          setId(response.data.journal.id)
         }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
@@ -149,7 +151,7 @@ export function JournalQuickEntry() {
               <p className="text-lg text-gray-800">{submittedEntry}</p>
             </CardContent>
             <CardFooter className="flex justify-end bg-muted p-4">
-              <button className="p-[3px] relative" onClick={() => (router.push(`/update-journal?${"journalId"}`))}>
+              <button className="p-[3px] relative" onClick={() => (router.push(`/update/journal/${id}`))}>
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                 <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
                   Update Journal
@@ -208,7 +210,7 @@ export function JournalQuickEntry() {
                   {Recommendation.exercise || "Loading..."}
                 </p>
                 <Button variant="link" className="p-0 text-blue-700">
-                  <a href={"/"} target="_blank" rel="noopener noreferrer">
+                  <a href={"/exercises"} target="_blank" rel="noopener noreferrer">
                     Explore More
                   </a>
                 </Button>

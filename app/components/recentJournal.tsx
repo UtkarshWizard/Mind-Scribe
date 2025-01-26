@@ -24,10 +24,6 @@ export function RecentJournalEntries() {
         const response = await axios.get<{journal : JournalEntry[]}>("/api/journal");
         // console.log(response.data.journal);
 
-        // if (response.data.journal) {
-        //   const recentJournals = response.data.journal.slice(0, 5);
-        //   setJournals(recentJournals);
-
         if (response.data.journal) {
           const sortedJournals = response.data.journal.sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -54,7 +50,7 @@ export function RecentJournalEntries() {
           <Button
             className="cursor-pointer"
             onClick={() => {
-              router.push("/journal");
+              router.push("/journals");
             }}
           >
             Show All Entries
@@ -81,7 +77,12 @@ export function RecentJournalEntries() {
                 <li key={entry.id} className="border-b pb-4 last:border-b-0">
                   <div className="flex justify-between items-start mb-4">
                     <span className="font-semibold">
-                      {new Date(dateString).toLocaleDateString()}
+                      {new Date(dateString).toLocaleDateString("en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
                     </span>
                     <span className="text-sm bg-muted px-2 py-1 rounded">
                       {entry.sentiment.overallEmotion}
@@ -90,7 +91,7 @@ export function RecentJournalEntries() {
                   <p className="text-sm mb-2">
                     {entry.content.substring(0, 100)}...
                   </p>
-                  <Button variant="link" className="p-0 text-blue-700">
+                  <Button variant="link" className="p-0 text-blue-700" onClick={() => (router.push(`/journals/${entry.id}`))}>
                     View Details
                   </Button>
                 </li>
