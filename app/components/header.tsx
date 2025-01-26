@@ -15,7 +15,7 @@ export default function Header() {
   const userName = session.data?.user?.name || "User"; 
   const userImage = session.data?.user?.image || ""; 
   const router = useRouter();
-  console.log(userImage)
+  // console.log(userImage)
 
   return (
     <header className="py-4 px-6 md:px-10 bg-gray-900 shadow-sm sticky top-0 z-50">

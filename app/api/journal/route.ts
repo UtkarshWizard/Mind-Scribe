@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await getServerSession();
-    console.log("postsession", session);
+    // console.log("postsession", session);
 
     const user = await prisma.user.findFirst({
       where: {
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("user", user);
+    // console.log("user", user);
 
     if (!user) {
       return NextResponse.json(
@@ -137,7 +137,7 @@ Analyze the following text: "${content.content}"`;
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession();
-    console.log("getsession", session);
+    // console.log("getsession", session);
 
     if (session) {
       const user = await prisma.user.findUnique({

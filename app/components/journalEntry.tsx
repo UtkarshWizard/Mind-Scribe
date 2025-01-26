@@ -40,10 +40,10 @@ export function JournalQuickEntry() {
         const date = new Date().toISOString(); // Current date in ISO format
         const response = await axios.get(`/api/journal/sentiment`);
         const sentimentData = response.data?.sentiment_analysis;
-        console.log(sentimentData);
+        // console.log(sentimentData);
         const overall_emotion = response.data?.overall_emotion;
         const recommendation = response.data?.recommendations;
-        console.log(recommendation);
+        // console.log(recommendation);
 
         // Map the fetched data into the format needed for the component
         if (sentimentData) {

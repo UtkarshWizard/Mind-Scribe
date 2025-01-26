@@ -76,7 +76,7 @@ export default function SignIn() {
         email: formData.email,
         password: formData.password,
       });
-      console.log("SignIn Response:", response);
+      // console.log("SignIn Response:", response);
 
       if (response?.error) {
         setError('Wrong Credentials.');

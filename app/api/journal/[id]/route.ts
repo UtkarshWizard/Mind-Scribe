@@ -52,7 +52,7 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession();
-    console.log(session);
+    // console.log(session);
 
     if (!session || !session.user?.email) {
       return NextResponse.json(
@@ -90,7 +90,7 @@ export async function PUT(
     });
 
     if (!user || journal.userId !== user.id) {
-      console.log(user , journal.userId)
+      // console.log(user , journal.userId)
       return NextResponse.json(
         { message: "Unauthorized to update this journal" },
         { status: 403 }

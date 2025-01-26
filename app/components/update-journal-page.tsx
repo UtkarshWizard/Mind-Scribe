@@ -35,7 +35,7 @@ interface Journal {
 export function UpdateJournalPage({ id }: { id: string }) {
   const router = useRouter()
   const [journal, setJournal] = useState<Journal | null>(null);
-  console.log(journal?.content) 
+  // console.log(journal?.content) 
   const [content, setContent] = useState(`${journal?.content}`);
   const [loading , setLoading] = useState(false);
   
@@ -62,7 +62,7 @@ export function UpdateJournalPage({ id }: { id: string }) {
   }, [journal]);
   
 
-  console.log(content)
+  // console.log(content)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission

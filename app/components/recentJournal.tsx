@@ -28,7 +28,7 @@ export function RecentJournalEntries() {
           const sortedJournals = response.data.journal.sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
-          console.log(sortedJournals)
+          // console.log(sortedJournals)
           const recentJournals = sortedJournals.slice(0, 5);
           setJournals(recentJournals);
         }
