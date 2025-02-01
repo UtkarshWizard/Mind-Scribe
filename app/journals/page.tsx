@@ -69,7 +69,7 @@ export default function JournalsPage() {
     if (years.length > 0 && selectedYear === null) {
       setSelectedYear(years[0]); // Default to the most recent year
     }
-  }, [years]);
+  }, [years , selectedYear]);
 
   const moodIcon = {
     Happy: <SmileIcon className="w-4 h-4 text-yellow-800" />,

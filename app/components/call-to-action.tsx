@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function CallToAction() {

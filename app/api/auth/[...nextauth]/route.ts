@@ -1,17 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaClient } from '@prisma/client';
-import { NextResponse } from "next/server";
-import jwt , { JwtPayload } from "jsonwebtoken";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcrypt'
-
-
-interface DecodedToken extends JwtPayload {
-  id: string;
-  name: string;
-  email: string;
-}
 
 interface Credentials {
   name?: string ;
@@ -39,7 +30,7 @@ const handler = NextAuth({
         email: {label: 'Email' , type:'email'},
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials: Credentials | undefined, req) {
+      async authorize(credentials: Credentials | undefined) {
         if(!credentials) {
           return null
         }
@@ -95,7 +86,7 @@ const handler = NextAuth({
             })
           }
         } catch (error) {
-
+          console.error("Error in signIn callback:", error);
         }
 
       return true
@@ -130,7 +121,7 @@ const handler = NextAuth({
     async jwt({ token, account, profile , user }) {
       // Add custom fields to the token
       if (account && profile && user) {
-        token.picture = (profile as any).picture || ""; 
+        token.picture = (profile as { picture?: string })?.picture || ""; 
         token.name = profile.name || "User";
         token.id = user.id
         token.name = user.name || 'User'

@@ -29,7 +29,7 @@ export function WelcomeBanner() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            "{quote}"
+            &quot{quote}&quot
           </motion.p>
           <motion.div
             className="absolute -bottom-4 -right-4 w-24 h-24 bg-slate-700 rounded-full opacity-50"

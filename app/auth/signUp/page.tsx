@@ -99,8 +99,6 @@ export default function SignUp() {
     setPasswordVisible((prev) => !prev);
   };
 
-  const [loading , setLoading] = useState(false)
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 h-screen">
       {/* Left Section */}

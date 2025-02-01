@@ -13,9 +13,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = context.params;
   try {
     const journal = await prisma.journalEntry.findUnique({
       where: { id: id },
@@ -41,7 +41,7 @@ export async function GET(
     );
   } catch (error) {
     return NextResponse.json({
-      message: "Error fetching Journal",
+      message: "Error fetching Journal", error
     });
   }
 }

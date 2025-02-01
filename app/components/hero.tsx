@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 const words = ["daily reflection", "mood tracking", "mindfulness", "personal growth"]

@@ -1,13 +1,12 @@
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = await getServerSession();
 
   try {
     // Fetch the current date in IST
-    const IST_OFFSET = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
     const currentDate = new Date(new Date().getTime());
     const startOfDay = new Date(currentDate.setUTCHours(0, 0, 0, 0));
     const endOfDay = new Date(currentDate.setUTCHours(23, 59, 59, 999));

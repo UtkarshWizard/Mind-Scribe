@@ -93,8 +93,6 @@ export default function SignIn() {
     }
   };
 
-  const [loading , setLoading] = useState(false);
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 h-screen">
       {/* Left Section */}
@@ -180,7 +178,7 @@ export default function SignIn() {
           </CardContent>
           <CardFooter>
             <Label>
-              Don't have an account?{" "}
+              Don&apost have an account?{" "}
               <Link
                 href={"/auth/signup"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
