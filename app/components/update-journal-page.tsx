@@ -43,8 +43,8 @@ export function UpdateJournalPage({ id }: { id: string }) {
     const fetchJournal = async () => {
       try {
         const response = await axios.get(`/api/journal/${id}`);
-        if (response.data.journal) {
-            setJournal(response.data.journal);
+        if (response.data) {
+            setJournal(response.data);
         }
         return 
       } catch (err) {

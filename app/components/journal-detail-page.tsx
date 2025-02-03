@@ -39,7 +39,8 @@ export function JournalDetailPage({ id }: { id: string }) {
     const fetchJournal = async () => {
       try {
         const response = await axios.get(`/api/journal/${id}`);
-        setJournal(response.data.journal);
+        console.log("response:" ,response)
+        setJournal(response.data);
       } catch (err) {
         console.error("Error fetching journal for today:", err);
       }
@@ -47,6 +48,8 @@ export function JournalDetailPage({ id }: { id: string }) {
 
     fetchJournal();
   }, [id]);
+
+  console.log(journal)
 
   // Early return if journal data is not yet loaded
   if (!journal) return <div>Loading...</div>;

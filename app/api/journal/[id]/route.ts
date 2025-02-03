@@ -11,46 +11,43 @@ const contentSchema = z.object({
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
-    const journal = await prisma.journalEntry.findUnique({
-      where: { id: id },
-    });
-    if (!journal) {
-      return NextResponse.json(
-        {
-          message: "Journal not found",
-        },
-        {
-          status: 411,
-        }
-      );
+    // Extracting ID from the request URL
+    const { pathname } = req.nextUrl;
+    const segments = pathname.split("/");
+    const id = segments[segments.length - 1]; // Last segment should be the ID
+
+    if (!id) {
+      return NextResponse.json({ message: "No ID provided" }, { status: 400 });
     }
-    return NextResponse.json(
-      {
-        message: "Journal found...",
-        journal,
-      },
-      {
-        status: 200,
-      }
-    );
-  } catch (error) {
-    return NextResponse.json({
-      message: "Error fetching Journal", error
+
+    const journal = await prisma.journalEntry.findUnique({
+      where: { id },
     });
+
+    if (!journal) {
+      return NextResponse.json({ message: "Journal not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(journal);
+  } catch (error) {
+    console.error("Error fetching journal:", error);
+    
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+
+export async function PUT(req: NextRequest): Promise<NextResponse> {
   try {
+    // Extracting ID from the request URL
+    const { pathname } = req.nextUrl;
+    const segments = pathname.split("/");
+    const id = segments[segments.length - 1]; // Last segment should be the ID
     const session = await getServerSession();
     // console.log(session);
 
@@ -60,8 +57,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
-    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -176,13 +171,13 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
   try {
+    // Extracting ID from the request URL
+    const { pathname } = req.nextUrl;
+    const segments = pathname.split("/");
+    const id = segments[segments.length - 1]; // Last segment should be the ID
     const session = await getServerSession();
-    const { id } = context.params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json(
@@ -217,7 +212,7 @@ export async function DELETE(
       message : " Error deleting journal",
       error
     }, {
-      status: 411
+      status: 500 // Changed status code to 500 for internal server error
     })
   }
 }
