@@ -257,12 +257,12 @@ export function JournalQuickEntry() {
             <Card className="mt-6 bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-900 dark:to-pink-900">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-purple-800 dark:text-purple-200">
-                  Ready for Today&aposs Insights?
+                  Ready for Today&apos;s Insights?
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="mb-4 text-gray-600 dark:text-gray-300 text-lg">
-                  Enter today&aposs journal to unlock your <span className="font-semibold italic">Personalized Sentiment
+                  Enter today&apos;s journal to unlock your <span className="font-semibold italic">Personalized Sentiment
                   Analysis</span> and <span className="font-semibold italic">Recommendations</span>.
                 </p>
               </CardContent>

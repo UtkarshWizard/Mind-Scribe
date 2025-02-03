@@ -61,7 +61,7 @@ export function RecentJournalEntries() {
         {Journals.length === 0 ? (
           <div className="text-center">
             <p className="text-xl font-semibold text-black pb-2">
-              &quot Every day is a new chapter. &quot
+              &quot; Every day is a new chapter. &quot;
             </p>
             <p>
               Capture your thoughts and memories—begin with your first journal

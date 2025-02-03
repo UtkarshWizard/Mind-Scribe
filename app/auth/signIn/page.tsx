@@ -178,7 +178,7 @@ export default function SignIn() {
           </CardContent>
           <CardFooter>
             <Label>
-              Don&apost have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href={"/auth/signup"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
