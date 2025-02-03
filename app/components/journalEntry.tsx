@@ -208,10 +208,8 @@ export function JournalQuickEntry() {
                 <p className="mb-2">
                   {Recommendation.exercise || "Loading..."}
                 </p>
-                <Button variant="link" className="p-0 text-blue-700">
-                  <a href={"/exercises"} target="_blank" rel="noopener noreferrer">
+                <Button variant="link" className="p-0 text-blue-700" onClick={() => {router.push("/exercises")}}>
                     Explore More
-                  </a>
                 </Button>
               </motion.div>
             </CardContent>
