@@ -58,7 +58,7 @@ const handler = NextAuth({
     })
   ],
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/auth/signIn",
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
@@ -98,7 +98,7 @@ const handler = NextAuth({
         return callbackUrl;
       }
     // Redirect to dashboard if no callbackUrl is found or URL matches baseUrl
-    if (url === baseUrl || url === `${baseUrl}/auth/signin` || url === `${baseUrl}/auth/signup`) {
+    if (url === baseUrl || url === `${baseUrl}/auth/signIn` || url === `${baseUrl}/auth/signUp`) {
       return `${baseUrl}/dashboard`;
     }
 

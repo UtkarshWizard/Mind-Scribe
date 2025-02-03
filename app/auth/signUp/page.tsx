@@ -78,7 +78,7 @@ export default function SignUp() {
         setError("");
         setSuccess(response.data.message || "Account Created Successfully , Please Sign In.");
         setTimeout(() => {
-            router.push("/auth/signin");    
+            router.push("/auth/signIn");    
         }, 1500 )
       } else {
         setError(response.data.message || "Something went wrong");
@@ -182,7 +182,7 @@ export default function SignUp() {
             <Label>
               Already have an account?{" "}
               <Link
-                href={"/auth/signin"}
+                href={"/auth/signIn"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
               >
                 Sign In

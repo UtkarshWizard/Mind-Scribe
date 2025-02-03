@@ -138,7 +138,7 @@ export default function NavBar() {
                   disabled={loading}
                   className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
                   onClick={() => {
-                    router.push('auth/signup')
+                    router.push('auth/signUp')
                     setLoading(true);
                   }}
                 >
@@ -236,7 +236,7 @@ export default function NavBar() {
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
                     signOut({redirect: false})
-                    router.push('/auth/signin')
+                    router.push('/auth/signIn')
                     setLoading(true);
                   }}
                 >
@@ -330,7 +330,7 @@ export default function NavBar() {
           <ul className="flex flex-col space-y-2">
             <li>
               <Link
-                href="#features"
+                href="/dashboard"
                 className="text-gray-300 hover:text-white"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -339,7 +339,7 @@ export default function NavBar() {
             </li>
             <li>
               <Link
-                href="#how-it-works"
+                href="/journals"
                 className="text-gray-300 hover:text-white"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -348,11 +348,11 @@ export default function NavBar() {
             </li>
             <li>
               <Link
-                href="#testimonials"
+                href="/exercises"
                 className="text-gray-300 hover:text-white"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Sentiments
+                Exercises
               </Link>
             </li>
             {session.data?.user && (
@@ -373,7 +373,7 @@ export default function NavBar() {
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
                     signOut({redirect: false})
-                    router.push('/auth/signin')
+                    router.push('/auth/signIn')
                     setLoading(true);
                   }}
                 >

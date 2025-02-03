@@ -180,7 +180,7 @@ export default function SignIn() {
             <Label>
               Don&apos;t have an account?{" "}
               <Link
-                href={"/auth/signup"}
+                href={"/auth/signUp"}
                 className="text-blue-500 hover:cursor-pointer hover:underline"
               >
                 Sign Up

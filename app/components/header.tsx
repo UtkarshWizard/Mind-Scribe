@@ -139,7 +139,7 @@ export default function Header() {
                   disabled={loading}
                   className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
                   onClick={() => {
-                    router.push('auth/signup')
+                    router.push('auth/signUp')
                     setLoading(true);
                   }}
                 >
@@ -237,7 +237,7 @@ export default function Header() {
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
                     signOut({redirect: false})
-                    router.push('/auth/signin')
+                    router.push('/auth/signIn')
                     setLoading(true);
                   }}
                 >
