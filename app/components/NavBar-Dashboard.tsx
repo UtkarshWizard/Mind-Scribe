@@ -19,7 +19,7 @@ export default function NavBar() {
   return (
     <header className="py-4 px-6 md:px-10 bg-gray-900 shadow-sm sticky top-0 z-50">
       <div className="flex justify-between items-center">
-        <Link href="/dashboard" className="text-2xl font-bold text-white">
+        <Link href="/dashboard" className="text-2xl font-light text-white">
           Mind Scribe
         </Link>
         <nav className="hidden md:block">
