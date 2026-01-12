@@ -30,7 +30,7 @@ const itemVariants = {
 };
 
 export default function DashboardPage() {
-  const { data:session, status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -51,18 +51,15 @@ export default function DashboardPage() {
   if (!session) return null;
 
   return (
-    <div className="">
-      <div className="group relative">
-        <NavBar />
-      </div>
+    <div className="z-50 top-0 w-full">
+      <NavBar />
       <div className="flex h-screen bg-background text-foreground">
         <motion.main
-          className="flex-1 overflow-y-auto p-4 md:py-6 md:px-12 space-y-6"
+          className="flex-1 overflow-y-none p-4 md:py-6 md:px-12 space-y-6"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          
           <motion.div variants={itemVariants}>
             <WelcomeBanner />
           </motion.div>
