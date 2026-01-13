@@ -10,6 +10,7 @@ import { WelcomeBanner } from "../components/welcome-banner";
 import NavBar from "../components/NavBar-Dashboard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -53,7 +54,7 @@ export default function DashboardPage() {
   return (
     <div className="z-50 top-0 w-full">
       <NavBar />
-      <div className="flex h-screen bg-background text-foreground">
+      <div className="bg-background text-foreground">
         <motion.main
           className="flex-1 overflow-y-none p-4 md:py-6 md:px-12 space-y-6"
           variants={containerVariants}
@@ -64,10 +65,10 @@ export default function DashboardPage() {
             <WelcomeBanner />
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-6">
+            <div className="space-y-6 p-2">
               <motion.div variants={itemVariants}>
                 <JournalQuickEntry />
-              </motion.div>
+              </motion.div>  
             </div>
             <div className="space-y-6">
               <motion.div variants={itemVariants}>

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -6,33 +6,50 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const session = useSession();
-  const userName = session.data?.user?.name || "User"; 
-  const userImage = session.data?.user?.image || ""; 
+  const userName = session.data?.user?.name || "User";
+  const userImage = session.data?.user?.image || "";
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
-    <header className="py-4 px-6 md:px-10 bg-gray-900 shadow-sm sticky top-0 z-50">
+    <header className="py-4 px-6 md:px-10 bg-white/50 backdrop-blur-sm shadow-sm sticky top-0 z-50">
       <div className="flex justify-between items-center">
-        <Link href="/dashboard" className="text-2xl font-light text-white">
+        <Link href="/dashboard" className="text-2xl font-light text-gray-800">
           Mind Scribe
         </Link>
         <nav className="hidden md:block">
           <ul className="flex space-x-4 gap-4 items-center">
             <li>
-              <Link href="/dashboard" className="text-gray-300 hover:text-white">
+              <Link
+                href="/dashboard"
+                className={`
+                    ${
+                      pathname === "/dashboard"
+                        ? "text-gray-900"
+                        : "text-gray-600 hover:text-gray-500"
+                    }
+                  `}
+              >
                 Dashboard
               </Link>
             </li>
             <li>
               <Link
                 href="/journals"
-                className="text-gray-300 hover:text-white"
+                className={`
+                    ${
+                      pathname === "/journals"
+                        ? "text-gray-900"
+                        : "text-gray-600 hover:text-gray-500"
+                    }
+                  `}
               >
                 Journals
               </Link>
@@ -40,11 +57,18 @@ export default function NavBar() {
             <li>
               <Link
                 href="/exercises"
-                className="text-gray-300 hover:text-white"
+                className={`
+                    ${
+                      pathname === "/exercises"
+                        ? "text-gray-900"
+                        : "text-gray-600 hover:text-gray-500"
+                    }
+                  `}
               >
                 Exercises
               </Link>
             </li>
+            <ThemeToggle />
             {!session.data?.user && (
               <li>
                 <Button
@@ -52,7 +76,7 @@ export default function NavBar() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signIn()
+                    signIn();
                     setLoading(true);
                   }}
                 >
@@ -136,9 +160,9 @@ export default function NavBar() {
               <li>
                 <Button
                   disabled={loading}
-                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-gray-800 hover:from-purple-600 hover:to-indigo-600"
                   onClick={() => {
-                    router.push('auth/signUp')
+                    router.push("auth/signUp");
                     setLoading(true);
                   }}
                 >
@@ -221,10 +245,13 @@ export default function NavBar() {
             {session.data?.user && (
               <li>
                 <Avatar>
-                  <AvatarImage className="w-8 h-8 rounded-full"  src={userImage} />
-                    <AvatarFallback className="text-white p-2">
-                      {userName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                  <AvatarImage
+                    className="w-8 h-8 rounded-full border-2 border-gray-500"
+                    src={userImage}
+                  />
+                  <AvatarFallback className="text-gray-800 w-8 h-8 rounded-full border-2 border-gray-500">
+                    {userName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </li>
             )}
@@ -235,8 +262,8 @@ export default function NavBar() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signOut({redirect: false})
-                    router.push('/auth/signIn')
+                    signOut({ redirect: false });
+                    router.push("/auth/signIn");
                     setLoading(true);
                   }}
                 >
@@ -318,12 +345,15 @@ export default function NavBar() {
             )}
           </ul>
         </nav>
-        <button
-          className="md:hidden text-white"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X /> : <Menu />}
-        </button>
+        <div className="flex justify-between gap-4 md:hidden">
+          <ThemeToggle />
+          <button
+            className="md:hidden text-gray-800"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
       {isMenuOpen && (
         <nav className="mt-4 md:hidden">
@@ -331,7 +361,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/dashboard"
-                className="text-gray-300 hover:text-white"
+                className="text-gray-300 hover:text-gray-800"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Dashboard
@@ -358,10 +388,13 @@ export default function NavBar() {
             {session.data?.user && (
               <li>
                 <Avatar>
-                  <AvatarImage className="w-8 h-8 rounded-full"  src={userImage} />
-                    <AvatarFallback className="text-white p-2">
-                      {userName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                  <AvatarImage
+                    className="w-8 h-8 rounded-full border-2 border-gray-500"
+                    src={userImage}
+                  />
+                  <AvatarFallback className="text-white w-8 h-8 rounded-full border-2 border-gray-500">
+                    {userName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </li>
             )}
@@ -372,8 +405,8 @@ export default function NavBar() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signOut({redirect: false})
-                    router.push('/auth/signIn')
+                    signOut({ redirect: false });
+                    router.push("/auth/signIn");
                     setLoading(true);
                   }}
                 >
