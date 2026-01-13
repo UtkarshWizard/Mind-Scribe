@@ -12,21 +12,22 @@ export function ThemeToggle() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const handleChange = () => setIsDarkMode(mediaQuery.matches)
-    mediaQuery.addEventListener("change", handleChange)
-    return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [])
+    const storedTheme = localStorage.getItem("theme")
 
-  useEffect(() => {
-    const initialDarkMode =
-      !!document.querySelector('meta[name="color-scheme"][content="dark"]') ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    setIsDarkMode(initialDarkMode)
+    if (storedTheme === "dark") {
+      setIsDarkMode(true)
+    } else if (storedTheme === "light") {
+      setIsDarkMode(false)
+    } else {
+      setIsDarkMode(
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      )
+    }
   }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode)
+    localStorage.setItem("theme" , isDarkMode ? "dark" : "light")
   }, [isDarkMode])
 
   const toggleDarkMode = () => setIsDarkMode((isDark) => !isDark)
