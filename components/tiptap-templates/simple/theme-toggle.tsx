@@ -7,38 +7,27 @@ import { Button } from "@/components/tiptap-ui-primitive/button"
 import { MoonStarIcon } from "@/components/tiptap-icons/moon-star-icon"
 import { SunIcon } from "@/components/tiptap-icons/sun-icon"
 import { useEffect, useState } from "react"
+import { useTheme } from "next-themes"
 
 export function ThemeToggle() {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
+  const { theme , setTheme , resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState<boolean>(false)
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme")
-
-    if (storedTheme === "dark") {
-      setIsDarkMode(true)
-    } else if (storedTheme === "light") {
-      setIsDarkMode(false)
-    } else {
-      setIsDarkMode(
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      )
-    }
+    setMounted(true)
   }, [])
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDarkMode)
-    localStorage.setItem("theme" , isDarkMode ? "dark" : "light")
-  }, [isDarkMode])
+  if (!mounted) return null
 
-  const toggleDarkMode = () => setIsDarkMode((isDark) => !isDark)
+  const isDark = resolvedTheme === "dark"
 
   return (
     <Button
-      onClick={toggleDarkMode}
-      aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       data-style="ghost"
     >
-      {isDarkMode ? (
+      {isDark ? (
         <MoonStarIcon className="tiptap-button-icon" />
       ) : (
         <SunIcon className="tiptap-button-icon" />

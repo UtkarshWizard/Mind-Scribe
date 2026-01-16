@@ -19,9 +19,12 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className="py-4 px-6 md:px-10 bg-white/50 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+    <header className="py-4 px-6 md:px-10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm sticky top-0 z-50">
       <div className="flex justify-between items-center">
-        <Link href="/dashboard" className="text-2xl font-light text-gray-800">
+        <Link
+          href="/dashboard"
+          className="text-2xl font-light text-gray-800 dark:text-gray-100"
+        >
           Mind Scribe
         </Link>
         <nav className="hidden md:block">
@@ -32,8 +35,8 @@ export default function NavBar() {
                 className={`
                     ${
                       pathname === "/dashboard"
-                        ? "text-gray-900"
-                        : "text-gray-600 hover:text-gray-500"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
                     }
                   `}
               >
@@ -46,8 +49,8 @@ export default function NavBar() {
                 className={`
                     ${
                       pathname === "/journals"
-                        ? "text-gray-900"
-                        : "text-gray-600 hover:text-gray-500"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
                     }
                   `}
               >
@@ -60,8 +63,8 @@ export default function NavBar() {
                 className={`
                     ${
                       pathname === "/exercises"
-                        ? "text-gray-900"
-                        : "text-gray-600 hover:text-gray-500"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
                     }
                   `}
               >
@@ -260,7 +263,7 @@ export default function NavBar() {
                 <Button
                   disabled={loading}
                   variant="outline"
-                  className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
+                  className="text-white border hover:border-gray-800 bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
                     signOut({ redirect: false });
                     router.push("/auth/signIn");
@@ -345,24 +348,33 @@ export default function NavBar() {
             )}
           </ul>
         </nav>
+
+        {/* Mobile View */}
+
         <div className="flex justify-between gap-4 md:hidden">
           <ThemeToggle />
           <button
-            className="md:hidden text-gray-800"
+            className="md:hidden text-gray-800 dark:text-gray-300"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </div>
+
       {isMenuOpen && (
         <nav className="mt-4 md:hidden">
           <ul className="flex flex-col space-y-2">
             <li>
               <Link
                 href="/dashboard"
-                className="text-gray-300 hover:text-gray-800"
-                onClick={() => setIsMenuOpen(false)}
+                className={`
+                    ${
+                      pathname === "/dashboard"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
+                    }
+                  `}
               >
                 Dashboard
               </Link>
@@ -370,17 +382,27 @@ export default function NavBar() {
             <li>
               <Link
                 href="/journals"
-                className="text-gray-300 hover:text-white"
-                onClick={() => setIsMenuOpen(false)}
+                className={`
+                    ${
+                      pathname === "/journals"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
+                    }
+                  `}
               >
-                Journal
+                Journals
               </Link>
             </li>
             <li>
               <Link
                 href="/exercises"
-                className="text-gray-300 hover:text-white"
-                onClick={() => setIsMenuOpen(false)}
+                className={`
+                    ${
+                      pathname === "/exercises"
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-500 hover:dark:text-gray-300"
+                    }
+                  `}
               >
                 Exercises
               </Link>
@@ -403,7 +425,7 @@ export default function NavBar() {
                 <Button
                   disabled={loading}
                   variant="outline"
-                  className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
+                  className="text-white bg-black hover:bg-white border-2 hover:border-gray-800 hover:text-gray-900"
                   onClick={() => {
                     signOut({ redirect: false });
                     router.push("/auth/signIn");
