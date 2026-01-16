@@ -249,7 +249,7 @@ export default function NavBar() {
                     className="w-8 h-8 rounded-full border-2 border-gray-500"
                     src={userImage}
                   />
-                  <AvatarFallback className="text-gray-800 w-8 h-8 rounded-full border-2 border-gray-500">
+                  <AvatarFallback className="text-gray-800 flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-500">
                     {userName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -392,7 +392,7 @@ export default function NavBar() {
                     className="w-8 h-8 rounded-full border-2 border-gray-500"
                     src={userImage}
                   />
-                  <AvatarFallback className="text-white w-8 h-8 rounded-full border-2 border-gray-500">
+                  <AvatarFallback className="text-white w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500">
                     {userName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
