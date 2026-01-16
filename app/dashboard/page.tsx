@@ -11,6 +11,7 @@ import NavBar from "../components/NavBar-Dashboard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { Flame } from "lucide-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,7 +57,7 @@ export default function DashboardPage() {
       <NavBar />
       <div className="bg-background text-foreground">
         <motion.main
-          className="flex-1 overflow-y-none p-4 md:py-6 md:px-12 space-y-6"
+          className="flex-1 overflow-y-none p-4 md:py-6 md:px-12 space-y-6 "
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -64,21 +65,28 @@ export default function DashboardPage() {
           <motion.div variants={itemVariants}>
             <WelcomeBanner />
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-6 p-2">
-              <motion.div variants={itemVariants}>
-                <JournalQuickEntry />
-              </motion.div>  
+          <div className="grid grid-cols-2 gap-4 max-w-6xl mx-auto">
+            <div className="flex flex-col items-center justify-center border border-gray-200 rounded-3xl p-4">
+              <div className="bg-orange-500/20 rounded-full p-3 mb-3">
+                <Flame className="text-orange-500 h-6 w-6" />
+              </div>
+              <div className="font-bold text-4xl">
+                0
+              </div>
+              <div className="text-lg">
+                Day Streak
+              </div>
             </div>
-            <div className="space-y-6">
-              <motion.div variants={itemVariants}>
-                <MoodTracker />
-              </motion.div>
-              <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-                <motion.div variants={itemVariants}>
-                  <RecentJournalEntries />
-                </motion.div>
-              </Suspense>
+            <div className="flex flex-col items-center justify-center border border-gray-200 rounded-3xl p-4">
+              <div>
+                <Flame className="text-orange-500 h-8 w-8" />
+              </div>
+              <div className="font-bold text-2xl">
+                0
+              </div>
+              <div className="text-lg">
+                Day Streak
+              </div>
             </div>
           </div>
         </motion.main>
