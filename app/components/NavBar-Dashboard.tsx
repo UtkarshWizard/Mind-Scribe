@@ -252,7 +252,7 @@ export default function NavBar() {
                     className="w-8 h-8 rounded-full border-2 border-gray-500"
                     src={userImage}
                   />
-                  <AvatarFallback className="text-gray-800 flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-500">
+                  <AvatarFallback className="text-gray-800 dark:text-gray-200 flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-500">
                     {userName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -263,7 +263,7 @@ export default function NavBar() {
                 <Button
                   disabled={loading}
                   variant="outline"
-                  className="text-white border hover:border-gray-800 bg-black hover:bg-white hover:text-gray-900"
+                  className="text-white border hover:border-gray-800 bg-black dark:bg-gray-800 dark:border-white dark:hover:bg-black dark:hover:text-gray-100 rounded-sm hover:bg-white hover:text-gray-900"
                   onClick={() => {
                     signOut({ redirect: false });
                     router.push("/auth/signIn");
@@ -414,7 +414,7 @@ export default function NavBar() {
                     className="w-8 h-8 rounded-full border-2 border-gray-500"
                     src={userImage}
                   />
-                  <AvatarFallback className="text-white w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500">
+                  <AvatarFallback className="text-gray-800 dark:text-gray-200 w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500">
                     {userName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
