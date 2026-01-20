@@ -63,7 +63,7 @@ export function RecentJournalEntries() {
             const dateString = entry.createdAt.split("T")[0];
 
             return (
-              <div key={entry.id} className="bg-gray-800 text-white rounded-md p-4 flex flex-col gap-4">
+              <div key={entry.id} onClick={() => router.push(`/journals/${entry.id}`)} className="bg-gray-800 text-white rounded-md p-4 flex flex-col gap-4 transition duration-300 hover:cursor-pointer hover:-translate-y-1">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex flex-col gap-2">
                     <span className="text-lg">
