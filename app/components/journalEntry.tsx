@@ -13,10 +13,10 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export function JournalQuickEntry() {
+export function JournalEntry() {
   const [entry, setEntry] = useState("");
   const [submittedEntry, setSubmittedEntry] = useState("");
-  const [id , setId] = useState("")
+  const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
 
   // State to hold the sentiment data
@@ -75,11 +75,11 @@ export function JournalQuickEntry() {
       try {
         const date = new Date().toISOString();
         const response = await axios.get(
-          `/api/journal?date=${encodeURIComponent(date)}`
+          `/api/journal?date=${encodeURIComponent(date)}`,
         );
         if (response.data.journal) {
           setSubmittedEntry(response.data.journal.content);
-          setId(response.data.journal.id)
+          setId(response.data.journal.id);
         }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
@@ -98,7 +98,7 @@ export function JournalQuickEntry() {
       if (response.status === 200) {
         const date = new Date().toISOString();
         const getResponse = await axios.get(
-          `/api/journal?date=${encodeURIComponent(date)}`
+          `/api/journal?date=${encodeURIComponent(date)}`,
         );
         setSubmittedEntry(getResponse.data.journal.content); // Set submitted journal
         setEntry(""); // Clear the textarea
@@ -131,15 +131,11 @@ export function JournalQuickEntry() {
       setLoading(false);
     }
   };
-  
+
   const router = useRouter();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <>
       {submittedEntry ? (
         <div>
           <Card className="overflow-hidden">
@@ -150,7 +146,10 @@ export function JournalQuickEntry() {
               <p className="text-lg text-gray-800">{submittedEntry}</p>
             </CardContent>
             <CardFooter className="flex justify-end bg-muted p-4">
-              <button className="p-[3px] relative" onClick={() => (router.push(`/update/journal/${id}`))}>
+              <button
+                className="p-[3px] relative"
+                onClick={() => router.push(`/update/journal/${id}`)}
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                 <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
                   Update Journal
@@ -208,66 +207,31 @@ export function JournalQuickEntry() {
                 <p className="mb-2">
                   {Recommendation.exercise || "Loading..."}
                 </p>
-                <Button variant="link" className="p-0 text-blue-700" onClick={() => {router.push("/exercises")}}>
-                    Explore More
+                <Button
+                  variant="link"
+                  className="p-0 text-blue-700"
+                  onClick={() => {
+                    router.push("/exercises");
+                  }}
+                >
+                  Explore More
                 </Button>
               </motion.div>
             </CardContent>
           </Card>
         </div>
       ) : (
-        <>
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-primary text-primary-foreground">
-              <CardTitle className="text-2xl">Quick Journal Entry</CardTitle>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent className="p-6">
-                <Textarea
-                  placeholder="Write about your day, emotions, or anything on your mind..."
-                  value={entry}
-                  onChange={(e) => setEntry(e.target.value)}
-                  className="min-h-[160px] mb-4"
-                />
-              </CardContent>
-              <CardFooter className="flex justify-end bg-muted p-4">
-                <button
-                  disabled={loading}
-                  className="p-[3px] relative"
-                  type="submit"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                  <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                    {loading ? "Submitting..." : "Submit"}
-                  </div>
-                </button>
-              </CardFooter>
-            </form>
-          </Card>
-          <motion.div
-            className="transition-shadow duration-300 ease-in-out hover:shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            // transition={{ duration: 0.5 }}
-          >
-            <Card className="mt-6 bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-900 dark:to-pink-900">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-purple-800 dark:text-purple-200">
-                  Ready for Today&apos;s Insights?
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-gray-600 dark:text-gray-300 text-lg">
-                  Enter today&apos;s journal to unlock your <span className="font-semibold italic">Personalized Sentiment
-                  Analysis</span> and <span className="font-semibold italic">Recommendations</span>.
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </>
+        <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-gray-700 h-full w-full rounded-md p-4 gap-4">
+          <span className="pb-2 text-xl text-center">
+            This is your space. Start with a single thought from today.
+          </span>
+          <div className="text-center">
+            <button className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400">
+              Create Entry
+            </button>
+          </div>
+        </div>
       )}
-    </motion.div>
+    </>
   );
 }

@@ -11,6 +11,7 @@ import { CirclePlus, Flame, Notebook, NotebookPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { RecentJournalEntries } from "../components/recentJournal";
+import { JournalEntry } from "../components/journalEntry";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -97,7 +98,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Notebook />
-              <span className="text-xl">Today Entry</span>
+              <span className="text-xl">Today&apos;s Entry</span>
             </div>
             <Button className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
               <div className="flex justify-center items-center gap-4">
@@ -107,9 +108,9 @@ export default function DashboardPage() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-3 justify-between items-center gap-4">
-            <div className="col-span-2 border-2 border-gray-700 h-full w-full rounded-md p-4"></div>
-            <div className="col-span-1">
+          <div className="grid md:grid-cols-3 grid-cols-1 justify-between items-center gap-4">
+            <JournalEntry />
+            <div className="md:col-span-1">
               <Calendar
                 mode="single"
                 // selected={date}
@@ -118,13 +119,16 @@ export default function DashboardPage() {
               />
             </div>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Notebook />
               <span className="text-xl">Recent Journals</span>
             </div>
-            <button onClick={() => router.push("/journals")} className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600">
+            <button
+              onClick={() => router.push("/journals")}
+              className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
+            >
               <div className="absolute inset-x-0 dark:h-px h-1 dark:w-1/2 w-[80%] mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent dark:via-orange-700 via-orange-800 to-transparent" />
               <span className="relative z-20">Show All Entries</span>
             </button>
