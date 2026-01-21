@@ -69,6 +69,12 @@
   box-shadow: 0 6px 18px rgba(2,6,23,0.12);
 }
 
+/* Dark theme: stronger, darker shadow so the panel stands out on dark backgrounds */
+.dark .simple-editor-content .tiptap.ProseMirror.simple-editor {
+  box-shadow: 0 10px 30px rgba(70, 68, 68, 0.5);
+  border-color: rgba(155, 155, 155, 0.04);
+}
+
 @media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
     padding: 1rem 1.5rem 2.5rem;
