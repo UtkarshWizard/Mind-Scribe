@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 mode="single"
                 // selected={date}
                 // onSelect={setDate}
-                className="rounded-lg border w-full"
+                className="rounded-lg border-2 border-gray-600 w-full"
               />
             </div>
           </div>

@@ -226,7 +226,7 @@ export function JournalEntry() {
             This is your space. Start with a single thought from today.
           </span>
           <div className="text-center">
-            <button className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400">
+            <button onClick={() => router.push("/editor")} className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400">
               Create Entry
             </button>
           </div>

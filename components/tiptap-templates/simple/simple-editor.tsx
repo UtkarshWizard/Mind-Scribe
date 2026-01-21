@@ -247,14 +247,21 @@ export function SimpleEditor() {
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
+          variant="fixed"
           style={{
             ...(isMobile
               ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                 }
-              : {}),
+              : {
+                  top: "calc(var(--navbar-height, 64px))",
+                }),
           }}
+          className="z-50"
         >
+          <div className="w-full max-w-4xl mx-auto px-4 flex overflow-x-auto gap-2 md:justify-center justify-start">
           {mobileView === "main" ? (
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}
@@ -267,6 +274,7 @@ export function SimpleEditor() {
               onBack={() => setMobileView("main")}
             />
           )}
+          </div>
         </Toolbar>
 
         <EditorContent

@@ -50,15 +50,23 @@
     }
 
     @media (max-width: 480px) {
-      position: absolute;
+      /* pin toolbar to the viewport bottom on mobile */
+      position: fixed;
       top: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
       height: calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom));
       border-top: 1px solid var(--tt-toolbar-border-color);
       border-bottom: none;
       padding: 0 0.5rem var(--tt-safe-area-bottom);
       flex-wrap: wrap;
       justify-content: flex-start;
+      z-index: 60;
 
+      /* allow smooth horizontal panning on mobile */
+      touch-action: pan-x;
+    
       .tiptap-toolbar-group {
         flex: 0 0 auto;
       }

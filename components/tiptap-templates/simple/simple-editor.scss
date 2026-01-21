@@ -1,15 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-body {
+/* Scope editor-specific globals to avoid leaking styles into other pages */
+.simple-editor-wrapper {
   --tt-toolbar-height: 44px;
   --tt-theme-text: var(--tt-gray-light-900);
 
-  .dark & {
-    --tt-theme-text: var(--tt-gray-dark-900);
-  }
-}
-
-body {
   font-family: "Inter", sans-serif;
   color: var(--tt-theme-text);
   font-optical-sizing: auto;
@@ -19,18 +14,11 @@ body {
   overscroll-behavior-y: none;
 }
 
-html,
-body {
-  overscroll-behavior-x: none;
+.dark .simple-editor-wrapper {
+  --tt-theme-text: var(--tt-gray-dark-900);
 }
 
-html,
-body,
-#root,
-#app {
-  height: 100%;
-  background-color: var(--tt-bg-color);
-}
+/* Avoid touching global html/body/#app height or background here; use app/globals.css for global variables */
 
 ::-webkit-scrollbar {
   width: 0.25rem;
@@ -55,24 +43,29 @@ body,
 }
 
 .simple-editor-wrapper {
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
+  width: 100%;
+  min-height: 100vh;
+  display: block;
+  position: relative;
+  overflow: visible;
 }
 
 .simple-editor-content {
   max-width: 648px;
   width: 100%;
   margin: 0 auto;
-  height: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
+  box-sizing: border-box;
+  /* allow page to scroll (avoid inner scrollbars); content sits below fixed toolbar */
+  overflow: visible;
+  padding-top: 8px
 }
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   flex: 1;
-  padding: 3rem 3rem 30vh;
+  padding: 2rem 3rem 30vh;
 }
 
 @media screen and (max-width: 480px) {
