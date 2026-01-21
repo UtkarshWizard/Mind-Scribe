@@ -62,17 +62,16 @@
   --tt-gray-dark-900: rgba(245, 245, 245, 1);
 
   /* Brand colors */
-  --tt-brand-color-50: rgba(239, 238, 255, 1);
-  --tt-brand-color-100: rgba(222, 219, 255, 1);
-  --tt-brand-color-200: rgba(195, 189, 255, 1);
-  --tt-brand-color-300: rgba(157, 138, 255, 1);
-  --tt-brand-color-400: rgba(122, 82, 255, 1);
-  --tt-brand-color-500: rgba(98, 41, 255, 1);
-  --tt-brand-color-600: rgba(84, 0, 229, 1);
-  --tt-brand-color-700: rgba(75, 0, 204, 1);
-  --tt-brand-color-800: rgba(56, 0, 153, 1);
-  --tt-brand-color-900: rgba(43, 25, 102, 1);
-  --tt-brand-color-950: hsla(257, 100%, 9%, 1);
+  --tt-brand-color-50: rgb(255, 245, 238);
+  --tt-brand-color-100: rgb(255, 231, 219);
+  --tt-brand-color-200: rgb(255, 201, 189);
+  --tt-brand-color-300: rgb(255, 186, 157);
+  --tt-brand-color-400: rgb(255, 161, 128);
+  --tt-brand-color-500: rgb(255, 135, 99);
+  --tt-brand-color-600: rgb(255, 105, 73);
+  --tt-brand-color-700: rgb(255, 90, 50);
+  --tt-brand-color-800: rgb(230, 80, 42);
+  --tt-brand-color-900: rgb(204, 60, 35);
 
   /* Green */
   --tt-color-green-inc-5: hsla(129, 100%, 97%, 1);
