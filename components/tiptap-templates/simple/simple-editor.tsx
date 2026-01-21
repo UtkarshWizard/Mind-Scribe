@@ -96,10 +96,10 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={isMobile} />
+        <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={true} />
         <ListDropdownMenu
           types={["bulletList", "orderedList", "taskList"]}
-          portal={isMobile}
+          portal={true}
         />
         <BlockquoteButton />
         <CodeBlockButton />
@@ -145,7 +145,7 @@ const MainToolbarContent = ({
 
       <Spacer />
 
-      {isMobile && <ToolbarSeparator />}
+      {/* {isMobile && <ToolbarSeparator />} */}
 
       <ToolbarGroup>
         
@@ -184,7 +184,10 @@ const MobileToolbarContent = ({
 )
 
 export function SimpleEditor() {
+  // isMobile: width < 768px (tablet and below)
   const isMobile = useIsBreakpoint()
+  // narrowMobile: width < 468px (small phones) — toolbar should pin to bottom here
+  const isNarrowMobile = useIsBreakpoint("max", 468)
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
@@ -248,18 +251,12 @@ export function SimpleEditor() {
         <Toolbar
           ref={toolbarRef}
           variant="fixed"
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                }
-              : {
-                  top: "calc(var(--navbar-height, 64px))",
-                }),
-          }}
-          className="z-50"
+          style={
+            isNarrowMobile
+              ? { bottom: 0, left: 0, right: 0 }
+              : { top: "calc(var(--navbar-height, 64px))" }
+          }
+          className="z-50 max-w-4xl mx-auto !bg-slate-100/50 dark:!bg-gray-950/50 rounded-sm backdrop-blur-md"
         >
           <div className="w-full max-w-4xl mx-auto px-4 flex overflow-x-auto gap-2 md:justify-center justify-start">
           {mobileView === "main" ? (

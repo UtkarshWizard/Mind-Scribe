@@ -14,7 +14,8 @@
     --------- POPOVER STYLING SETTINGS -----------
     -------------------------------------------- */
 .tiptap-popover {
-  z-index: 50;
+  /* Raise above header and fixed toolbar. Use global top-z-index when available. */
+  z-index: var(--top-z-index, 2147483647);
   outline: none;
   transform-origin: var(--radix-popover-content-transform-origin);
   max-height: var(--radix-popover-content-available-height);

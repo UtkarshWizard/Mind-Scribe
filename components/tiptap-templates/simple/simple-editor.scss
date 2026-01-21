@@ -1,10 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-/* Scope editor-specific globals to avoid leaking styles into other pages */
 .simple-editor-wrapper {
   --tt-toolbar-height: 44px;
   --tt-theme-text: var(--tt-gray-light-900);
-
   font-family: "Inter", sans-serif;
   color: var(--tt-theme-text);
   font-optical-sizing: auto;
@@ -17,8 +15,6 @@
 .dark .simple-editor-wrapper {
   --tt-theme-text: var(--tt-gray-dark-900);
 }
-
-/* Avoid touching global html/body/#app height or background here; use app/globals.css for global variables */
 
 ::-webkit-scrollbar {
   width: 0.25rem;
@@ -44,7 +40,8 @@
 
 .simple-editor-wrapper {
   width: 100%;
-  min-height: 100vh;
+  /* keep the editor within the viewport minus the navbar to avoid pushing the topbar out of view */
+  min-height: calc(100vh - var(--navbar-height, 64px));
   display: block;
   position: relative;
   overflow: visible;
@@ -60,16 +57,20 @@
   box-sizing: border-box;
   /* allow page to scroll (avoid inner scrollbars); content sits below fixed toolbar */
   overflow: visible;
-  padding-top: 8px
+  padding-top: 8px;
 }
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   flex: 1;
-  padding: 2rem 3rem 30vh;
+  /* reduce huge bottom padding (30vh) which caused a large gap on desktop/iPad
+     and made the topbar scroll offscreen on small screens */
+  padding: 2rem 3rem 3rem;
+  border-color: rgba(0,0,0,0.9);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12);
 }
 
 @media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
-    padding: 1rem 1.5rem 30vh;
+    padding: 1rem 1.5rem 2.5rem;
   }
 }
