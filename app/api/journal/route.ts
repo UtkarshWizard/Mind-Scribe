@@ -8,12 +8,13 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 const contentSchema = z.object({
-  content: z.string(),
+  content: z.any(),
+  plainText : z.string()
 });
 
 export async function POST(req: NextRequest) {
   try {
-    const content = contentSchema.parse(await req.json());
+    const { content, plainText } = contentSchema.parse(await req.json());
 
     if (!content) {
       return NextResponse.json(
@@ -86,7 +87,7 @@ Example:
 
 strictly Remember to not include the json and ''' quotes marking in the response , just keep the object as it is shown above. 
 
-Analyze the following text: "${content.content}"`;
+Analyze the following text: "${plainText}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
     // console.log("sentiment data", sentimentData);
@@ -108,6 +109,7 @@ Analyze the following text: "${content.content}"`;
       data: {
         userId: user.id,
         content: content.content,
+        plainText: plainText,
         createdAt: new Date(),
         sentiment: parsedSentiment,
       },

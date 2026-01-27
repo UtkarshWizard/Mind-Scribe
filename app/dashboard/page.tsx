@@ -100,7 +100,7 @@ export default function DashboardPage() {
               <Notebook />
               <span className="text-xl">Today&apos;s Entry</span>
             </div>
-            <Button className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+            <Button onClick={() => router.push("/editor")} className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
               <div className="flex justify-center items-center gap-4">
                 <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
                 <div className="text-md">New Journal</div>

@@ -26,7 +26,8 @@ model User {
 
 model JournalEntry {
   id                String            @id @default(uuid())
-  content           String
+  content           Json
+  plainText         String
   sentiment         Json?
   createdAt         DateTime
   updatedAt         DateTime?
