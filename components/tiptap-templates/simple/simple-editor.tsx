@@ -243,14 +243,14 @@ export function SimpleEditor() {
     }
   }, [isMobile, mobileView]);
 
-  const text = editor?.getText();
-  console.log(text)
+  // const text = editor?.getText();
+  // console.log(text)
 
   const handleSave = async () => {
     if (!editor || editor.isEmpty) return;
 
     const content = editor.getJSON();
-    const plainText = editor.getText();
+    const plainText = editor.getText().trim();
 
     try {
       const res = await axios.post("/api/journal" , {

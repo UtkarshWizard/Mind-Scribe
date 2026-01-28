@@ -15,6 +15,14 @@ interface JournalEntry {
   updatedAt: string | null;
 }
 
+export function getPreview (text : string , words = 100) {
+  return text.replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .slice(0, words)
+    .join(" ")
+} 
+
 export function RecentJournalEntries() {
   const router = useRouter();
   const [Journals, setJournals] = useState<JournalEntry[]>([]);
@@ -80,7 +88,7 @@ export function RecentJournalEntries() {
                   </span>
                 </div>
                 <span className="text-lg">
-                  {JSON.stringify(entry.plainText)}
+                  {getPreview(entry.plainText , 10)}....
                 </span>
               </div>
             );
