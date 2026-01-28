@@ -6,7 +6,8 @@ import axios from "axios";
 
 interface JournalEntry {
   id: string;
-  content: string;
+  content: JSON;
+  plainText: string;
   sentiment: {
     overallEmotion: string;
   };
@@ -24,7 +25,7 @@ export function RecentJournalEntries() {
         const response = await axios.get<{ journal: JournalEntry[] }>(
           "/api/journal",
         );
-        // console.log(response.data.journal);
+        console.log(response.data.journal);
 
         if (response.data.journal) {
           const sortedJournals = response.data.journal.sort(
@@ -79,7 +80,7 @@ export function RecentJournalEntries() {
                   </span>
                 </div>
                 <span className="text-lg">
-                  {entry.content.substring(0, 100)}...
+                  {JSON.stringify(entry.plainText)}
                 </span>
               </div>
             );
