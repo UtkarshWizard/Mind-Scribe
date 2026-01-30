@@ -12,12 +12,15 @@ import axios from "axios";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { getPreview } from "./recentJournal";
 
 export function JournalEntry() {
   const [entry, setEntry] = useState("");
   const [submittedEntry, setSubmittedEntry] = useState("");
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
 
   // State to hold the sentiment data
   const [Sentiment, setSentiment] = useState({
@@ -78,7 +81,19 @@ export function JournalEntry() {
           `/api/journal?date=${encodeURIComponent(date)}`,
         );
         if (response.data.journal) {
-          setSubmittedEntry(response.data.journal.content);
+          const plainJournal = getPreview(response.data.journal.plainText);
+          setSubmittedEntry(plainJournal);
+          const date = new Date(
+            response.data.journal.createdAt,
+          ).toLocaleDateString("en-GB");
+          if (response.data.journal.updatedAt) {
+            const updatedAt = new Date(
+              response.data.journal.updatedAt,
+            ).toLocaleDateString("en-GB");
+
+            setUpdatedAt(updatedAt);
+          }
+          setDate(date);
           setId(response.data.journal.id);
         }
       } catch (error) {
@@ -137,30 +152,20 @@ export function JournalEntry() {
   return (
     <>
       {submittedEntry ? (
-        <div>
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-primary text-primary-foreground">
-              <CardTitle className="text-2xl">Your Journal Entry</CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <p className="text-lg text-gray-800">{submittedEntry}</p>
-            </CardContent>
-            <CardFooter className="flex justify-end bg-muted p-4">
-              <button
-                className="p-[3px] relative"
-                onClick={() => router.push(`/update/journal/${id}`)}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-                <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
-                  Update Journal
-                </div>
-              </button>
-            </CardFooter>
-          </Card>
-
+        <div className="w-full p-4 flex flex-col rounded-md border border-gray-800 dark:border-gray-600">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col gap-2">
+                {date}
+                {updatedAt && <div> Updated At - {updatedAt} </div>}
+              </div> 
+              {Sentiment.overall}
+            </div>
+              {submittedEntry}
+          </div>
           {/* Sentiments card */}
 
-          <Card className="mt-6">
+          {/* <Card className="mt-6">
             <CardHeader>
               <CardTitle className="text-xl">Sentiment Insights</CardTitle>
             </CardHeader>
@@ -181,7 +186,7 @@ export function JournalEntry() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Recommendation card */}
 
@@ -226,7 +231,10 @@ export function JournalEntry() {
             This is your space. Start with a single thought from today.
           </span>
           <div className="text-center">
-            <button onClick={() => router.push("/editor")} className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400">
+            <button
+              onClick={() => router.push("/editor")}
+              className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400"
+            >
               Create Entry
             </button>
           </div>

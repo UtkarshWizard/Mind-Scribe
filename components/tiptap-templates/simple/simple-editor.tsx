@@ -229,7 +229,7 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    // content,
   });
 
   const rect = useCursorVisibility({
@@ -303,14 +303,14 @@ export function SimpleEditor() {
             className="simple-editor-content"
           />
 
-          <Button
+          <button
             onClick={() => handleSave()}
-            className="inline-flex !h-12 animate-shimmer items-center justify-center !rounded-sm !border !border-slate-800 !dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] !px-4 font-medium !text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-8"
+            className="inline-flex !h-12 animate-shimmer items-center justify-center !rounded-sm border border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] !px-4 font-medium !text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-8"
           >
             <div className="flex justify-center items-center gap-4">
               <div className="text-md">Create Journal</div>
             </div>
-          </Button>
+          </button>
         </div>
       </EditorContext.Provider>
     </div>
