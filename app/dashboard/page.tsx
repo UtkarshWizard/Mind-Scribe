@@ -42,18 +42,7 @@ export default function DashboardPage() {
       router.push("/"); // Redirect to the homepage or login page if not authenticated
     }
   }, [status, router]);
-
-  // Optionally, you can display a loading skeleton while the session is being verified
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Skeleton className="h-32 w-32" />
-      </div>
-    );
-  }
-
-  if (!session) return null;
-
+  
   useEffect(() => {
     if (!journalRef.current) return;
 
@@ -66,10 +55,22 @@ export default function DashboardPage() {
     return () => observer.disconnect();
   }, []);
 
+  // Optionally, you can display a loading skeleton while the session is being verified
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Skeleton className="h-32 w-32" />
+      </div>
+    );
+  }
+
+  if (!session) return null;
+
+
   return (
     <div className="z-50 top-0 w-full">
       <NavBar />
-      <div className="bg-background text-foreground lg:max-w-6xl max-w-4xl mx-auto flex flex-col items-center min-h-screen">
+      <div className="bg-background text-foreground lg:max-w-6xl max-w-2xl mx-auto flex flex-col items-center min-h-screen">
         <motion.main
           className="flex-1 w-full p-4 md:py-6 md:px-12 space-y-6 flex flex-col"
           variants={containerVariants}
@@ -114,28 +115,19 @@ export default function DashboardPage() {
               <Notebook />
               <span className="text-xl">Today&apos;s Entry</span>
             </div>
-            <Button
-              onClick={() => router.push("/editor")}
-              className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-            >
-              <div className="flex justify-center items-center gap-4">
-                <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
-                <div className="text-md">New Journal</div>
-              </div>
-            </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 grid-cols-1 items-start gap-4">
-            <div ref={journalRef} className="col-span-2">
+          <div className="grid md:grid-cols-3 grid-cols-1 justify-center items-center md:items-start gap-4">
+            <div ref={journalRef} className="col-span-2 min-h-full">
               <JournalEntry />
             </div>
             <div
-              className="md:col-span-1 sticky top-24"
+              className="md:col-span-1 md:sticky md:top-24"
               style={{
                 maxHeight: journalHeight ? `${journalHeight}px` : "auto",
               }}
             >
-              <div className="overflow-y-auto max-h-full">
+              <div className="overflow-y-auto max-h-full flex justify-center items-center">
                 <Calendar
                   mode="single"
                   // selected={date}

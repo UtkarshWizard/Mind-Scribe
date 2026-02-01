@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getPreview } from "./recentJournal";
-import { SquarePen, Trash } from "lucide-react";
+import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
 
 export function JournalEntry() {
   const [entry, setEntry] = useState("");
@@ -100,6 +100,15 @@ export function JournalEntry() {
 
   const router = useRouter();
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/api/journal/${id}`);
+      alert("Journal deleted")
+    } catch (error) {
+      console.error("Error Deleting Journal" , error)
+    }
+  }
+
   return (
     <>
       {submittedEntry ? (
@@ -111,15 +120,18 @@ export function JournalEntry() {
                 {updatedAt && <div> Updated At - {updatedAt} </div>}
               </div>
               <div className="flex gap-2 items-center">
+                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-blue-600" /></button>
                 <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
-                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
+                <button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
               </div>
             </div>
-            {submittedEntry} ....
+            <div className="px-2">
+              {submittedEntry} ....
+            </div>
           </div>
           {/* Sentiments card */}
 
-          <Card className="mt-6 bg-slate-50 dark:bg-slate-900 border border-gray-900 dark:border-gray-600 backdrop-blur-md">
+          <Card className="mt-6 bg-gray-100 dark:bg-slate-900 border border-gray-900 dark:border-gray-600 ">
             <CardHeader>
               <CardTitle className="text-xl font-medium">
                 Sentiment Insights
@@ -181,17 +193,23 @@ export function JournalEntry() {
           </div>
         </div>
       ) : (
-        <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-gray-700 h-full w-full rounded-md p-4 gap-4">
+        <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-gray-700 min-h-[400px] w-full rounded-md p-4 md:p-8 gap-4">
           <span className="pb-2 text-xl text-center">
             This is your space. Start with a single thought from today.
           </span>
+          <span className="pb-2 text-md text-center">
+            Create your Journal Entry to <br /> Analyse your emotion for the day and <br /> get Insights.
+          </span>
           <div className="text-center">
-            <button
+            <Button
               onClick={() => router.push("/editor")}
-              className="px-6 py-2 bg-black text-white rounded-sm transform hover:-translate-y-1 transition duration-400"
+              className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
             >
-              Create Entry
-            </button>
+              <div className="flex justify-center items-center gap-4">
+                <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
+                <div className="text-md">New Journal</div>
+              </div>
+            </Button>
           </div>
         </div>
       )}

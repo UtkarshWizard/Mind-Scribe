@@ -30,20 +30,12 @@ export function RecentJournalEntries() {
   useEffect(() => {
     const fetchJournals = async () => {
       try {
-        const response = await axios.get<{ journal: JournalEntry[] }>(
-          "/api/journal",
+        const response = await axios.get<{ journals: JournalEntry[] }>(
+          "/api/journal?limit=5",
         );
-        console.log(response.data.journal);
-
-        if (response.data.journal) {
-          const sortedJournals = response.data.journal.sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-          );
-          // console.log(sortedJournals)
-          const recentJournals = sortedJournals.slice(0, 5);
+        // console.log("response - " , response.data.journals);
+          const recentJournals = response.data.journals;
           setJournals(recentJournals);
-        }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
       }

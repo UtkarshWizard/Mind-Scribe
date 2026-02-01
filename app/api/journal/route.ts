@@ -174,7 +174,32 @@ export async function GET(req: NextRequest) {
           }
         );
       }
+
+      const limit = Number(req.nextUrl.searchParams.get("limit") || undefined);
+  
+      if (limit) {
+        const journals = await prisma.journalEntry.findMany({
+          where: {
+            userId: user?.id
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: limit,
+        })
+
+        return NextResponse.json(
+          {
+            message: "Recent 5 Journals found",
+            journals
+          } ,
+          {
+            status: 200
+          }
+        );
+      }
     }
+
 
     // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
 
@@ -221,3 +246,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
