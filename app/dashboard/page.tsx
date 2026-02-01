@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WelcomeBanner } from "../components/welcome-banner";
@@ -34,6 +34,8 @@ const itemVariants = {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const journalRef = useRef<HTMLDivElement>(null);
+  const [journalHeight, setJournalHeight] = useState<number | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -51,6 +53,18 @@ export default function DashboardPage() {
   }
 
   if (!session) return null;
+
+  useEffect(() => {
+    if (!journalRef.current) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setJournalHeight(entry.contentRect.height);
+    });
+
+    observer.observe(journalRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="z-50 top-0 w-full">
@@ -111,17 +125,24 @@ export default function DashboardPage() {
             </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 grid-cols-1 justify-between items-center gap-4">
-            <div className="col-span-2">
+          <div className="grid md:grid-cols-3 grid-cols-1 items-start gap-4">
+            <div ref={journalRef} className="col-span-2">
               <JournalEntry />
             </div>
-            <div className="md:col-span-1">
-              <Calendar
-                mode="single"
-                // selected={date}
-                // onSelect={setDate}
-                className="rounded-lg border-2 border-gray-600 w-full"
-              />
+            <div
+              className="md:col-span-1 sticky top-24"
+              style={{
+                maxHeight: journalHeight ? `${journalHeight}px` : "auto",
+              }}
+            >
+              <div className="overflow-y-auto max-h-full">
+                <Calendar
+                  mode="single"
+                  // selected={date}
+                  // onSelect={setDate}
+                  className="rounded-lg border-2 border-gray-600 w-full"
+                />
+              </div>
             </div>
           </div>
 

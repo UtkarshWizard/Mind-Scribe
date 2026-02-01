@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getPreview } from "./recentJournal";
+import { SquarePen, Trash } from "lucide-react";
 
 export function JournalEntry() {
   const [entry, setEntry] = useState("");
@@ -81,7 +75,7 @@ export function JournalEntry() {
           `/api/journal?date=${encodeURIComponent(date)}`,
         );
         if (response.data.journal) {
-          const plainJournal = getPreview(response.data.journal.plainText);
+          const plainJournal = getPreview(response.data.journal.plainText, 30);
           setSubmittedEntry(plainJournal);
           const date = new Date(
             response.data.journal.createdAt,
@@ -104,49 +98,6 @@ export function JournalEntry() {
     fetchJournalForToday();
   }, []); // Fetch on mount
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios.post("/api/journal", { content: entry });
-
-      if (response.status === 200) {
-        const date = new Date().toISOString();
-        const getResponse = await axios.get(
-          `/api/journal?date=${encodeURIComponent(date)}`,
-        );
-        setSubmittedEntry(getResponse.data.journal.content); // Set submitted journal
-        setEntry(""); // Clear the textarea
-        const sentimentResponse = await axios.get(`/api/journal/sentiment`);
-        const sentimentData = sentimentResponse.data?.sentiment_analysis;
-        const overall_emotion = sentimentResponse.data?.overall_emotion;
-        const recommendation = sentimentResponse.data?.recommendations;
-
-        if (sentimentData) {
-          setSentiment({
-            overall: overall_emotion || "",
-            categories: [
-              { name: "Happy", percentage: sentimentData?.Happy || 0 },
-              { name: "Neutral", percentage: sentimentData?.Neutral || 0 },
-              { name: "Sad", percentage: sentimentData?.Sad || 0 },
-            ],
-          });
-        }
-
-        if (recommendation) {
-          setRecommendation({
-            quote: recommendation.quote,
-            exercise: recommendation.exercise,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting journal:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const router = useRouter();
 
   return (
@@ -154,20 +105,25 @@ export function JournalEntry() {
       {submittedEntry ? (
         <div className="w-full p-4 flex flex-col rounded-md border border-gray-800 dark:border-gray-600">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 text-xl mb-2">
               <div className="flex flex-col gap-2">
                 {date}
                 {updatedAt && <div> Updated At - {updatedAt} </div>}
-              </div> 
-              {Sentiment.overall}
+              </div>
+              <div className="flex gap-2 items-center">
+                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
+                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
+              </div>
             </div>
-              {submittedEntry}
+            {submittedEntry} ....
           </div>
           {/* Sentiments card */}
 
-          {/* <Card className="mt-6">
+          <Card className="mt-6 bg-slate-50 dark:bg-slate-900 border border-gray-900 dark:border-gray-600 backdrop-blur-md">
             <CardHeader>
-              <CardTitle className="text-xl">Sentiment Insights</CardTitle>
+              <CardTitle className="text-xl font-medium">
+                Sentiment Insights
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-lg mb-4">
@@ -186,27 +142,26 @@ export function JournalEntry() {
                 ))}
               </div>
             </CardContent>
-          </Card> */}
+          </Card>
 
           {/* Recommendation card */}
 
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="text-xl">
-                Personalized Recommendations
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col justify-center gap-4">
+          <div className="mt-4">
+            <div className="text-xl font-medium">
+              Personalized Recommendations
+            </div>
+
+            <div className="flex flex-col justify-center gap-4 mt-2">
               <motion.div
-                className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-                whileHover={{ scale: 1.05 }}
+                className="bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
+                whileHover={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <p className="mb-2">{Recommendation.quote || "Loading..."}</p>
               </motion.div>
               <motion.div
-                className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-                whileHover={{ scale: 1.05 }}
+                className="bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
+                whileHover={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <p className="mb-2">
@@ -214,7 +169,7 @@ export function JournalEntry() {
                 </p>
                 <Button
                   variant="link"
-                  className="p-0 text-blue-700"
+                  className="p-0 text-blue-700 dark:text-blue-400"
                   onClick={() => {
                     router.push("/exercises");
                   }}
@@ -222,8 +177,8 @@ export function JournalEntry() {
                   Explore More
                 </Button>
               </motion.div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-gray-700 h-full w-full rounded-md p-4 gap-4">
