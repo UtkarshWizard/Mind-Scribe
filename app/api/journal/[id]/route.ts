@@ -5,7 +5,8 @@ import { getServerSession } from "next-auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const contentSchema = z.object({
-  content: z.string(),
+  content: z.any(),
+  plainText: z.string()
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -65,7 +66,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const { content } = contentSchema.parse(await req.json());
+    const { content , plainText } = contentSchema.parse(await req.json());
 
     const journal = await prisma.journalEntry.findUnique({
       where: { id },
@@ -130,7 +131,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     
     strictly Remember to not include the json and ''' quotes marking in the response , just keep the object as it is shown above. 
     
-    Analyze the following text: "${content}"`;
+    Analyze the following text: "${plainText}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
     // console.log("sentiment data", sentimentData);
@@ -153,6 +154,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       where: { id },
       data: {
         content,
+        plainText,
         updatedAt: new Date(),
         sentiment: parsedSentiment,
       },

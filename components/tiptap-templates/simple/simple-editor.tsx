@@ -73,6 +73,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -298,6 +299,33 @@ export function SimpleEditor() {
     }
   };
 
+  const handleEditSave = async () => {
+    if (!editor || editor.isEmpty) return;
+
+    const content = editor.getJSON();
+    const plainText = editor.getText().trim();
+
+    try {
+      // Send the updated journal content to the backend
+      await axios.put(`/api/journal/${id}`, { content , plainText });
+  
+      toast({
+        title: "Journal Updated",
+        description: "Your journal entry has been successfully updated.",
+      });
+  
+      // Redirect to the journal detail page
+      router.push(`/journals/${id}`);
+    } catch (error) {
+      console.error("Error updating journal:", error);
+  
+      toast({
+        title: "Error",
+        description: "Failed to update the journal. Please try again later.",
+      });
+    }
+  };
+
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
@@ -334,14 +362,25 @@ export function SimpleEditor() {
             className="simple-editor-content"
           />
 
-          <button
-            onClick={() => handleSave()}
-            className="inline-flex !h-12 animate-shimmer items-center justify-center !rounded-sm border border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] !px-4 font-medium !text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-8"
-          >
-            <div className="flex justify-center items-center gap-4">
-              <div className="text-md">Create Journal</div>
-            </div>
-          </button>
+          {content ? (
+            <button
+              onClick={() => handleEditSave()}
+              className="inline-flex !h-12 animate-shimmer items-center justify-center !rounded-sm border border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] !px-4 font-medium !text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-8"
+            >
+              <div className="flex justify-center items-center gap-4">
+                <div className="text-md">Update Journal</div>
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={() => handleSave()}
+              className="inline-flex !h-12 animate-shimmer items-center justify-center !rounded-sm border border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] !px-4 font-medium !text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-8"
+            >
+              <div className="flex justify-center items-center gap-4">
+                <div className="text-md">Create Journal</div>
+              </div>
+            </button>
+          )}
         </div>
       </EditorContext.Provider>
     </div>

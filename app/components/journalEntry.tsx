@@ -103,7 +103,8 @@ export function JournalEntry() {
   const handleDelete = async () => {
     try {
       await axios.delete(`/api/journal/${id}`);
-      alert("Journal deleted")
+      alert("Journal deleted");
+      setSubmittedEntry("");
     } catch (error) {
       console.error("Error Deleting Journal" , error)
     }
@@ -117,11 +118,11 @@ export function JournalEntry() {
             <div className="flex items-center justify-between gap-2 text-xl mb-2">
               <div className="flex flex-col gap-2">
                 {date}
-                {updatedAt && <div> Updated At - {updatedAt} </div>}
+                {updatedAt && <div className="text-lg dark:text-gray-300 text-gray-600"> Updated At - {updatedAt} </div>}
               </div>
               <div className="flex gap-2 items-center">
-                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-blue-600" /></button>
-                <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
+                <button onClick={() => router.push("/editor")} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
+                <button onClick={() => router.push('/editor')} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
                 <button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
               </div>
             </div>
