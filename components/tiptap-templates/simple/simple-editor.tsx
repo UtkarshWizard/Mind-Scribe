@@ -71,9 +71,8 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
-
-import content from "@/components/tiptap-templates/simple/data/content.json";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -191,6 +190,10 @@ export function SimpleEditor() {
     "main",
   );
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const [content, setContent] = useState();
+  const [id, setId] = useState();
+
+  const router = useRouter();
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -229,7 +232,7 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    // content,
+    content,
   });
 
   const rect = useCursorVisibility({
@@ -243,8 +246,34 @@ export function SimpleEditor() {
     }
   }, [isMobile, mobileView]);
 
+  useEffect(() => {
+    const fetchJournalForToday = async () => {
+      try {
+        const date = new Date().toISOString();
+        const response = await axios.get(
+          `/api/journal?date=${encodeURIComponent(date)}`,
+        );
+        if (response.data.journal) {
+          const journal = response.data.journal;
+          setContent(journal.content);
+          setId(response.data.journal.id);
+        }
+      } catch (error) {
+        console.error("Error fetching journal for today:", error);
+      }
+    };
+
+    fetchJournalForToday();
+  }, []);
+
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
+
   // const text = editor?.getText();
-  // console.log(text)
+  // console.log("content : ", content);
 
   const handleSave = async () => {
     if (!editor || editor.isEmpty) return;
@@ -253,19 +282,21 @@ export function SimpleEditor() {
     const plainText = editor.getText().trim();
 
     try {
-      const res = await axios.post("/api/journal" , {
-        content : content,
-        plainText : plainText
-      })
+      const res = await axios.post("/api/journal", {
+        content: content,
+        plainText: plainText,
+      });
 
       if (res.status == 200) {
-        console.log("Journal saved succesfully")
+        alert("Journal saved succesfully");
+        router.push("/dashboard");
+      } else {
+        alert("Failed to save Journal");
       }
-    } catch(err) {
+    } catch (err) {
       console.error("Error fetching journal for today:", err);
     }
-  }
-
+  };
 
   return (
     <div className="simple-editor-wrapper">
