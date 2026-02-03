@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { CalendarIcon, FrownIcon, MehIcon, SmileIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface JournalEntry {
   id: string;
@@ -15,13 +17,9 @@ interface JournalEntry {
   updatedAt: string | null;
 }
 
-export function getPreview (text : string , words = 100) {
-  return text.replace(/\s+/g, " ")
-    .trim()
-    .split(" ")
-    .slice(0, words)
-    .join(" ")
-} 
+export function getPreview(text: string, words = 100) {
+  return text.replace(/\s+/g, " ").trim().split(" ").slice(0, words).join(" ");
+}
 
 export function RecentJournalEntries() {
   const router = useRouter();
@@ -34,8 +32,8 @@ export function RecentJournalEntries() {
           "/api/journal?limit=5",
         );
         // console.log("response - " , response.data.journals);
-          const recentJournals = response.data.journals;
-          setJournals(recentJournals);
+        const recentJournals = response.data.journals;
+        setJournals(recentJournals);
       } catch (error) {
         console.error("Error fetching journal for today:", error);
       }
@@ -45,6 +43,20 @@ export function RecentJournalEntries() {
   }, []);
 
   // console.log(Journals);
+
+  const moodIcon: Record<string, React.ReactNode> = {
+    Happy: (
+      <SmileIcon className="w-6 h-6 text-yellow-800 dark:text-yellow-300" />
+    ),
+    Neutral: <MehIcon className="w-6 h-6 text-black dark:text-gray-200" />,
+    Sad: <FrownIcon className="w-6 h-6 text-red-600 dark:text-red-400" />,
+  };
+
+  const moodColor: Record<string, string> = {
+    Happy: "bg-pastel-green/50 dark:bg-pastel-green/80",
+    Neutral: "bg-pastel-yellow/40 dark:bg-pastel-yellow/80",
+    Sad: "bg-pastel-pink/50 dark:bg-pastel-pink/80",
+  };
 
   return (
     <div>
@@ -64,25 +76,34 @@ export function RecentJournalEntries() {
             const dateString = entry.createdAt.split("T")[0];
 
             return (
-              <div key={entry.id} onClick={() => router.push(`/journals/${entry.id}`)} className="bg-gray-800 text-white rounded-md p-4 flex flex-col gap-4 transition duration-300 hover:cursor-pointer hover:-translate-y-1">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-lg">
+              <Card
+                key={entry.id}
+                className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[entry.sentiment.overallEmotion]}`}
+                onClick={() => router.push(`/journals/${entry.id}`)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <Badge
+                      variant="outline"
+                      className="text-sm font-normal bg-white dark:bg-gray-800 transition-none"
+                    >
+                      <CalendarIcon className="w-3 h-3 mr-1" />
                       {new Date(dateString).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
+                    </Badge>
+
+                    <span className="text-sm bg-muted p-2 rounded-full">
+                      {moodIcon[entry.sentiment.overallEmotion]}
                     </span>
                   </div>
-                  <span className="text-lg">
-                    {entry.sentiment.overallEmotion}
-                  </span>
-                </div>
-                <span className="text-lg">
-                  {getPreview(entry.plainText , 10)}....
-                </span>
-              </div>
+                  <p className="text-gray-700">
+                    {getPreview(entry.plainText, 10)}
+                  </p>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
