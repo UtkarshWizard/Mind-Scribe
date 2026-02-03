@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const journalRef = useRef<HTMLDivElement>(null);
   const [journalHeight, setJournalHeight] = useState<number | null>(null);
+  const [date , setDate] = useState<Date | undefined>(new Date());
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -130,9 +131,10 @@ export default function DashboardPage() {
               <div className="overflow-y-auto max-h-full flex justify-center items-center">
                 <Calendar
                   mode="single"
-                  // selected={date}
-                  // onSelect={setDate}
+                  selected={date}
+                  onSelect={setDate}
                   className="rounded-lg border-2 border-gray-600 w-full"
+                  captionLayout="dropdown"
                 />
               </div>
             </div>
