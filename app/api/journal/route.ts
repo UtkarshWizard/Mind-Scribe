@@ -175,66 +175,71 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      const limit = Number(req.nextUrl.searchParams.get("limit") || undefined);
-  
-      if (limit) {
-        const journals = await prisma.journalEntry.findMany({
-          where: {
-            userId: user?.id
-          },
-          orderBy: {
-            createdAt: "desc"
-          },
-          take: limit,
-        })
+      // Pagination, sorting and mood filtering
+      const page = Number(req.nextUrl.searchParams.get("page") || "1");
+      const limit = Number(req.nextUrl.searchParams.get("limit") || "20");
+      const sort = req.nextUrl.searchParams.get("sort") || "latest"; // 'latest' or 'oldest'
+      const mood = req.nextUrl.searchParams.get("mood"); // 'Happy' | 'Neutral' | 'Sad'
+      // const search = req.nextUrl.searchParams.get("search") || undefined;
+      const yearParam = req.nextUrl.searchParams.get("year") || undefined;
 
-        return NextResponse.json(
-          {
-            message: "Recent 5 Journals found",
-            journals
-          } ,
-          {
-            status: 200
-          }
-        );
+      const orderBy = {
+        createdAt: sort === "oldest" ? "asc" : "desc",
+      } as const;
+
+      const whereBase: any = {
+        userId: user?.id,
+      };
+
+      if (mood) {
+        // Filter by sentiment.overallEmotion stored in JSON
+        whereBase.sentiment = { path: ["overallEmotion"], equals: mood };
       }
-    }
 
+      // if (search) {
+      //   whereBase.plainText = { contains: search, mode: "insensitive" };
+      // }
 
-    // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+      if (yearParam) {
+        const y = Number(yearParam);
+        if (!Number.isNaN(y)) {
+          const start = new Date(Date.UTC(y, 0, 1, 0, 0, 0, 0));
+          const end = new Date(Date.UTC(y, 11, 31, 23, 59, 59, 999));
+          whereBase.createdAt = { gte: start, lte: end };
+        }
+      }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session?.user.email,
-      },
-    });
+      const total = await prisma.journalEntry.count({ where: whereBase });
 
-    if (!user) {
+      const journals = await prisma.journalEntry.findMany({
+        where: whereBase,
+        orderBy,
+        skip: (Math.max(page, 1) - 1) * Math.max(limit, 1),
+        take: Math.max(limit, 1),
+      });
+
+      return NextResponse.json(
+        {
+          message: "Journals fetched",
+          journals,
+          total,
+          page,
+          limit,
+        },
+        {
+          status: 200,
+        }
+      );
+    } else {
       return NextResponse.json(
         {
           message: "Unauthorized",
         },
         {
-          status: 411,
+          status: 401,
         }
       );
     }
-
-    const journal = await prisma.journalEntry.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
-
-    return NextResponse.json(
-      {
-        message: "Journal Found",
-        journal,
-      },
-      {
-        status: 200,
-      }
-    );
   } catch (err) {
     return NextResponse.json(
       {

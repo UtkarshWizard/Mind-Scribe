@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Link from "next/link";
 import { CirclePlus, PlusCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,20 +33,49 @@ export default function JournalsPage() {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [yearsList, setYearsList] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const [limit] = useState<number>(20);
+  const [sortOrder, setSortOrder] = useState<string>("latest");
+  const [moodFilter, setMoodFilter] = useState<string>("");
 
   useEffect(() => {
     const fetchJournals = async () => {
       try {
-        const response = await axios.get<{ journal: Journal[] }>(
-          "/api/journal",
-        );
-        setJournals(response.data.journal);
+        const params: any = { page, limit, sort: sortOrder };
+        if (moodFilter) params.mood = moodFilter;
+        if (selectedYear) params.year = selectedYear;
+
+        const query = new URLSearchParams(params).toString();
+        const response = await axios.get(`/api/journal?${query}`);
+        setJournals(response.data.journals || response.data.journal || []);
+        setTotal(response.data.total || 0);
       } catch (error) {
         console.error("Failed to fetch journals", error);
       }
     };
 
     fetchJournals();
+  }, [page, sortOrder, moodFilter, selectedYear]);
+
+  // fetch years (use a large limit to derive available years)
+  useEffect(() => {
+    const fetchYears = async () => {
+      try {
+        const resp = await axios.get(`/api/journal?limit=10000&sort=latest`);
+        const all = resp.data.journals || resp.data.journal || [];
+        const derived = Object.keys(groupJournalsByYear(all))
+          .map(Number)
+          .sort((a, b) => b - a);
+        setYearsList(derived);
+        if (derived.length && selectedYear === null) setSelectedYear(derived[0]);
+      } catch (err) {
+        console.error("Failed to fetch years", err);
+      }
+    };
+
+    fetchYears();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -123,7 +150,11 @@ export default function JournalsPage() {
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <select
                   value={selectedYear ?? ""}
-                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedYear(val ? Number(val) : null);
+                    setPage(1);
+                  }}
                   className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer"
                 >
                   {years.length === 0 && <option value="">All years</option>}
@@ -132,6 +163,32 @@ export default function JournalsPage() {
                       {y}
                     </option>
                   ))}
+                </select>
+
+                <select
+                  value={sortOrder}
+                  onChange={(e) => {
+                    setSortOrder(e.target.value);
+                    setPage(1);
+                  }}
+                  className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
+                >
+                  <option value="latest">Latest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+
+                <select
+                  value={moodFilter}
+                  onChange={(e) => {
+                    setMoodFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
+                >
+                  <option value="">All moods</option>
+                  <option value="Happy">Happy</option>
+                  <option value="Neutral">Neutral</option>
+                  <option value="Sad">Sad</option>
                 </select>
 
                 <input
@@ -158,25 +215,35 @@ export default function JournalsPage() {
           </header>
 
           <main className="space-y-4">
-            {journals
-              .filter((j) =>
-                selectedYear
-                  ? new Date(j.createdAt).getFullYear() === selectedYear
-                  : true,
-              )
-              .filter((j) =>
+            {(() => {
+              const filtered = journals.filter((j) =>
                 searchQuery
-                  ? j.plainText
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
+                  ? j.plainText.toLowerCase().includes(searchQuery.toLowerCase())
                   : true,
-              )
-              .sort(
-                (a, b) =>
-                  new Date(b.createdAt).getTime() -
-                  new Date(a.createdAt).getTime(),
-              )
-              .map((journal) => (
+              );
+
+              if (filtered.length === 0) {
+                return (
+                  <div className="w-full py-20 flex flex-col items-center justify-center text-center">
+                    <div className="p-6 rounded-xl bg-gradient-to-br from-white to-orange-50 dark:from-transparent dark:to-gray-800 shadow-md border border-gray-100 dark:border-gray-700">
+                      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200 mx-auto">
+                        <PlusCircle className="w-8 h-8" />
+                      </div>
+                      <h2 className="mt-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">No Journal Entries</h2>
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 max-w-md">
+                        You haven't added any journal entries yet. Capture your thoughts and moods — your Journals will appear here.
+                      </p>
+                      <div className="mt-6">
+                        <Button onClick={() => router.push('/editor')} className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100">
+                          New Journal
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return filtered.map((journal) => (
                 <Card
                   key={journal.id}
                   className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[journal.sentiment.overallEmotion]}`}
@@ -206,7 +273,34 @@ export default function JournalsPage() {
                     </p>
                   </CardContent>
                 </Card>
-              ))}
+              ));
+            })()}
+
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
+                >
+                  Prev
+                </Button>
+
+                <div className="px-2">Page {page} of {Math.max(1, Math.ceil(total / limit))}</div>
+
+                <Button
+                  disabled={page >= Math.ceil(total / limit)}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
           </main>
         </div>
       </div>
