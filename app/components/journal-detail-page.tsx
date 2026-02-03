@@ -14,7 +14,8 @@ type Emotion = "Happy" | "Neutral" | "Sad";
 
 interface Journal {
   id: string;
-  content: string;
+  content: JSON;
+  plainText: string;
   sentiment: {
     emotions: {
       Happy: number;
@@ -86,7 +87,7 @@ export function JournalDetailPage({ id }: { id: string }) {
               </div>
               <JournalActions id={id} />
             </div>
-            <JournalContent content={journal.content} />
+            <JournalContent content={journal.plainText} />
           </CardContent>
         </Card>
       </motion.div>

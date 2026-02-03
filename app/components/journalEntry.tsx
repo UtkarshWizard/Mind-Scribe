@@ -121,7 +121,7 @@ export function JournalEntry() {
                 {updatedAt && <div className="text-lg dark:text-gray-300 text-gray-600"> Updated At - {updatedAt} </div>}
               </div>
               <div className="flex gap-2 items-center">
-                <button onClick={() => router.push("/editor")} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
+                <button onClick={() => router.push(`/journals/${id}`)} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
                 <button onClick={() => router.push('/editor')} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
                 <button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
               </div>
