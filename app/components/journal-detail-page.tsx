@@ -9,18 +9,27 @@ import { PersonalizedRecommendations } from "./personalizedRecommendations";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Typography from "@tiptap/extension-typography";
-import TextAlign from "@tiptap/extension-text-align";
+import { StarterKit } from "@tiptap/starter-kit";
+import { Typography } from "@tiptap/extension-typography";
+import { TextAlign } from "@tiptap/extension-text-align";
 import { CalendarIcon, SmileIcon, MehIcon, FrownIcon } from "lucide-react";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node";
+import { Selection } from "@tiptap/extensions";
+import "@/components/tiptap-templates/simple/simple-editor.scss";
+import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension";
+import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
+import "@/components/tiptap-node/code-block-node/code-block-node.scss";
+import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
+import "@/components/tiptap-node/list-node/list-node.scss";
+import "@/components/tiptap-node/image-node/image-node.scss";
+import "@/components/tiptap-node/heading-node/heading-node.scss";
+import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
-import Image from "@tiptap/extension-image";
-import Highlight from "@tiptap/extension-highlight";
-import Superscript from "@tiptap/extension-superscript";
-import Subscript from "@tiptap/extension-subscript";
+import { Image } from "@tiptap/extension-image";
+import { Highlight } from "@tiptap/extension-highlight";
+import { Superscript } from "@tiptap/extension-superscript";
+import { Subscript } from "@tiptap/extension-subscript";
 
 type Emotion = "Happy" | "Neutral" | "Sad";
 
@@ -91,15 +100,33 @@ export function JournalDetailPage({ id }: { id: string }) {
       Image,
       Superscript,
       Subscript,
+      Selection,
+      ImageUploadNode.configure({
+        accept: "image/*",
+        maxSize: MAX_FILE_SIZE,
+        limit: 3,
+        upload: handleImageUpload,
+        onError: (error: any) => console.error("Upload failed:", error),
+      }),
     ],
   });
 
-  // Update editor content when journal loads
+  // Update editor content when journal loads — handle JSON, object, or HTML
   useEffect(() => {
     if (!editor || !journal) return;
     try {
-      const content = (journal.content as any) || journal.plainText || "";
-        editor.commands.setContent(content);
+      let content: any = (journal as any).content ?? journal.plainText ?? "";
+
+      // If content is a string, try to parse JSON (some APIs store serialized JSON)
+      if (typeof content === "string") {
+        try {
+          content = JSON.parse(content);
+        } catch (_) {
+          // keep as string (HTML or plain text)
+        }
+      }
+
+      editor.commands.setContent(content);
     } catch (e) {
       console.error("Failed to set editor content:", e);
     }
@@ -156,8 +183,8 @@ export function JournalDetailPage({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="mt-6 prose prose-lg max-w-none dark:prose-invert">
-              {editor ? <EditorContent editor={editor} /> : <div className="text-gray-500">Loading content...</div>}
+            <div className="simple-editor-container">
+              {editor ? <EditorContent editor={editor} role="presentation" className="simple-editor-content" /> : <div className="text-gray-500">Loading content...</div>}
             </div>
           </CardContent>
         </Card>
