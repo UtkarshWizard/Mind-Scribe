@@ -20,14 +20,14 @@ export function PersonalizedRecommendations({
       <CardContent className="flex flex-col justify-center gap-4">
         <motion.div
           className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <p className="mb-2">{recommendation.quote || "Loading..."}</p>
         </motion.div>
         <motion.div
           className="bg-muted p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg"
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <p className="mb-2">{recommendation.exercise || "Loading..."}</p>

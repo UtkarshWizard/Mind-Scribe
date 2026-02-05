@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, SquarePenIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function JournalActions({ id }: { id: string }) {
@@ -34,13 +34,14 @@ export function JournalActions({ id }: { id: string }) {
         variant="outline"
         size="icon"
         onClick={() => router.push(`/update/journal/${id}`)}
+        className="hover:bg-yellow-400 hover:dark:text-black"
       >
-        <Pencil className="h-4 w-4" />
+        <SquarePenIcon className="h-4 w-4" />
       </Button>
       <Button
         variant="outline"
         size="icon"
-        className="hover:bg-red-300"
+        className="hover:bg-red-500 hover:text-white"
         onClick={deleteJournal}
       >
         <Trash2 className="h-4 w-4" />

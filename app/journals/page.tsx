@@ -68,7 +68,8 @@ export default function JournalsPage() {
           .map(Number)
           .sort((a, b) => b - a);
         setYearsList(derived);
-        if (derived.length && selectedYear === null) setSelectedYear(derived[0]);
+        if (derived.length && selectedYear === null)
+          setSelectedYear(derived[0]);
       } catch (err) {
         console.error("Failed to fetch years", err);
       }
@@ -146,58 +147,62 @@ export default function JournalsPage() {
               My Journals
             </h1>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <select
-                  value={selectedYear ?? ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedYear(val ? Number(val) : null);
-                    setPage(1);
-                  }}
-                  className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer"
-                >
-                  {years.length === 0 && <option value="">All years</option>}
-                  {years.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
+            <div className="flex flex-col md:flex-row md:items-center gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full m-auto">
+                  <select
+                    value={selectedYear ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedYear(val ? Number(val) : null);
+                      setPage(1);
+                    }}
+                    className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer"
+                  >
+                    {years.length === 0 && <option value="">All years</option>}
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
 
-                <select
-                  value={sortOrder}
-                  onChange={(e) => {
-                    setSortOrder(e.target.value);
-                    setPage(1);
-                  }}
-                  className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
-                >
-                  <option value="latest">Latest</option>
-                  <option value="oldest">Oldest</option>
-                </select>
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => {
+                      setSortOrder(e.target.value);
+                      setPage(1);
+                    }}
+                    className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
+                  >
+                    <option value="latest">Latest</option>
+                    <option value="oldest">Oldest</option>
+                  </select>
 
-                <select
-                  value={moodFilter}
-                  onChange={(e) => {
-                    setMoodFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
-                >
-                  <option value="">All moods</option>
-                  <option value="Happy">Happy</option>
-                  <option value="Neutral">Neutral</option>
-                  <option value="Sad">Sad</option>
-                </select>
+                  <select
+                    value={moodFilter}
+                    onChange={(e) => {
+                      setMoodFilter(e.target.value);
+                      setPage(1);
+                    }}
+                    className="px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 cursor-pointer ml-2"
+                  >
+                    <option value="">All moods</option>
+                    <option value="Happy">Happy</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Sad">Sad</option>
+                  </select>
+                </div>
 
-                <input
-                  aria-label="Search journals"
-                  placeholder="Search journals..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100"
-                />
+                <div className="w-full">
+                  <input
+                    aria-label="Search journals"
+                    placeholder="Search journals..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 min-w-0 px-3 py-2 rounded-md border bg-white dark:bg-gray-800 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100 w-full"
+                  />
+                </div>
               </div>
 
               <div className="ml-auto">
@@ -208,7 +213,7 @@ export default function JournalsPage() {
                   <div className="flex justify-center items-center gap-4">
                     <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
                     <div className="text-md">New Journal</div>
-                  </div>  
+                  </div>
                 </Button>
               </div>
             </div>
@@ -218,7 +223,9 @@ export default function JournalsPage() {
             {(() => {
               const filtered = journals.filter((j) =>
                 searchQuery
-                  ? j.plainText.toLowerCase().includes(searchQuery.toLowerCase())
+                  ? j.plainText
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
                   : true,
               );
 
@@ -229,12 +236,18 @@ export default function JournalsPage() {
                       <div className="w-20 h-20 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200 mx-auto">
                         <PlusCircle className="w-8 h-8" />
                       </div>
-                      <h2 className="mt-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">No Journal Entries</h2>
+                      <h2 className="mt-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                        No Journal Entries
+                      </h2>
                       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 max-w-md">
-                        You haven't added any journal entries yet. Capture your thoughts and moods — your Journals will appear here.
+                        You haven't added any journal entries yet. Capture your
+                        thoughts and moods — your Journals will appear here.
                       </p>
                       <div className="mt-6">
-                        <Button onClick={() => router.push('/editor')} className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100">
+                        <Button
+                          onClick={() => router.push("/editor")}
+                          className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
+                        >
                           New Journal
                         </Button>
                       </div>
@@ -276,9 +289,10 @@ export default function JournalsPage() {
               ));
             })()}
 
-            <div className="flex items-center justify-between mt-4">
+            <div className="flex flex-col sm:flex-row gap-2 items-center justify-between mt-4 pt-4">
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
+                Showing {(page - 1) * limit + 1} -{" "}
+                {Math.min(page * limit, total)} of {total}
               </div>
 
               <div className="flex items-center gap-2">
@@ -290,7 +304,9 @@ export default function JournalsPage() {
                   Prev
                 </Button>
 
-                <div className="px-2">Page {page} of {Math.max(1, Math.ceil(total / limit))}</div>
+                <div className="px-2">
+                  Page {page} of {Math.max(1, Math.ceil(total / limit))}
+                </div>
 
                 <Button
                   disabled={page >= Math.ceil(total / limit)}

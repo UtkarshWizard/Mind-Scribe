@@ -155,7 +155,7 @@ export function JournalDetailPage({ id }: { id: string }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
       >
-        <Card className="overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-white/60 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border border-transparent hover:shadow-lg transition-shadow">
+        <Card className="overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-white/60 dark:from-gray-950 dark:via-gray-800 dark:to-gray-950 border border-transparent hover:shadow-lg dark:hover:shadow-gray-800 transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -172,7 +172,7 @@ export function JournalDetailPage({ id }: { id: string }) {
                 )}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center md:flex-row flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 dark:text-gray-300">Mood</span>
                   <div className="p-2 rounded-full bg-white/60 dark:bg-gray-800 border">
@@ -183,8 +183,8 @@ export function JournalDetailPage({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="simple-editor-container">
-              {editor ? <EditorContent editor={editor} role="presentation" className="simple-editor-content" /> : <div className="text-gray-500">Loading content...</div>}
+            <div className="mt-4">
+              {editor ? <EditorContent editor={editor} role="presentation" className="" /> : <div className="text-gray-500">Loading content...</div>}
             </div>
           </CardContent>
         </Card>
