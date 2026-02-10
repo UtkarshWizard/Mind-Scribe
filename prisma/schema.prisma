@@ -56,6 +56,8 @@ enum ExerciseType {
   Breathing
   Meditation
   Music
+  Yoga
+  Podcast
 }
 
 enum Mood {

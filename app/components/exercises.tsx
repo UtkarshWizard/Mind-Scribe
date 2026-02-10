@@ -41,9 +41,9 @@ const exercises = [
 
 export default function MindExercises() {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 p-8">
+    <div className="min-h-screen dark:bg-gray-900 bg-gray-100 p-8">
       <motion.h1
-        className="text-4xl font-bold text-center mb-8 text-white float"
+        className="text-4xl font-bold text-center mb-8 dark:text-gray-200 text-gray-700 float"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -72,6 +72,9 @@ export default function MindExercises() {
                   <h2 className="text-2xl font-bold mb-4">{exercise.title} Exercise</h2>
                   <p>{exercise.content}</p>
                 </motion.div>
+                <div className="">
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/LiUnFJ8P4gM?si=XyfqUs8-D6P4TsGI" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

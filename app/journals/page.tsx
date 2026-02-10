@@ -149,7 +149,7 @@ export default function JournalsPage() {
 
             <div className="flex flex-col md:flex-row md:items-center gap-3 sm:gap-4">
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full m-auto">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full m-auto">
                   <select
                     value={selectedYear ?? ""}
                     onChange={(e) => {
