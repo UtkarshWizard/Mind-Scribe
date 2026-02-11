@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { RecentJournalEntries } from "../components/recentJournal";
 import { JournalEntry } from "../components/journalEntry";
+import axios from "axios";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,6 +38,10 @@ export default function DashboardPage() {
   const journalRef = useRef<HTMLDivElement>(null);
   const [journalHeight, setJournalHeight] = useState<number | null>(null);
   const [date , setDate] = useState<Date | undefined>(new Date());
+  const [totalEntries , setTotalEntries] = useState();
+  const [streak , setStreak] = useState();
+  const [entryDates, setEntryDates] = useState<string[]>([]);
+  const [streakDates, setStreakDates] = useState<string[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -55,6 +60,53 @@ export default function DashboardPage() {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('/api/journal');
+        setTotalEntries(response.data.total);
+        console.log(response.data.streak)
+        setStreak(response.data.streak);
+        // Try to derive entry dates from response if available
+        const rawEntries = response.data.journals || []
+        if (Array.isArray(rawEntries) && rawEntries.length > 0) {
+          const toLocal = (d: string | Date) => {
+            const date = new Date(d)
+            const y = date.getFullYear()
+            const m = String(date.getMonth() + 1).padStart(2, "0")
+            const day = String(date.getDate()).padStart(2, "0")
+            return `${y}-${m}-${day}`
+          }
+          const dates = rawEntries.map((e: any) => {
+            if (typeof e === 'string') return toLocal(e)
+            if (e && e.createdAt) return toLocal(e.createdAt)
+            return null
+          }).filter(Boolean)
+          const uniq = Array.from(new Set(dates))
+          setEntryDates(uniq)
+
+          // compute current streak dates (contiguous backwards from today)
+          const dateSet = new Set(uniq)
+          const today = new Date()
+          const streakArr: string[] = []
+          let cur = new Date(today)
+          while (true) {
+            const key = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
+            if (dateSet.has(key)) {
+              streakArr.push(key)
+              cur.setDate(cur.getDate() - 1)
+            } else break
+          }
+          setStreakDates(streakArr)
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      }
+    }
+
+    fetchStats()
+  }, [])
 
   // Optionally, you can display a loading skeleton while the session is being verified
   if (status === "loading") {
@@ -95,7 +147,7 @@ export default function DashboardPage() {
                 <Flame className="text-orange-500 h-10 w-10" />
               </div>
               <div className="flex flex-col px-4">
-                <div className="font-bold text-4xl text-right">0</div>
+                <div className="font-bold text-4xl text-right">{streak || 0}</div>
                 <div className="text-lg text-right">Day Streak</div>
               </div>
             </div>
@@ -105,7 +157,7 @@ export default function DashboardPage() {
                 <NotebookPen className="text-orange-500 h-10 w-10" />
               </div>
               <div className="flex flex-col px-4">
-                <div className="font-bold text-4xl text-right">0</div>
+                <div className="font-bold text-4xl text-right">{totalEntries || 0}</div>
                 <div className="text-lg text-right">Journal Entries</div>
               </div>
             </div>
@@ -134,6 +186,8 @@ export default function DashboardPage() {
                   selected={date}
                   onSelect={setDate}
                   className="rounded-lg border-2 border-gray-600 w-full"
+                  entryDates={entryDates}
+                  streakDates={streakDates}
                   captionLayout="dropdown"
                 />
               </div>

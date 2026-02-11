@@ -32,7 +32,7 @@ export function PersonalizedRecommendations({
         >
           <p className="mb-2">{recommendation.exercise || "Loading..."}</p>
           <Button variant="link" className="p-0 text-blue-700">
-            <a href={"/exercises"} target="_blank" rel="noopener noreferrer">
+            <a href={"/exercises"}>
               Explore More
             </a>
           </Button>

@@ -105,6 +105,38 @@ Analyze the following text: "${plainText}"`;
       );
     }
 
+    function startOfDayUTC(date: Date) {
+        return new Date(Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate()
+        ));
+      }
+
+    function dayDifference(d1: Date, d2: Date) {
+      const diff = d1.getTime() - d2.getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    const today = startOfDayUTC(new Date());
+
+    let newStreak = user.currentStreak;
+
+    if (!user.lastEntryDate) {
+      newStreak = 1;
+    } else {
+      const last = startOfDayUTC(new Date(user.lastEntryDate));
+      const diff = dayDifference(today , last);
+
+      if (diff == 0) {
+        newStreak = 1;
+      } else if ( diff == 1) {
+        newStreak = user.currentStreak + 1;
+      } else {
+        newStreak = 0;
+      }
+    }
+
     const journal = await prisma.journalEntry.create({
       data: {
         userId: user.id,
@@ -114,6 +146,16 @@ Analyze the following text: "${plainText}"`;
         sentiment: parsedSentiment,
       },
     });
+
+    if (journal) {
+      await prisma.user.update({
+        where: { id: user.id},
+        data: {
+          currentStreak: newStreak,
+          lastEntryDate: today,
+        }
+      })
+    }
 
     return NextResponse.json(
       {
@@ -147,6 +189,17 @@ export async function GET(req: NextRequest) {
           email: session.user.email,
         },
       });
+
+      if (!user) {
+        return NextResponse.json(
+          {
+            message: `Error finding User`,
+          },
+          {
+            status: 411,
+          }
+        );
+      }
 
       const date = req.nextUrl.searchParams.get("date") || "";
 
@@ -211,6 +264,8 @@ export async function GET(req: NextRequest) {
 
       const total = await prisma.journalEntry.count({ where: whereBase });
 
+      const streak = user.currentStreak;
+
       const journals = await prisma.journalEntry.findMany({
         where: whereBase,
         orderBy,
@@ -225,6 +280,7 @@ export async function GET(req: NextRequest) {
           total,
           page,
           limit,
+          streak
         },
         {
           status: 200,

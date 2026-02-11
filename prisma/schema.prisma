@@ -22,6 +22,9 @@ model User {
   provider            Provider
   journals            JournalEntry[]
   mood                moodTracking[]
+
+  currentStreak       Int             @default(0)
+  lastEntryDate       DateTime?
 }
 
 model JournalEntry {

@@ -19,11 +19,28 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  // new props: lists of dates (Date or ISO string) where entries exist and where current streak applies
+  entryDates,
+  streakDates,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
+  entryDates?: Array<string | Date>
+  streakDates?: Array<string | Date>
 }) {
   const defaultClassNames = getDefaultClassNames()
+
+  const toLocalDateKey = (d: string | Date) => {
+    const date = new Date(d)
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${y}-${m}-${day}`
+  }
+
+  const entryDatesSet = new Set((entryDates || []).map((d) => toLocalDateKey(d)) as string[])
+
+  const streakDatesSet = new Set((streakDates || []).map((d) => toLocalDateKey(d)) as string[])
 
   return (
     <DayPicker
@@ -155,7 +172,10 @@ function Calendar({
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
           )
         },
-        DayButton: CalendarDayButton,
+        DayButton: (props) => (
+          // Pass our date sets through to the day button so it can render indicators
+          <CalendarDayButton {...props} entryDatesSet={entryDatesSet} streakDatesSet={streakDatesSet} />
+        ),
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -176,14 +196,69 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  // our injected sets
+  entryDatesSet,
+  streakDatesSet,
   ...props
-}: React.ComponentProps<typeof DayButton>) {
+}: React.ComponentProps<typeof DayButton> & {
+  entryDatesSet?: Set<string>
+  streakDatesSet?: Set<string>
+}) {
   const defaultClassNames = getDefaultClassNames()
 
   const ref = React.useRef<HTMLButtonElement>(null)
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus()
   }, [modifiers.focused])
+
+  const toLocalDateKey2 = (d: Date) => {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${y}-${m}-${day}`
+  }
+
+  const dateKey = toLocalDateKey2(day.date)
+
+  const hasEntry = entryDatesSet ? entryDatesSet.has(dateKey) : false
+  const inStreak = streakDatesSet ? streakDatesSet.has(dateKey) : false
+
+  const prev = new Date(day.date)
+  prev.setDate(prev.getDate() - 1)
+  const next = new Date(day.date)
+  next.setDate(next.getDate() + 1)
+
+  const prevKey = toLocalDateKey2(prev)
+  const nextKey = toLocalDateKey2(next)
+
+  const prevInStreak = streakDatesSet ? streakDatesSet.has(prevKey) : false
+  const nextInStreak = streakDatesSet ? streakDatesSet.has(nextKey) : false
+
+  // indicator: dot for entry, and bar connections for streak
+  const renderIndicator = () => {
+    if (inStreak) {
+      // full bar if connected both sides
+      if (prevInStreak && nextInStreak) {
+        return <div className="absolute -bottom-1 left-0 right-0 h-2 bg-orange-500 rounded-md" />
+      }
+      // connect to left
+      if (prevInStreak && !nextInStreak) {
+        return <div className="absolute -bottom-1 left-0 right-1/2 h-2 bg-orange-500 rounded-l-md" />
+      }
+      // connect to right
+      if (!prevInStreak && nextInStreak) {
+        return <div className="absolute -bottom-1 left-1/2 right-0 h-2 bg-orange-500 rounded-r-md" />
+      }
+      // single streak day (no neighbours)
+      return <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-orange-500 rounded-full" />
+    }
+
+    if (hasEntry) {
+      return <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-orange-500 rounded-full" />
+    }
+
+    return null
+  }
 
   return (
     <Button
@@ -201,12 +276,17 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70",
+        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px]",
         defaultClassNames.day,
         className
       )}
       {...props}
-    />
+    >
+      <div className="relative flex h-full w-full items-center justify-center">
+        <span className="text-sm select-none">{day.date.getDate()}</span>
+        {renderIndicator()}
+      </div>
+    </Button>
   )
 }
 
