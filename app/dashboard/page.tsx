@@ -71,7 +71,7 @@ export default function DashboardPage() {
   return (
     <div className="z-50 top-0 w-full">
       <NavBar />
-      <div className="bg-background text-foreground lg:max-w-6xl max-w-2xl mx-auto flex flex-col items-center min-h-screen">
+      <div className="bg-background text-foreground lg:max-w-6xl mx-auto flex flex-col items-center min-h-screen">
         <motion.main
           className="flex-1 w-full p-4 md:py-6 md:px-12 space-y-6 flex flex-col"
           variants={containerVariants}
@@ -118,12 +118,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 grid-cols-1 justify-center items-center md:items-start gap-4">
-            <div ref={journalRef} className="col-span-2 min-h-full">
+          <div className="grid md:grid-cols-5 grid-cols-2 justify-center items-center md:items-start gap-4">
+            <div ref={journalRef} className="md:col-span-3 col-span-2 min-h-full">
               <JournalEntry />
             </div>
             <div
-              className="md:col-span-1 md:sticky md:top-24"
+              className="md:col-span-2 col-span-2 md:sticky md:top-24"
               style={{
                 maxHeight: journalHeight ? `${journalHeight}px` : "auto",
               }}
@@ -140,14 +140,14 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center pt-4">
             <div className="flex items-center gap-2">
               <Notebook />
               <span className="text-xl">Recent Journals</span>
             </div>
             <button
               onClick={() => router.push("/journals")}
-              className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
+              className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
             >
               <div className="absolute inset-x-0 dark:h-px h-1 dark:w-1/2 w-[80%] mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent dark:via-orange-700 via-orange-800 to-transparent" />
               <span className="relative z-20">Show All Entries</span>

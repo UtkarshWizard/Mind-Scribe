@@ -132,7 +132,7 @@ export function JournalEntry() {
           </div>
           {/* Sentiments card */}
 
-          <Card className="mt-6 bg-gray-100 dark:bg-slate-900 border border-gray-900 dark:border-gray-600 ">
+          <Card className="w-full mt-6 bg-gray-100 dark:bg-slate-900 border border-gray-900 dark:border-gray-600 ">
             <CardHeader>
               <CardTitle className="text-xl font-medium">
                 Sentiment Insights
@@ -143,7 +143,7 @@ export function JournalEntry() {
                 Your mood today is:{" "}
                 <strong>{Sentiment.overall || "Loading..."}</strong>
               </p>
-              <div className="space-y-4">
+              <div className="space-y-4 w-full">
                 {Sentiment.categories.map((category) => (
                   <div key={category.name}>
                     <div className="flex justify-between mb-1">
@@ -164,16 +164,16 @@ export function JournalEntry() {
               Personalized Recommendations
             </div>
 
-            <div className="flex flex-col justify-center gap-4 mt-2">
+              <div className="flex flex-col justify-center gap-4 mt-2 w-full">
               <motion.div
-                className="bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
+                className="w-full bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
                 whileHover={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <p className="mb-2">{Recommendation.quote || "Loading..."}</p>
               </motion.div>
               <motion.div
-                className="bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
+                className="w-full bg-gray-100 dark:bg-slate-900 p-4 rounded-lg transition-shadow duration-300 ease-in-out hover:shadow-lg border border-gray-800 dark:border-gray-500 dark:shadow-slate-700"
                 whileHover={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
@@ -195,7 +195,7 @@ export function JournalEntry() {
         </div>
       ) : (
         <div className="md:col-span-2 flex flex-col items-center justify-center border-2 border-gray-700 min-h-[400px] w-full rounded-md p-4 md:p-8 gap-4">
-          <span className="pb-2 text-xl text-center">
+          <span className="pb-2 text-2xl text-center">
             This is your space. Start with a single thought from today.
           </span>
           <span className="pb-2 text-md text-center">
