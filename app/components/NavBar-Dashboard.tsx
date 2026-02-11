@@ -23,7 +23,7 @@ export default function NavBar() {
       className="py-4 px-6 md:px-10 bg-white/50 dark:bg-black/50 backdrop-blur-sm shadow-sm sticky top-0 z-50"
       style={{
         // expose navbar height to other components (used by editor toolbar)
-        ["--navbar-height" as any]: "64px",
+        ["--navbar-height" as string]: "64px",
       }}
     >
       <div className="flex justify-between items-center">

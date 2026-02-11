@@ -61,8 +61,8 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon";
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint";
-import { useWindowSize } from "@/hooks/use-window-size";
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
+// import { useWindowSize } from "@/hooks/use-window-size";
+// import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 
 // --- Components ---
 
@@ -186,7 +186,6 @@ export function SimpleEditor() {
   const isMobile = useIsBreakpoint();
   // narrowMobile: width < 468px (small phones) — toolbar should pin to bottom here
   const isNarrowMobile = useIsBreakpoint("max", 468);
-  const { height } = useWindowSize();
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main",
   );
@@ -236,10 +235,10 @@ export function SimpleEditor() {
     content,
   });
 
-  const rect = useCursorVisibility({
-    editor,
-    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-  });
+  // const rect = useCursorVisibility({
+  //   editor,
+  //   overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
+  // });
 
   useEffect(() => {
     if (!isMobile && mobileView !== "main") {

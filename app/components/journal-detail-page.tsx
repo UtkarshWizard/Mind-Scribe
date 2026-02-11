@@ -12,7 +12,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Typography } from "@tiptap/extension-typography";
 import { TextAlign } from "@tiptap/extension-text-align";
-import { CalendarIcon, SmileIcon, MehIcon, FrownIcon } from "lucide-react";
+import { SmileIcon, MehIcon, FrownIcon } from "lucide-react";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { Selection } from "@tiptap/extensions";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
@@ -106,7 +106,7 @@ export function JournalDetailPage({ id }: { id: string }) {
         maxSize: MAX_FILE_SIZE,
         limit: 3,
         upload: handleImageUpload,
-        onError: (error: any) => console.error("Upload failed:", error),
+        onError: (error) => console.error("Upload failed:", error),
       }),
     ],
   });
@@ -115,15 +115,11 @@ export function JournalDetailPage({ id }: { id: string }) {
   useEffect(() => {
     if (!editor || !journal) return;
     try {
-      let content: any = (journal as any).content ?? journal.plainText ?? "";
+      let content = (journal).content ?? journal.plainText ?? "";
 
       // If content is a string, try to parse JSON (some APIs store serialized JSON)
       if (typeof content === "string") {
-        try {
-          content = JSON.parse(content);
-        } catch (_) {
-          // keep as string (HTML or plain text)
-        }
+        content = JSON.parse(content);
       }
 
       editor.commands.setContent(content);

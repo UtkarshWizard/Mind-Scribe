@@ -7,8 +7,7 @@ import { WelcomeBanner } from "../components/welcome-banner";
 import NavBar from "../components/NavBar-Dashboard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { CirclePlus, Flame, Notebook, NotebookPen } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Flame, Notebook, NotebookPen } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { RecentJournalEntries } from "../components/recentJournal";
 import { JournalEntry } from "../components/journalEntry";
@@ -78,19 +77,21 @@ export default function DashboardPage() {
             const day = String(date.getDate()).padStart(2, "0")
             return `${y}-${m}-${day}`
           }
-          const dates = rawEntries.map((e: any) => {
-            if (typeof e === 'string') return toLocal(e)
-            if (e && e.createdAt) return toLocal(e.createdAt)
-            return null
-          }).filter(Boolean)
-          const uniq = Array.from(new Set(dates))
-          setEntryDates(uniq)
+          const dates = rawEntries
+            .map((e) => {
+              if (typeof e === "string") return toLocal(e);
+              if (e && e.createdAt) return toLocal(e.createdAt);
+              return null;
+            })
+            .filter((d): d is string => Boolean(d));
+          const uniq = Array.from(new Set(dates));
+          setEntryDates(uniq as string[]);
 
           // compute current streak dates (contiguous backwards from today)
           const dateSet = new Set(uniq)
           const today = new Date()
           const streakArr: string[] = []
-          let cur = new Date(today)
+          const cur = new Date(today)
           while (true) {
             const key = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
             if (dateSet.has(key)) {

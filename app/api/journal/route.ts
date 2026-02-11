@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -240,7 +241,7 @@ export async function GET(req: NextRequest) {
         createdAt: sort === "oldest" ? "asc" : "desc",
       } as const;
 
-      const whereBase: any = {
+      const whereBase: Prisma.JournalEntryWhereInput = {
         userId: user?.id,
       };
 

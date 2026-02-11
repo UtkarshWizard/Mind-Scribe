@@ -35,16 +35,20 @@ export default function JournalsPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
-  const [limit] = useState<number>(20);
+  const limit = 20;
   const [sortOrder, setSortOrder] = useState<string>("latest");
   const [moodFilter, setMoodFilter] = useState<string>("");
 
   useEffect(() => {
     const fetchJournals = async () => {
       try {
-        const params: any = { page, limit, sort: sortOrder };
+        const params: Record<string, string> = {
+          page: String(page),
+          limit: String(limit),
+          sort: sortOrder,
+        };
         if (moodFilter) params.mood = moodFilter;
-        if (selectedYear) params.year = selectedYear;
+        if (selectedYear) params.year = String(selectedYear);
 
         const query = new URLSearchParams(params).toString();
         const response = await axios.get(`/api/journal?${query}`);
@@ -240,7 +244,7 @@ export default function JournalsPage() {
                         No Journal Entries
                       </h2>
                       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 max-w-md">
-                        You haven't added any journal entries yet. Capture your
+                        You haven&apos;t added any journal entries yet. Capture your
                         thoughts and moods — your Journals will appear here.
                       </p>
                       <div className="mt-6">

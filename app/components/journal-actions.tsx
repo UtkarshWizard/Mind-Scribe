@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { Pencil, SquarePenIcon, Trash2 } from "lucide-react";
+import { SquarePenIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function JournalActions({ id }: { id: string }) {

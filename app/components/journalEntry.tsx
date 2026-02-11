@@ -9,10 +9,8 @@ import { getPreview } from "./recentJournal";
 import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
 
 export function JournalEntry() {
-  const [entry, setEntry] = useState("");
   const [submittedEntry, setSubmittedEntry] = useState("");
   const [id, setId] = useState("");
-  const [loading, setLoading] = useState(false);
   const [date, setDate] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
 
