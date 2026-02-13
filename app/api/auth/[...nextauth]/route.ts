@@ -92,8 +92,11 @@ const handler = NextAuth({
       return true
     },
     async redirect({ url, baseUrl }) {
+    // Handle relative URLs by prepending baseUrl
+    const absoluteUrl = url.startsWith("http") ? url : `${baseUrl}${url}`;
+    
     // If the URL contains a callbackUrl parameter, use it
-      const callbackUrl = new URL(url).searchParams.get("callbackUrl");
+    const callbackUrl = new URL(absoluteUrl).searchParams.get("callbackUrl");
       if (callbackUrl) {
         return callbackUrl;
       }
@@ -103,8 +106,8 @@ const handler = NextAuth({
     }
 
     // Allow URLs that start with the base URL
-    if (url.startsWith(baseUrl)) {
-      return url;
+    if (absoluteUrl.startsWith(baseUrl)) {
+      return absoluteUrl;
     }
 
     // Fallback to dashboard for any external URL
