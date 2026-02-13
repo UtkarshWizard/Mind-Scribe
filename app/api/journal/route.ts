@@ -130,11 +130,11 @@ Analyze the following text: "${plainText}"`;
       const diff = dayDifference(today , last);
 
       if (diff == 0) {
-        newStreak = 1;
+        newStreak = user.currentStreak;
       } else if ( diff == 1) {
         newStreak = user.currentStreak + 1;
       } else {
-        newStreak = 0;
+        newStreak = 1;
       }
     }
 
@@ -265,7 +265,27 @@ export async function GET(req: NextRequest) {
 
       const total = await prisma.journalEntry.count({ where: whereBase });
 
-      const streak = user.currentStreak;
+      // Compute today's start in UTC
+      const now = new Date();
+      const todayStartUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+      // Determine visible streak: if the user has an entry for today, show stored streak;
+      // otherwise (they missed today) show 0. This avoids showing an old streak on missed days.
+      let streak = 0;
+      if (user.lastEntryDate) {
+        const last = new Date(user.lastEntryDate);
+        const lastStartUTC = new Date(Date.UTC(last.getUTCFullYear(), last.getUTCMonth(), last.getUTCDate()));
+        const diffDays = Math.floor((todayStartUTC.getTime() - lastStartUTC.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays === 0 || diffDays === 1) {
+          // User already has an entry today — show current streak
+          streak = user.currentStreak;
+        } else {
+          // Missed today (or earlier) — visible streak is 0
+          streak = 0;
+        }
+      } else {
+        streak = 0;
+      }
 
       const journals = await prisma.journalEntry.findMany({
         where: whereBase,
