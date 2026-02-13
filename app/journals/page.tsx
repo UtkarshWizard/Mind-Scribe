@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, PlusCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, SmileIcon, MehIcon, FrownIcon } from "lucide-react";
 import axios from "axios";
 import NavBar from "../components/NavBar-Dashboard";
-import { useRouter } from "next/navigation";
 
 type Emotion = "Happy" | "Neutral" | "Sad";
 
@@ -131,8 +131,6 @@ export default function JournalsPage() {
     Sad: "bg-pastel-pink/50 dark:bg-pastel-pink/80",
   };
 
-  const router = useRouter();
-
   const truncateContent = (content: string) => {
     const words = content.split(" ");
     if (words.length > 20) {
@@ -210,15 +208,16 @@ export default function JournalsPage() {
               </div>
 
               <div className="ml-auto">
-                <Button
-                  onClick={() => router.push("/editor")}
-                  className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-                >
-                  <div className="flex justify-center items-center gap-4">
-                    <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
-                    <div className="text-md">New Journal</div>
-                  </div>
-                </Button>
+                <Link href="/editor">
+                  <Button
+                    className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                  >
+                    <div className="flex justify-center items-center gap-4">
+                      <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
+                      <div className="text-md">New Journal</div>
+                    </div>
+                  </Button>
+                </Link>
               </div>
             </div>
           </header>
@@ -248,12 +247,13 @@ export default function JournalsPage() {
                         thoughts and moods — your Journals will appear here.
                       </p>
                       <div className="mt-6">
-                        <Button
-                          onClick={() => router.push("/editor")}
-                          className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
-                        >
-                          New Journal
-                        </Button>
+                        <Link href="/editor">
+                          <Button
+                            className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
+                          >
+                            New Journal
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -261,12 +261,11 @@ export default function JournalsPage() {
               }
 
               return filtered.map((journal) => (
-                <Card
-                  key={journal.id}
-                  className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[journal.sentiment.overallEmotion]}`}
-                  onClick={() => router.push(`/journals/${journal.id}`)}
-                >
-                  <CardContent className="p-6">
+                <Link key={journal.id} href={`/journals/${journal.id}`}>
+                  <Card
+                    className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[journal.sentiment.overallEmotion]}`}
+                  >
+                    <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <Badge
                         variant="outline"
@@ -290,6 +289,7 @@ export default function JournalsPage() {
                     </p>
                   </CardContent>
                 </Card>
+                </Link>
               ));
             })()}
 

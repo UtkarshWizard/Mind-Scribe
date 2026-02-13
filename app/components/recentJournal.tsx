@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { CalendarIcon, FrownIcon, MehIcon, SmileIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,6 @@ export function getPreview(text: string, words = 100) {
 }
 
 export function RecentJournalEntries() {
-  const router = useRouter();
   const [Journals, setJournals] = useState<JournalEntry[]>([]);
 
   useEffect(() => {
@@ -75,12 +74,11 @@ export function RecentJournalEntries() {
             const dateString = entry.createdAt.split("T")[0];
 
             return (
-              <Card
-                key={entry.id}
-                className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[entry.sentiment.overallEmotion]}`}
-                onClick={() => router.push(`/journals/${entry.id}`)}
-              >
-                <CardContent className="p-6">
+              <Link key={entry.id} href={`/journals/${entry.id}`}>
+                <Card
+                  className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[entry.sentiment.overallEmotion]}`}
+                >
+                  <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <Badge
                       variant="outline"
@@ -103,6 +101,7 @@ export function RecentJournalEntries() {
                   </p>
                 </CardContent>
               </Card>
+              </Link>
             );
           })}
         </div>

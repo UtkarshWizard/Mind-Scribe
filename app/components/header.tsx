@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +13,6 @@ export default function Header() {
   const session = useSession();
   const userName = session.data?.user?.name || "User"; 
   const userImage = session.data?.user?.image || ""; 
-  const router = useRouter();
   // console.log(userImage)
 
   return (
@@ -135,88 +133,86 @@ export default function Header() {
             )}
             {!session.data?.user && (
               <li>
-                <Button
-                  disabled={loading}
-                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
-                  onClick={() => {
-                    router.push('auth/signUp')
-                    setLoading(true);
-                  }}
-                >
-                  {loading ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 200 200"
-                    >
-                      <radialGradient
-                        id="a11"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
+                <Link href="/auth/signUp">
+                  <Button
+                    disabled={loading}
+                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                  >
+                    {loading ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 200 200"
                       >
-                        <stop offset="0" stopColor="#FFFFFF"></stop>
-                        <stop
-                          offset=".3"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".9"
-                        ></stop>
-                        <stop
-                          offset=".6"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".6"
-                        ></stop>
-                        <stop
-                          offset=".8"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".3"
-                        ></stop>
-                        <stop
-                          offset="1"
-                          stopColor="#FFFFFF"
-                          stopOpacity="0"
-                        ></stop>
-                      </radialGradient>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        stroke="url(#a11)"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        strokeDasharray="200 1000"
-                        strokeDashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      >
-                        <animateTransform
-                          type="rotate"
-                          attributeName="transform"
-                          calcMode="spline"
-                          dur="2"
-                          values="360;0"
-                          keyTimes="0;1"
-                          keySplines="0 0 1 1"
-                          repeatCount="indefinite"
-                        ></animateTransform>
-                      </circle>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#FFFFFF"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      ></circle>
-                    </svg>
-                  ) : (
-                    "Sign Up"
-                  )}
-                </Button>
+                        <radialGradient
+                          id="a11"
+                          cx=".66"
+                          fx=".66"
+                          cy=".3125"
+                          fy=".3125"
+                          gradientTransform="scale(1.5)"
+                        >
+                          <stop offset="0" stopColor="#FFFFFF"></stop>
+                          <stop
+                            offset=".3"
+                            stopColor="#FFFFFF"
+                            stopOpacity=".9"
+                          ></stop>
+                          <stop
+                            offset=".6"
+                            stopColor="#FFFFFF"
+                            stopOpacity=".6"
+                          ></stop>
+                          <stop
+                            offset=".8"
+                            stopColor="#FFFFFF"
+                            stopOpacity=".3"
+                          ></stop>
+                          <stop
+                            offset="1"
+                            stopColor="#FFFFFF"
+                            stopOpacity="0"
+                          ></stop>
+                        </radialGradient>
+                        <circle
+                          transform="center"
+                          fill="none"
+                          stroke="url(#a11)"
+                          strokeWidth="13"
+                          strokeLinecap="round"
+                          strokeDasharray="200 1000"
+                          strokeDashoffset="0"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        >
+                          <animateTransform
+                            type="rotate"
+                            attributeName="transform"
+                            calcMode="spline"
+                            dur="2"
+                            values="360;0"
+                            keyTimes="0;1"
+                            keySplines="0 0 1 1"
+                            repeatCount="indefinite"
+                          ></animateTransform>
+                        </circle>
+                        <circle
+                          transform="center"
+                          fill="none"
+                          opacity=".2"
+                          stroke="#FFFFFF"
+                          strokeWidth="13"
+                          strokeLinecap="round"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        ></circle>
+                      </svg>
+                    ) : (
+                      "Sign Up"
+                    )}
+                  </Button>
+                </Link>
               </li>
             )}
             {session.data?.user && (
@@ -236,8 +232,7 @@ export default function Header() {
                   variant="outline"
                   className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signOut({redirect: false})
-                    router.push('/auth/signIn')
+                    signOut({redirect: false, callbackUrl: '/auth/signIn'})
                     setLoading(true);
                   }}
                 >
@@ -357,16 +352,12 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Button
-                disabled={loading}
-                variant="outline"
-                className="w-full text-white bg-black border-white hover:bg-white hover:text-gray-900"
-                onClick={() => {
-                  router.push("/auth/signIn")
-                  setIsMenuOpen(false);
-                  setLoading(true);
-                }}
-              >
+              <Link href="/auth/signIn" className="w-full block" onClick={() => setIsMenuOpen(false)}>
+                <Button
+                  disabled={loading}
+                  variant="outline"
+                  className="w-full text-white bg-black border-white hover:bg-white hover:text-gray-900"
+                >
                 {loading ? (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
                     <radialGradient
@@ -437,18 +428,15 @@ export default function Header() {
                 ) : (
                   "Log In"
                 )}
-              </Button>
+                </Button>
+              </Link>
             </li>
             <li>
-              <Button
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
-                onClick={() => {
-                  router.push("/auth/signUp")
-                  setIsMenuOpen(false);
-                  setLoading(true);
-                }}
-              >
+              <Link href="/auth/signUp" className="w-full block" onClick={() => setIsMenuOpen(false)}>
+                <Button
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                >
                 {loading ? (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
                     <radialGradient
@@ -519,7 +507,9 @@ export default function Header() {
                 ) : (
                   "Sign Up"
                 )}
-              </Button>
+                </Button>
+              </Link>
+              <div onClick={() => setIsMenuOpen(false)} />
             </li>
           </ul>
         </nav>

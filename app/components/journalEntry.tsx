@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { getPreview } from "./recentJournal";
 import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -98,9 +98,8 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
     };
 
     fetchJournalForToday();
-  }, []); // Fetch on mount
+  }, []);
 
-  const router = useRouter();
   const { toast } = useToast();
 
   const handleDeleteConfirm = async () => {
@@ -142,9 +141,13 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
                 {updatedAt && <div className="text-lg dark:text-gray-300 text-gray-600"> Updated At - {updatedAt} </div>}
               </div>
               <div className="flex gap-2 items-center">
-                <button onClick={() => router.push(`/journals/${id}`)} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
-                <button onClick={() => router.push(`/update/journal/${id}`)} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
-                <button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button>
+                <Link href={`/journals/${id}`}>
+                  <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
+                </Link>
+                <Link href={`/update/journal/${id}`}>
+                  <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
+                </Link>
+                <Link href={""}><button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button></Link>
               </div>
             </div>
             <div className="px-2">
@@ -204,11 +207,10 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
                 <Button
                   variant="link"
                   className="p-0 text-blue-700 dark:text-blue-400"
-                  onClick={() => {
-                    router.push("/exercises");
-                  }}
                 >
-                  Explore More
+                  <Link href="/exercises">
+                    Explore More
+                  </Link>
                 </Button>
               </motion.div>
             </div>
@@ -223,15 +225,16 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
             Create your Journal Entry to <br /> Analyse your emotion for the day and <br /> get Insights.
           </span>
           <div className="text-center">
-            <Button
-              onClick={() => router.push("/editor")}
-              className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-            >
-              <div className="flex justify-center items-center gap-4">
-                <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
-                <div className="text-md">New Journal</div>
-              </div>
-            </Button>
+            <Link href="/editor">
+              <Button
+                className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+              >
+                <div className="flex justify-center items-center gap-4">
+                  <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
+                  <div className="text-md">New Journal</div>
+                </div>
+              </Button>
+            </Link>
           </div>
         </div>
       )}

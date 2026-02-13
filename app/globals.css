@@ -79,6 +79,20 @@
   }
 }
 
+#nprogress .bar {
+  background: #5DEE92; /* your brand green */
+  height: 3px;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #5DEE92, 0 0 5px #5DEE92;
+}
+
+#nprogress .spinner {
+  display: none;
+}
+
+
 .animate-in {
   animation: animateIn 0.3s ease-in-out;
 }

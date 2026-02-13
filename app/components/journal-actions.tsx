@@ -3,6 +3,7 @@ import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { SquarePenIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 
@@ -41,14 +42,15 @@ export function JournalActions({ id }: { id: string }) {
   return (
     <>
       <div className="flex space-x-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => router.push(`/update/journal/${id}`)}
-          className="hover:bg-yellow-400 hover:dark:text-black"
-        >
-          <SquarePenIcon className="h-4 w-4" />
-        </Button>
+        <Link href={`/update/journal/${id}`}>
+          <Button
+            variant="outline"
+            size="icon"
+            className="hover:bg-yellow-400 hover:dark:text-black"
+          >
+            <SquarePenIcon className="h-4 w-4" />
+          </Button>
+        </Link>
         <Button
           variant="outline"
           size="icon"

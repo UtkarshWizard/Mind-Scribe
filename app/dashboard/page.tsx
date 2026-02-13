@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WelcomeBanner } from "../components/welcome-banner";
@@ -202,13 +203,14 @@ export default function DashboardPage() {
               <Notebook />
               <span className="text-xl">Recent Journals</span>
             </div>
-            <button
-              onClick={() => router.push("/journals")}
-              className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
-            >
-              <div className="absolute inset-x-0 dark:h-px h-1 dark:w-1/2 w-[80%] mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent dark:via-orange-700 via-orange-800 to-transparent" />
-              <span className="relative z-20">Show All Entries</span>
-            </button>
+            <Link href="/journals">
+              <button
+                className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
+              >
+                <div className="absolute inset-x-0 dark:h-px h-1 dark:w-1/2 w-[80%] mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent dark:via-orange-700 via-orange-800 to-transparent" />
+                <span className="relative z-20">Show All Entries</span>
+              </button>
+            </Link>
           </div>
           <RecentJournalEntries />
         </motion.main>

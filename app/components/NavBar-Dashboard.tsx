@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
 
 export default function NavBar() {
@@ -15,7 +15,6 @@ export default function NavBar() {
   const session = useSession();
   const userName = session.data?.user?.name || "User";
   const userImage = session.data?.user?.image || "";
-  const router = useRouter();
   const pathname = usePathname();
 
   return (
@@ -167,14 +166,11 @@ export default function NavBar() {
             )}
             {!session.data?.user && (
               <li>
-                <Button
-                  disabled={loading}
-                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-gray-800 hover:from-purple-600 hover:to-indigo-600"
-                  onClick={() => {
-                    router.push("auth/signUp");
-                    setLoading(true);
-                  }}
-                >
+                <Link href="/auth/signUp">
+                  <Button
+                    disabled={loading}
+                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-gray-800 hover:from-purple-600 hover:to-indigo-600"
+                  >
                   {loading ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -249,6 +245,7 @@ export default function NavBar() {
                     "Sign Up"
                   )}
                 </Button>
+                </Link>
               </li>
             )}
             {session.data?.user && (
@@ -271,8 +268,7 @@ export default function NavBar() {
                   variant="outline"
                   className="text-white border hover:border-gray-800 bg-black dark:bg-gray-800 dark:border-white dark:hover:bg-black dark:hover:text-gray-100 rounded-sm hover:bg-white hover:text-gray-900"
                   onClick={() => {
-                    signOut({ redirect: false });
-                    router.push("/auth/signIn");
+                    signOut({ redirect: false, callbackUrl: "/auth/signIn" });
                     setLoading(true);
                   }}
                 >
@@ -433,8 +429,7 @@ export default function NavBar() {
                   variant="outline"
                   className="text-white bg-black hover:bg-white border-2 hover:border-gray-800 hover:text-gray-900"
                   onClick={() => {
-                    signOut({ redirect: false });
-                    router.push("/auth/signIn");
+                    signOut({ redirect: false, callbackUrl: "/auth/signIn" });
                     setLoading(true);
                   }}
                 >
