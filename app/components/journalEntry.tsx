@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getPreview } from "./recentJournal";
 import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 
-export function JournalEntry() {
+export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
   const [submittedEntry, setSubmittedEntry] = useState("");
   const [id, setId] = useState("");
   const [date, setDate] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // State to hold the sentiment data
   const [Sentiment, setSentiment] = useState({
@@ -97,15 +101,34 @@ export function JournalEntry() {
   }, []); // Fetch on mount
 
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleDelete = async () => {
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
     try {
       await axios.delete(`/api/journal/${id}`);
-      alert("Journal deleted");
+      toast({
+        title: "Deleted!",
+        description: "Your journal entry has been sent to the void.",
+        variant: "success",
+      });
       setSubmittedEntry("");
+      setShowDeleteDialog(false);
+      onDelete?.();
     } catch (error) {
-      console.error("Error Deleting Journal" , error)
+      console.error("Error Deleting Journal" , error);
+      toast({
+        title: "Oops!",
+        description: "Something went wrong. Your entry is still safe.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
     }
+  }
+
+  const handleDelete = () => {
+    setShowDeleteDialog(true);
   }
 
   return (
@@ -212,6 +235,12 @@ export function JournalEntry() {
           </div>
         </div>
       )}
+      <DeleteConfirmationDialog
+        isOpen={showDeleteDialog}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setShowDeleteDialog(false)}
+        isLoading={isDeleting}
+      />
     </>
   );
 }

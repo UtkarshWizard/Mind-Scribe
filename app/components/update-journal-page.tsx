@@ -291,8 +291,9 @@ export function UpdateJournalPage({ id }: { id: string }) {
       await axios.put(`/api/journal/${id}`, { content, plainText });
 
       toast({
-        title: "Journal Updated",
-        description: "Your journal entry has been successfully updated.",
+        title: "Updated!",
+        description: "Your journal entry has been updated successfully.",
+        variant: "success",
       });
 
       // Redirect to the journal detail page
@@ -301,8 +302,9 @@ export function UpdateJournalPage({ id }: { id: string }) {
       console.error("Error updating journal:", error);
 
       toast({
-        title: "Error",
-        description: "Failed to update the journal. Please try again later.",
+        title: "Oops!",
+        description: "Failed to update the journal. Please try again.",
+        variant: "destructive",
       });
     }
   };

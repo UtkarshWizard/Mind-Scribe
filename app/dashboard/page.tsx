@@ -60,53 +60,55 @@ export default function DashboardPage() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get('/api/journal');
-        setTotalEntries(response.data.total);
-        console.log(response.data.streak)
-        setStreak(response.data.streak);
-        // Try to derive entry dates from response if available
-        const rawEntries = response.data.journals || []
-        if (Array.isArray(rawEntries) && rawEntries.length > 0) {
-          const toLocal = (d: string | Date) => {
-            const date = new Date(d)
-            const y = date.getFullYear()
-            const m = String(date.getMonth() + 1).padStart(2, "0")
-            const day = String(date.getDate()).padStart(2, "0")
-            return `${y}-${m}-${day}`
-          }
-          const dates = rawEntries
-            .map((e) => {
-              if (typeof e === "string") return toLocal(e);
-              if (e && e.createdAt) return toLocal(e.createdAt);
-              return null;
-            })
-            .filter((d): d is string => Boolean(d));
-          const uniq = Array.from(new Set(dates));
-          setEntryDates(uniq as string[]);
-
-          // compute current streak dates (contiguous backwards from today)
-          const dateSet = new Set(uniq)
-          const today = new Date()
-          const streakArr: string[] = []
-          const cur = new Date(today)
-          while (true) {
-            const key = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
-            if (dateSet.has(key)) {
-              streakArr.push(key)
-              cur.setDate(cur.getDate() - 1)
-            } else break
-          }
-          setStreakDates(streakArr)
+  const refetchStats = async () => {
+    try {
+      const response = await axios.get('/api/journal');
+      setTotalEntries(response.data.total);
+      setStreak(response.data.streak)
+      const rawEntries = response.data.journals || []
+      if (Array.isArray(rawEntries) && rawEntries.length > 0) {
+        const toLocal = (d: string | Date) => {
+          const date = new Date(d)
+          const y = date.getFullYear()
+          const m = String(date.getMonth() + 1).padStart(2, "0")
+          const day = String(date.getDate()).padStart(2, "0")
+          return `${y}-${m}-${day}`
         }
-      } catch (error) {
-        console.error("Failed to fetch stats", error);
-      }
-    }
+        const dates = rawEntries
+          .map((e) => {
+            if (typeof e === "string") return toLocal(e);
+            if (e && e.createdAt) return toLocal(e.createdAt);
+            return null;
+          })
+          .filter((d): d is string => Boolean(d));
+        const uniq = Array.from(new Set(dates));
+        setEntryDates(uniq as string[]);
 
-    fetchStats()
+        // compute current streak dates (contiguous backwards from today)
+        const dateSet = new Set(uniq)
+        const today = new Date()
+        const streakArr: string[] = []
+        const cur = new Date(today)
+        while (true) {
+          const key = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
+          if (dateSet.has(key)) {
+            streakArr.push(key)
+            cur.setDate(cur.getDate() - 1)
+          } else break
+        }
+        setStreakDates(streakArr)
+      } else {
+        // Reset dates if no entries
+        setEntryDates([]);
+        setStreakDates([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch stats", error);
+    }
+  }
+
+  useEffect(() => {
+    refetchStats()
   }, [])
 
   // Optionally, you can display a loading skeleton while the session is being verified
@@ -173,7 +175,7 @@ export default function DashboardPage() {
 
           <div className="grid md:grid-cols-5 grid-cols-2 justify-center items-center md:items-start gap-4">
             <div ref={journalRef} className="md:col-span-3 col-span-2 min-h-full">
-              <JournalEntry />
+              <JournalEntry onDelete={refetchStats} />
             </div>
             <div
               className="md:col-span-2 col-span-2 md:sticky md:top-24"

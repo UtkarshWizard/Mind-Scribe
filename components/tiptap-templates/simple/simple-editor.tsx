@@ -288,13 +288,26 @@ export function SimpleEditor() {
       });
 
       if (res.status == 200) {
-        alert("Journal saved succesfully");
+        toast({
+          title: "Saved!",
+          description: "Your journal entry has been saved successfully.",
+          variant: "success",
+        });
         router.push("/dashboard");
       } else {
-        alert("Failed to save Journal");
+        toast({
+          title: "Oops!",
+          description: "Failed to save the journal. Please try again.",
+          variant: "destructive",
+        });
       }
     } catch (err) {
       console.error("Error fetching journal for today:", err);
+      toast({
+        title: "Oops!",
+        description: "An error occurred while saving your journal.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -309,8 +322,9 @@ export function SimpleEditor() {
       await axios.put(`/api/journal/${id}`, { content , plainText });
   
       toast({
-        title: "Journal Updated",
+        title: "Updated!",
         description: "Your journal entry has been successfully updated.",
+        variant: "success",
       });
   
       // Redirect to the journal detail page
@@ -319,8 +333,9 @@ export function SimpleEditor() {
       console.error("Error updating journal:", error);
   
       toast({
-        title: "Error",
-        description: "Failed to update the journal. Please try again later.",
+        title: "Oops!",
+        description: "Failed to update the journal. Please try again.",
+        variant: "destructive",
       });
     }
   };
