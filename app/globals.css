@@ -79,18 +79,35 @@
   }
 }
 
+#nprogress {
+  pointer-events: none;
+}
+
 #nprogress .bar {
-  background: #5DEE92; /* your brand green */
-  height: 3px;
+  background: #EA580C !important;
+  height: 4px !important;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px #5DEE92, 0 0 5px #5DEE92;
+  box-shadow: 0 0 10px #EA580C, 0 0 5px #EA580C !important;
 }
 
 #nprogress .spinner {
-  display: none;
+  display: none !important;
 }
+
+#nprogress .spinner-icon {
+  display: none !important;
+}
+
+.dark #nprogress .bar {
+  background: #ed8936 !important;
+}
+
+.dark #nprogress .peg {
+  box-shadow: 0 0 10px #ed8936, 0 0 5px #ed8936 !important;
+}
+
 
 
 .animate-in {

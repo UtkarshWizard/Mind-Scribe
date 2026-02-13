@@ -13,6 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { RecentJournalEntries } from "../components/recentJournal";
 import { JournalEntry } from "../components/journalEntry";
 import axios from "axios";
+import { startProgress } from "../components/NavigationProgress";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -203,7 +204,7 @@ export default function DashboardPage() {
               <Notebook />
               <span className="text-xl">Recent Journals</span>
             </div>
-            <Link href="/journals">
+            <Link onClick={() => startProgress()} href="/journals">
               <button
                 className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
               >

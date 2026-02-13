@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
+import { startProgress } from "./NavigationProgress";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,6 +29,7 @@ export default function NavBar() {
       <div className="flex justify-between items-center">
         <Link
           href="/dashboard"
+          onClick={() => startProgress()}
           className="text-2xl font-light text-gray-800 dark:text-gray-100"
         >
           Mind Scribe
@@ -37,6 +39,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/dashboard"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/dashboard"
@@ -51,6 +54,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/journals"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/journals"
@@ -65,6 +69,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/exercises"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/exercises"
@@ -166,7 +171,7 @@ export default function NavBar() {
             )}
             {!session.data?.user && (
               <li>
-                <Link href="/auth/signUp">
+                <Link href="/auth/signUp" onClick={() => startProgress()}>
                   <Button
                     disabled={loading}
                     className="bg-gradient-to-r from-purple-500 to-indigo-500 text-gray-800 hover:from-purple-600 hover:to-indigo-600"
@@ -370,6 +375,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/dashboard"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/dashboard"
@@ -384,6 +390,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/journals"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/journals"
@@ -398,6 +405,7 @@ export default function NavBar() {
             <li>
               <Link
                 href="/exercises"
+                onClick={() => startProgress()}
                 className={`
                     ${
                       pathname === "/exercises"

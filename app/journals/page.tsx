@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, SmileIcon, MehIcon, FrownIcon } from "lucide-react";
 import axios from "axios";
 import NavBar from "../components/NavBar-Dashboard";
+import { startProgress } from "../components/NavigationProgress";
 
 type Emotion = "Happy" | "Neutral" | "Sad";
 
@@ -208,7 +209,7 @@ export default function JournalsPage() {
               </div>
 
               <div className="ml-auto">
-                <Link href="/editor">
+                <Link onClick={() => startProgress()} href="/editor">
                   <Button
                     className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   >
@@ -247,7 +248,7 @@ export default function JournalsPage() {
                         thoughts and moods — your Journals will appear here.
                       </p>
                       <div className="mt-6">
-                        <Link href="/editor">
+                        <Link onClick={() => startProgress()} href="/editor">
                           <Button
                             className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
                           >
@@ -261,9 +262,9 @@ export default function JournalsPage() {
               }
 
               return filtered.map((journal) => (
-                <Link key={journal.id} href={`/journals/${journal.id}`}>
+                <Link onClick={() => startProgress()} key={journal.id} href={`/journals/${journal.id}`}>
                   <Card
-                    className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[journal.sentiment.overallEmotion]}`}
+                    className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer mb-4 ${moodColor[journal.sentiment.overallEmotion]}`}
                   >
                     <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">

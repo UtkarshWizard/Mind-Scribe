@@ -9,6 +9,7 @@ import { getPreview } from "./recentJournal";
 import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
+import { startProgress } from "./NavigationProgress";
 
 export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
   const [submittedEntry, setSubmittedEntry] = useState("");
@@ -141,13 +142,13 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
                 {updatedAt && <div className="text-lg dark:text-gray-300 text-gray-600"> Updated At - {updatedAt} </div>}
               </div>
               <div className="flex gap-2 items-center">
-                <Link href={`/journals/${id}`}>
+                <Link onClick={() => startProgress()} href={`/journals/${id}`}>
                   <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Eye className="text-orange-500" /></button>
                 </Link>
-                <Link href={`/update/journal/${id}`}>
+                <Link onClick={() => startProgress()} href={`/update/journal/${id}`}>
                   <button className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><SquarePen /></button>
                 </Link>
-                <Link href={""}><button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button></Link>
+                <Link onClick={() => startProgress()} href={""}><button onClick={handleDelete} className="hover:cursor-pointer hover:translate-y-[2px] transition-all duration-200"><Trash className="text-red-600" /></button></Link>
               </div>
             </div>
             <div className="px-2">
@@ -208,7 +209,7 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
                   variant="link"
                   className="p-0 text-blue-700 dark:text-blue-400"
                 >
-                  <Link href="/exercises">
+                  <Link onClick={() => startProgress()} href="/exercises">
                     Explore More
                   </Link>
                 </Button>
@@ -225,7 +226,7 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
             Create your Journal Entry to <br /> Analyse your emotion for the day and <br /> get Insights.
           </span>
           <div className="text-center">
-            <Link href="/editor">
+            <Link onClick={() => startProgress()} href="/editor">
               <Button
                 className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
               >

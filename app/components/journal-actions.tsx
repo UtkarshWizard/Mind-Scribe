@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
+import { startProgress } from "./NavigationProgress";
 
 export function JournalActions({ id }: { id: string }) {
   const router = useRouter();
@@ -42,7 +43,7 @@ export function JournalActions({ id }: { id: string }) {
   return (
     <>
       <div className="flex space-x-2">
-        <Link href={`/update/journal/${id}`}>
+        <Link onClick={() => startProgress()} href={`/update/journal/${id}`}>
           <Button
             variant="outline"
             size="icon"

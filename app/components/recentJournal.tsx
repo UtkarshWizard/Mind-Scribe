@@ -4,6 +4,7 @@ import Link from "next/link";
 import axios from "axios";
 import { CalendarIcon, FrownIcon, MehIcon, SmileIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { startProgress } from "./NavigationProgress";
 
 interface JournalEntry {
   id: string;
@@ -74,7 +75,7 @@ export function RecentJournalEntries() {
             const dateString = entry.createdAt.split("T")[0];
 
             return (
-              <Link key={entry.id} href={`/journals/${entry.id}`}>
+              <Link key={entry.id} onClick={() => startProgress()} href={`/journals/${entry.id}`}>
                 <Card
                   className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer ${moodColor[entry.sentiment.overallEmotion]}`}
                 >
