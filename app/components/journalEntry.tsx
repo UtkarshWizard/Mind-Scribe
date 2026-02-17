@@ -10,6 +10,7 @@ import { CirclePlus, Eye, SquarePen, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 import { startProgress } from "./NavigationProgress";
+import { Skeleton } from "./Skeleton";
 
 export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
   const [submittedEntry, setSubmittedEntry] = useState("");
@@ -34,7 +35,10 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
     exercise: "",
   });
 
+  const [loading , setLoading] = useState(true);
+
   useEffect(() => {
+    setLoading(true);
     const fetchSentimentData = async () => {
       try {
         const response = await axios.get(`/api/journal/sentiment`);
@@ -64,6 +68,8 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
         }
       } catch (error) {
         console.error("Error fetching sentiment data:", error);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -71,6 +77,7 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const fetchJournalForToday = async () => {
       try {
         const date = new Date().toISOString();
@@ -95,6 +102,8 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
         }
       } catch (error) {
         console.error("Error fetching journal for today:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -129,6 +138,12 @@ export function JournalEntry({ onDelete }: { onDelete?: () => void }) {
 
   const handleDelete = () => {
     setShowDeleteDialog(true);
+  }
+
+  if (loading) {
+    return <div className="w-full p-4 flex flex-col rounded-md border border-gray-800 dark:border-gray-600">
+      <Skeleton className="w-full h-64" />
+    </div>
   }
 
   return (

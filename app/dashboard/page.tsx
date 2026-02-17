@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Skeleton } from "@/components/ui/skeleton";
 import { WelcomeBanner } from "../components/welcome-banner";
 import NavBar from "../components/NavBar-Dashboard";
 import { useSession } from "next-auth/react";
@@ -14,6 +13,7 @@ import { RecentJournalEntries } from "../components/recentJournal";
 import { JournalEntry } from "../components/journalEntry";
 import axios from "axios";
 import { startProgress } from "../components/NavigationProgress";
+import { Skeleton } from "../components/Skeleton";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,9 +38,9 @@ export default function DashboardPage() {
   const router = useRouter();
   const journalRef = useRef<HTMLDivElement>(null);
   const [journalHeight, setJournalHeight] = useState<number | null>(null);
-  const [date , setDate] = useState<Date | undefined>(new Date());
-  const [totalEntries , setTotalEntries] = useState();
-  const [streak , setStreak] = useState();
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [totalEntries, setTotalEntries] = useState();
+  const [streak, setStreak] = useState();
   const [entryDates, setEntryDates] = useState<string[]>([]);
   const [streakDates, setStreakDates] = useState<string[]>([]);
 
@@ -49,7 +49,7 @@ export default function DashboardPage() {
       router.push("/"); // Redirect to the homepage or login page if not authenticated
     }
   }, [status, router]);
-  
+
   useEffect(() => {
     if (!journalRef.current) return;
 
@@ -64,18 +64,18 @@ export default function DashboardPage() {
 
   const refetchStats = async () => {
     try {
-      const response = await axios.get('/api/journal');
+      const response = await axios.get("/api/journal");
       setTotalEntries(response.data.total);
-      setStreak(response.data.streak)
-      const rawEntries = response.data.journals || []
+      setStreak(response.data.streak);
+      const rawEntries = response.data.journals || [];
       if (Array.isArray(rawEntries) && rawEntries.length > 0) {
         const toLocal = (d: string | Date) => {
-          const date = new Date(d)
-          const y = date.getFullYear()
-          const m = String(date.getMonth() + 1).padStart(2, "0")
-          const day = String(date.getDate()).padStart(2, "0")
-          return `${y}-${m}-${day}`
-        }
+          const date = new Date(d);
+          const y = date.getFullYear();
+          const m = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        };
         const dates = rawEntries
           .map((e) => {
             if (typeof e === "string") return toLocal(e);
@@ -87,18 +87,18 @@ export default function DashboardPage() {
         setEntryDates(uniq as string[]);
 
         // compute current streak dates (contiguous backwards from today)
-        const dateSet = new Set(uniq)
-        const today = new Date()
-        const streakArr: string[] = []
-        const cur = new Date(today)
+        const dateSet = new Set(uniq);
+        const today = new Date();
+        const streakArr: string[] = [];
+        const cur = new Date(today);
         while (true) {
-          const key = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
+          const key = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}-${String(cur.getDate()).padStart(2, "0")}`;
           if (dateSet.has(key)) {
-            streakArr.push(key)
-            cur.setDate(cur.getDate() - 1)
-          } else break
+            streakArr.push(key);
+            cur.setDate(cur.getDate() - 1);
+          } else break;
         }
-        setStreakDates(streakArr)
+        setStreakDates(streakArr);
       } else {
         // Reset dates if no entries
         setEntryDates([]);
@@ -107,23 +107,42 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Failed to fetch stats", error);
     }
-  }
+  };
 
   useEffect(() => {
-    refetchStats()
-  }, [])
+    refetchStats();
+  }, []);
 
-  // Optionally, you can display a loading skeleton while the session is being verified
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Skeleton className="h-32 w-32" />
+      <div className="z-50 top-0 w-full">
+        <Skeleton className="w-full h-16 mb-8" />
+        <div className="lg:max-w-6xl max-w-4xl mx-auto min-h-screen flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-24 w-full" />
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 w-full lg:max-w-6xl max-w-4xl mx-auto justify-center">
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-5 grid-cols-2 justify-center items-center md:items-start gap-4">
+            <div className="md:col-span-3 col-span-2 min-h-full">
+              <Skeleton className="w-full h-64" />
+            </div>
+            <div className="md:col-span-2 col-span-2 min-h-full">
+              <Skeleton className="w-full h-64" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!session) return null;
-
 
   return (
     <div className="z-50 top-0 w-full">
@@ -152,7 +171,9 @@ export default function DashboardPage() {
                 <Flame className="text-orange-500 h-10 w-10" />
               </div>
               <div className="flex flex-col px-4">
-                <div className="font-bold text-4xl text-right">{streak || 0}</div>
+                <div className="font-bold text-4xl text-right">
+                  {streak || 0}
+                </div>
                 <div className="text-lg text-right">Day Streak</div>
               </div>
             </div>
@@ -162,7 +183,9 @@ export default function DashboardPage() {
                 <NotebookPen className="text-orange-500 h-10 w-10" />
               </div>
               <div className="flex flex-col px-4">
-                <div className="font-bold text-4xl text-right">{totalEntries || 0}</div>
+                <div className="font-bold text-4xl text-right">
+                  {totalEntries || 0}
+                </div>
                 <div className="text-lg text-right">Journal Entries</div>
               </div>
             </div>
@@ -176,7 +199,10 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid md:grid-cols-5 grid-cols-2 justify-center items-center md:items-start gap-4">
-            <div ref={journalRef} className="md:col-span-3 col-span-2 min-h-full">
+            <div
+              ref={journalRef}
+              className="md:col-span-3 col-span-2 min-h-full"
+            >
               <JournalEntry onDelete={refetchStats} />
             </div>
             <div
@@ -205,9 +231,7 @@ export default function DashboardPage() {
               <span className="text-xl">Recent Journals</span>
             </div>
             <Link onClick={() => startProgress()} href="/journals">
-              <button
-                className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600"
-              >
+              <button className="px-8 py-2 rounded-sm relative bg-slate-900 text-white text-sm sm:text-md hover:shadow-2xl hover:shadow-black/[0.2] dark:hover:shadow-gray-400/[0.1] transition duration-200 border border-slate-600">
                 <div className="absolute inset-x-0 dark:h-px h-1 dark:w-1/2 w-[80%] mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent dark:via-orange-700 via-orange-800 to-transparent" />
                 <span className="relative z-20">Show All Entries</span>
               </button>

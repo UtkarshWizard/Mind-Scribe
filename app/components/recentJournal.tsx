@@ -5,6 +5,7 @@ import axios from "axios";
 import { CalendarIcon, FrownIcon, MehIcon, SmileIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { startProgress } from "./NavigationProgress";
+import { Skeleton } from "./Skeleton";
 
 interface JournalEntry {
   id: string;
@@ -23,8 +24,10 @@ export function getPreview(text: string, words = 100) {
 
 export function RecentJournalEntries() {
   const [Journals, setJournals] = useState<JournalEntry[]>([]);
+  const [loading , setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchJournals = async () => {
       try {
         const response = await axios.get<{ journals: JournalEntry[] }>(
@@ -35,6 +38,8 @@ export function RecentJournalEntries() {
         setJournals(recentJournals);
       } catch (error) {
         console.error("Error fetching journal for today:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,11 +62,20 @@ export function RecentJournalEntries() {
     Sad: "bg-pastel-pink/50 dark:bg-pastel-pink/80",
   };
 
+  if (loading) {
+    return (
+    <div className="flex flex-col gap-4">
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+    )
+  }
+
   return (
     <div>
       {Journals.length === 0 ? (
         <div className="text-center mb-4 md:mb-8">
-          <p className="text-xl font-semibold text-black pb-2">
+          <p className="text-xl font-semibold text-black dark:text-white pb-2">
             &quot; Every day is a new chapter. &quot;
           </p>
           <p>
