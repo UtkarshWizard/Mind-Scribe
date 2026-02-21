@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -8,12 +9,13 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 const contentSchema = z.object({
-  content: z.string(),
+  content: z.any(),
+  plainText : z.string()
 });
 
 export async function POST(req: NextRequest) {
   try {
-    const content = contentSchema.parse(await req.json());
+    const { content, plainText } = contentSchema.parse(await req.json());
 
     if (!content) {
       return NextResponse.json(
@@ -86,7 +88,7 @@ Example:
 
 strictly Remember to not include the json and ''' quotes marking in the response , just keep the object as it is shown above. 
 
-Analyze the following text: "${content.content}"`;
+Analyze the following text: "${plainText}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
     // console.log("sentiment data", sentimentData);
@@ -104,14 +106,57 @@ Analyze the following text: "${content.content}"`;
       );
     }
 
+    function startOfDayUTC(date: Date) {
+        return new Date(Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate()
+        ));
+      }
+
+    function dayDifference(d1: Date, d2: Date) {
+      const diff = d1.getTime() - d2.getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    const today = startOfDayUTC(new Date());
+
+    let newStreak = user.currentStreak;
+
+    if (!user.lastEntryDate) {
+      newStreak = 1;
+    } else {
+      const last = startOfDayUTC(new Date(user.lastEntryDate));
+      const diff = dayDifference(today , last);
+
+      if (diff == 0) {
+        newStreak = user.currentStreak;
+      } else if ( diff == 1) {
+        newStreak = user.currentStreak + 1;
+      } else {
+        newStreak = 1;
+      }
+    }
+
     const journal = await prisma.journalEntry.create({
       data: {
         userId: user.id,
         content: content.content,
+        plainText: plainText,
         createdAt: new Date(),
         sentiment: parsedSentiment,
       },
     });
+
+    if (journal) {
+      await prisma.user.update({
+        where: { id: user.id},
+        data: {
+          currentStreak: newStreak,
+          lastEntryDate: today,
+        }
+      })
+    }
 
     return NextResponse.json(
       {
@@ -146,6 +191,17 @@ export async function GET(req: NextRequest) {
         },
       });
 
+      if (!user) {
+        return NextResponse.json(
+          {
+            message: `Error finding User`,
+          },
+          {
+            status: 411,
+          }
+        );
+      }
+
       const date = req.nextUrl.searchParams.get("date") || "";
 
       const startOfDay = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
@@ -172,42 +228,95 @@ export async function GET(req: NextRequest) {
           }
         );
       }
-    }
 
-    // const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+      // Pagination, sorting and mood filtering
+      const page = Number(req.nextUrl.searchParams.get("page") || "1");
+      const limit = Number(req.nextUrl.searchParams.get("limit") || "20");
+      const sort = req.nextUrl.searchParams.get("sort") || "latest"; // 'latest' or 'oldest'
+      const mood = req.nextUrl.searchParams.get("mood"); // 'Happy' | 'Neutral' | 'Sad'
+      // const search = req.nextUrl.searchParams.get("search") || undefined;
+      const yearParam = req.nextUrl.searchParams.get("year") || undefined;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session?.user.email,
-      },
-    });
+      const orderBy = {
+        createdAt: sort === "oldest" ? "asc" : "desc",
+      } as const;
 
-    if (!user) {
+      const whereBase: Prisma.JournalEntryWhereInput = {
+        userId: user?.id,
+      };
+
+      if (mood) {
+        // Filter by sentiment.overallEmotion stored in JSON
+        whereBase.sentiment = { path: ["overallEmotion"], equals: mood };
+      }
+
+      // if (search) {
+      //   whereBase.plainText = { contains: search, mode: "insensitive" };
+      // }
+
+      if (yearParam) {
+        const y = Number(yearParam);
+        if (!Number.isNaN(y)) {
+          const start = new Date(Date.UTC(y, 0, 1, 0, 0, 0, 0));
+          const end = new Date(Date.UTC(y, 11, 31, 23, 59, 59, 999));
+          whereBase.createdAt = { gte: start, lte: end };
+        }
+      }
+
+      const total = await prisma.journalEntry.count({ where: whereBase });
+
+      // Compute today's start in UTC
+      const now = new Date();
+      const todayStartUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+      // Determine visible streak: if the user has an entry for today, show stored streak;
+      // otherwise (they missed today) show 0. This avoids showing an old streak on missed days.
+      let streak = 0;
+      if (user.lastEntryDate) {
+        const last = new Date(user.lastEntryDate);
+        const lastStartUTC = new Date(Date.UTC(last.getUTCFullYear(), last.getUTCMonth(), last.getUTCDate()));
+        const diffDays = Math.floor((todayStartUTC.getTime() - lastStartUTC.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays === 0 || diffDays === 1) {
+          // User already has an entry today — show current streak
+          streak = user.currentStreak;
+        } else {
+          // Missed today (or earlier) — visible streak is 0
+          streak = 0;
+        }
+      } else {
+        streak = 0;
+      }
+
+      const journals = await prisma.journalEntry.findMany({
+        where: whereBase,
+        orderBy,
+        skip: (Math.max(page, 1) - 1) * Math.max(limit, 1),
+        take: Math.max(limit, 1),
+      });
+
+      return NextResponse.json(
+        {
+          message: "Journals fetched",
+          journals,
+          total,
+          page,
+          limit,
+          streak
+        },
+        {
+          status: 200,
+        }
+      );
+    } else {
       return NextResponse.json(
         {
           message: "Unauthorized",
         },
         {
-          status: 411,
+          status: 401,
         }
       );
     }
-
-    const journal = await prisma.journalEntry.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
-
-    return NextResponse.json(
-      {
-        message: "Journal Found",
-        journal,
-      },
-      {
-        status: 200,
-      }
-    );
   } catch (err) {
     return NextResponse.json(
       {
@@ -219,3 +328,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+

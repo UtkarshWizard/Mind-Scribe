@@ -16,7 +16,7 @@ export function WelcomeBanner() {
         <CardContent className="p-6 relative">
             <Boxes />
           <motion.h1
-            className="text-3xl font-bold mb-2 text-white relative z-20"
+            className="text-xl sm:text-3xl font-bold mb-2 text-white relative z-20"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -24,7 +24,7 @@ export function WelcomeBanner() {
             Welcome back, {userName} !
           </motion.h1>
           <motion.p
-            className="text-xl italic text-gray-200 relative z-20"
+            className="text-sm sm:text-xl italic text-gray-200 relative z-20"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}

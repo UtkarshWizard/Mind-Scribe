@@ -5,7 +5,8 @@ import { getServerSession } from "next-auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const contentSchema = z.object({
-  content: z.string(),
+  content: z.any(),
+  plainText: z.string()
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -65,7 +66,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const { content } = contentSchema.parse(await req.json());
+    const { content , plainText } = contentSchema.parse(await req.json());
 
     const journal = await prisma.journalEntry.findUnique({
       where: { id },
@@ -130,7 +131,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     
     strictly Remember to not include the json and ''' quotes marking in the response , just keep the object as it is shown above. 
     
-    Analyze the following text: "${content}"`;
+    Analyze the following text: "${plainText}"`;
     const result = await model.generateContent(prompt);
     const sentimentData = result.response.text();
     // console.log("sentiment data", sentimentData);
@@ -153,6 +154,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       where: { id },
       data: {
         content,
+        plainText,
         updatedAt: new Date(),
         sentiment: parsedSentiment,
       },
@@ -193,15 +195,100 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
       );
     }
 
+    // Get the journal to find the user
+    const journal = await prisma.journalEntry.findUnique({
+      where: { id },
+    });
+
+    if (!journal) {
+      return NextResponse.json(
+        { message: "Journal not found" },
+        { status: 404 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user || journal.userId !== user.id) {
+      return NextResponse.json(
+        { message: "Unauthorized to delete this journal" },
+        { status: 403 }
+      );
+    }
+
+    // Delete the journal
     await prisma.journalEntry.delete({
-      where: {
-        id: id,
+      where: { id: id },
+    });
+
+    // Recalculate streak after deletion
+    const userJournals = await prisma.journalEntry.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+
+    function startOfDayUTC(date: Date) {
+      return new Date(Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate()
+      ));
+    }
+
+    function dayDifference(d1: Date, d2: Date) {
+      const diff = d1.getTime() - d2.getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    let newStreak = 0;
+    let newLastEntryDate: Date | null = null;
+
+    if (userJournals.length > 0) {
+      // Start from the most recent journal and count consecutive days backwards
+      const today = startOfDayUTC(new Date());
+      const firstJournalDate = startOfDayUTC(new Date(userJournals[0].createdAt));
+      const diffFromToday = dayDifference(today, firstJournalDate);
+
+      // Only count streak if the most recent entry is today or yesterday
+      if (diffFromToday === 0 || diffFromToday === 1) {
+        newStreak = 1;
+        newLastEntryDate = firstJournalDate;
+
+        // Count consecutive days backwards
+        for (let i = 1; i < userJournals.length; i++) {
+          const currentDate = startOfDayUTC(new Date(userJournals[i].createdAt));
+          const dayDiff = dayDifference(newLastEntryDate!, currentDate);
+
+          if (dayDiff === 1) {
+            // Consecutive day found
+            newStreak++;
+            newLastEntryDate = currentDate;
+          } else {
+            // Streak broken
+            break;
+          }
+        }
+      } else {
+        // No recent entries, streak is 0
+        newStreak = 0;
+        newLastEntryDate = null;
+      }
+    }
+
+    // Update user's streak and last entry date
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        currentStreak: newStreak,
+        lastEntryDate: newLastEntryDate,
       },
     });
 
     return NextResponse.json(
       {
-        message: "Journal Deleted Succesfully.",
+        message: "Journal Deleted Successfully.",
       },
       {
         status: 200,

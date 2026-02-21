@@ -22,11 +22,15 @@ model User {
   provider            Provider
   journals            JournalEntry[]
   mood                moodTracking[]
+
+  currentStreak       Int             @default(0)
+  lastEntryDate       DateTime?
 }
 
 model JournalEntry {
   id                String            @id @default(uuid())
-  content           String
+  content           Json
+  plainText         String
   sentiment         Json?
   createdAt         DateTime
   updatedAt         DateTime?
@@ -55,6 +59,8 @@ enum ExerciseType {
   Breathing
   Meditation
   Music
+  Yoga
+  Podcast
 }
 
 enum Mood {

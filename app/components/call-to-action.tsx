@@ -2,10 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function CallToAction() {
-  const router = useRouter()
   return (
     <section className="py-20 px-6 md:px-10 bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 text-white text-center overflow-hidden">
       <motion.div
@@ -34,13 +33,14 @@ export default function CallToAction() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          <Button
-            onClick={() =>  router.push('/auth/signUp')} 
-            size="lg" 
-            className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all duration-300"
-          >
-            Sign Up for Free
-          </Button>
+          <Link href="/auth/signUp">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all duration-300"
+            >
+              Sign Up for Free
+            </Button>
+          </Link>
         </motion.div>
       </motion.div>
     </section>

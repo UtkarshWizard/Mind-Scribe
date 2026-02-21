@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+.simple-editor-wrapper {
+  --tt-toolbar-height: 44px;
+  --tt-theme-text: var(--tt-gray-light-900);
+  font-family: "Inter", sans-serif;
+  color: var(--tt-theme-text);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  padding: 0;
+  overscroll-behavior-y: none;
+}
+
+.dark .simple-editor-wrapper {
+  --tt-theme-text: var(--tt-gray-dark-900);
+}
+
+::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--tt-scrollbar-color);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tiptap.ProseMirror {
+  font-family: "DM Sans", sans-serif;
+}
+
+.simple-editor-wrapper {
+  width: 100%;
+  /* keep the editor within the viewport minus the navbar to avoid pushing the topbar out of view */
+  min-height: calc(100vh - var(--navbar-height, 64px));
+  display: block;
+  position: relative;
+  overflow: visible;
+}
+
+.simple-editor-content {
+  max-width: 648px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  box-sizing: border-box;
+  /* allow page to scroll (avoid inner scrollbars); content sits below fixed toolbar */
+  overflow: visible;
+  padding-top: 8px;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  flex: 1;
+  /* reduce huge bottom padding (30vh) which caused a large gap on desktop/iPad
+     and made the topbar scroll offscreen on small screens */
+  padding: 2rem 3rem 3rem;
+  border-color: rgba(0,0,0,0.9);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+}
+
+/* Dark theme: stronger, darker shadow so the panel stands out on dark backgrounds */
+.dark .simple-editor-content .tiptap.ProseMirror.simple-editor {
+  box-shadow: 0 10px 30px rgba(70, 68, 68, 0.5);
+  border-color: rgba(155, 155, 155, 0.04);
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding: 1rem 1.5rem 2.5rem;
+  }
+}

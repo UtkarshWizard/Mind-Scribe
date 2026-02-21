@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '../styles/_variables.css';
+@import '../styles/_keyframe-animations.css';
+
 @layer base {
   :root {
     --background: 220 100% 97%;
@@ -66,6 +69,7 @@
   }
 }
 
+
 @layer base {
   * {
     @apply border-border;
@@ -74,6 +78,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: #EA580C !important;
+  height: 4px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #EA580C, 0 0 5px #EA580C !important;
+}
+
+#nprogress .spinner {
+  display: none !important;
+}
+
+#nprogress .spinner-icon {
+  display: none !important;
+}
+
+.dark #nprogress .bar {
+  background: #ed8936 !important;
+}
+
+.dark #nprogress .peg {
+  box-shadow: 0 0 10px #ed8936, 0 0 5px #ed8936 !important;
+}
+
+
 
 .animate-in {
   animation: animateIn 0.3s ease-in-out;

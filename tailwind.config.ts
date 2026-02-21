@@ -5,7 +5,7 @@
 //   } = require("tailwindcss/lib/util/flattenColorPalette");
 
 // export default {
-	
+
 //     darkMode: ["class"],
 //     content: [
 //     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -71,7 +71,7 @@
 // 	let newVars = Object.fromEntries(
 // 	  Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
 // 	);
-   
+
 // 	addBase({
 // 	  ":root": newVars,
 // 	});
@@ -79,7 +79,9 @@
 
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
-const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
 
 export default {
   darkMode: ["class"],
@@ -161,25 +163,31 @@ export default {
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0 "},
+          to: { height: "0 " },
+        },
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
+          },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s linear infinite",
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    addVariablesForColors,
-  ],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
 } satisfies Config;
 
 function addVariablesForColors({ addBase, theme }: any) {
   const allColors = flattenColorPalette(theme("colors"));
   const newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
   );
 
   addBase({
