@@ -8,6 +8,7 @@ import { SentimentInsights } from "./sentimentInsights";
 import { PersonalizedRecommendations } from "./personalizedRecommendations";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Skeleton } from "./Skeleton";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Typography } from "@tiptap/extension-typography";
@@ -130,8 +131,96 @@ export function JournalDetailPage({ id }: { id: string }) {
 
   if (!journal) {
     return (
-      <div className="min-h-[300px] flex items-center justify-center">
-        <div className="text-center text-gray-500">Loading journal...</div>
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
+        {/* Header Card Skeleton */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+        >
+          <Card className="overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-white/60 dark:from-gray-950 dark:via-gray-800 dark:to-gray-950 border border-transparent">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <Skeleton className="h-8 w-64 mb-2" />
+                  <Skeleton className="h-4 w-48" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-10 w-24" />
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-32 w-full mt-4" />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* AI Response Skeleton */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.12 }}
+        >
+          <Card className="overflow-hidden bg-gradient-to-br from-white to-blue-50 dark:from-gray-950 dark:to-gray-800">
+            <CardContent className="p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Sentiment Insights Skeleton */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.18 }}
+        >
+          <Card className="overflow-hidden bg-gradient-to-br from-white to-purple-50 dark:from-gray-950 dark:to-gray-800">
+            <CardContent className="p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <div className="grid grid-cols-3 gap-4">
+                <Skeleton className="h-24 w-full rounded-lg" />
+                <Skeleton className="h-24 w-full rounded-lg" />
+                <Skeleton className="h-24 w-full rounded-lg" />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Personalized Recommendations Skeleton */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.24 }}
+        >
+          <Card className="overflow-hidden bg-gradient-to-br from-white to-green-50 dark:from-gray-950 dark:to-gray-800">
+            <CardContent className="p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <div className="space-y-4">
+                <div>
+                  <Skeleton className="h-5 w-32 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+                <div>
+                  <Skeleton className="h-5 w-32 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }

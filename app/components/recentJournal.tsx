@@ -64,11 +64,24 @@ export function RecentJournalEntries() {
 
   if (loading) {
     return (
-    <div className="flex flex-col gap-4">
-      <Skeleton className="h-24 w-full" />
-      <Skeleton className="h-24 w-full" />
-    </div>
-    )
+      <div className="space-y-4">
+        {[...Array(5)].map((_, index) => (
+          <Card key={`skeleton-${index}`} className="rounded-lg overflow-hidden bg-gradient-to-r from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-6 w-6 rounded-full" />
+              </div>
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   return (

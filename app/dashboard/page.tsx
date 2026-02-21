@@ -14,6 +14,7 @@ import { JournalEntry } from "../components/journalEntry";
 import axios from "axios";
 import { startProgress } from "../components/NavigationProgress";
 import { Skeleton } from "../components/Skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -117,25 +118,49 @@ export default function DashboardPage() {
     return (
       <div className="z-50 top-0 w-full">
         <Skeleton className="w-full h-16 mb-8" />
-        <div className="lg:max-w-6xl max-w-4xl mx-auto min-h-screen flex flex-col gap-4">
-          <div className="flex flex-col gap-4">
-            <Skeleton className="h-24 w-full" />
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 w-full lg:max-w-6xl max-w-4xl mx-auto justify-center">
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-24 w-full" />
+        <div className="lg:max-w-6xl max-w-4xl mx-auto min-h-screen flex flex-col gap-6 p-4 md:p-12">
+          <Skeleton className="h-24 w-full rounded-lg" />
+
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-4 w-full">
+            <div className="border border-gray-700 dark:bg-gray-900 bg-gray-100 rounded-xl p-4 space-y-4">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <Skeleton className="h-12 w-32" />
+            </div>
+            <div className="border border-gray-700 dark:bg-gray-900 bg-gray-100 rounded-xl p-4 space-y-4">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <Skeleton className="h-12 w-32" />
             </div>
           </div>
-          <div className="grid md:grid-cols-5 grid-cols-2 justify-center items-center md:items-start gap-4">
-            <div className="md:col-span-3 col-span-2 min-h-full">
-              <Skeleton className="w-full h-64" />
+
+          <Skeleton className="h-6 w-40" />
+
+          <div className="grid md:grid-cols-5 grid-cols-2 gap-4">
+            <div className="md:col-span-3 col-span-2 space-y-4">
+              <Skeleton className="h-64 w-full rounded-lg" />
             </div>
-            <div className="md:col-span-2 col-span-2 min-h-full">
-              <Skeleton className="w-full h-64" />
+            <div className="md:col-span-2 col-span-2">
+              <Skeleton className="h-64 w-full rounded-lg" />
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
+
+          <Skeleton className="h-6 w-40" />
+
+          <div className="space-y-4">
+            {[...Array(5)].map((_, index) => (
+              <Card key={`skeleton-${index}`} className="rounded-lg overflow-hidden bg-gradient-to-r from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <Skeleton className="h-6 w-40" />
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                  </div>
+                  <div className="space-y-3">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-4 w-4/5" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { CalendarIcon, SmileIcon, MehIcon, FrownIcon } from "lucide-react";
 import axios from "axios";
 import NavBar from "../components/NavBar-Dashboard";
 import { startProgress } from "../components/NavigationProgress";
+import { Skeleton } from "../components/Skeleton";
 
 type Emotion = "Happy" | "Neutral" | "Sad";
 
@@ -39,8 +40,10 @@ export default function JournalsPage() {
   const limit = 20;
   const [sortOrder, setSortOrder] = useState<string>("latest");
   const [moodFilter, setMoodFilter] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchJournals = async () => {
       try {
         const params: Record<string, string> = {
@@ -57,6 +60,8 @@ export default function JournalsPage() {
         setTotal(response.data.total || 0);
       } catch (error) {
         console.error("Failed to fetch journals", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -210,9 +215,7 @@ export default function JournalsPage() {
 
               <div className="ml-auto">
                 <Link onClick={() => startProgress()} href="/editor">
-                  <Button
-                    className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-                  >
+                  <Button className="inline-flex h-12 animate-shimmer items-center justify-center rounded-sm border border-slate-800 dark:border-slate-600 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 font-medium text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
                     <div className="flex justify-center items-center gap-4">
                       <CirclePlus className="text-orange-400 hover:text-orange-600 !h-4 !w-4" />
                       <div className="text-md">New Journal</div>
@@ -224,7 +227,26 @@ export default function JournalsPage() {
           </header>
 
           <main className="space-y-4">
-            {(() => {
+            {loading ? (
+              // Skeleton loaders
+              <div className="space-y-4">
+                {[...Array(5)].map((_, index) => (
+                  <Card key={`skeleton-${index}`} className="rounded-lg overflow-hidden bg-gradient-to-r from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <Skeleton className="h-6 w-40" />
+                        <Skeleton className="h-6 w-6 rounded-full" />
+                      </div>
+                      <div className="space-y-3">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                        <Skeleton className="h-4 w-4/5" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (() => {
               const filtered = journals.filter((j) =>
                 searchQuery
                   ? j.plainText
@@ -244,14 +266,13 @@ export default function JournalsPage() {
                         No Journal Entries
                       </h2>
                       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 max-w-md">
-                        You haven&apos;t added any journal entries yet. Capture your
-                        thoughts and moods — your Journals will appear here.
+                        You haven&apos;t added any journal entries yet. Capture
+                        your thoughts and moods — your Journals will appear
+                        here.
                       </p>
                       <div className="mt-6">
                         <Link onClick={() => startProgress()} href="/editor">
-                          <Button
-                            className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100"
-                          >
+                          <Button className="bg-black hover:bg-gray-800 rounded-sm text-gray-100 border dark:border-gray-100">
                             New Journal
                           </Button>
                         </Link>
@@ -262,34 +283,38 @@ export default function JournalsPage() {
               }
 
               return filtered.map((journal) => (
-                <Link onClick={() => startProgress()} key={journal.id} href={`/journals/${journal.id}`}>
+                <Link
+                  onClick={() => startProgress()}
+                  key={journal.id}
+                  href={`/journals/${journal.id}`}
+                >
                   <Card
                     className={`rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-[1] hover:shadow-2xl dark:hover:shadow-gray-500 dark:hover:scale-[1.01] cursor-pointer mb-4 ${moodColor[journal.sentiment.overallEmotion]}`}
                   >
                     <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <Badge
-                        variant="outline"
-                        className="text-sm font-normal bg-white dark:bg-gray-800 transition-none"
-                      >
-                        <CalendarIcon className="w-3 h-3 mr-1" />
-                        {new Intl.DateTimeFormat("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          timeZone: "UTC",
-                        }).format(new Date(journal.createdAt))}
-                      </Badge>
+                      <div className="flex justify-between items-start mb-4">
+                        <Badge
+                          variant="outline"
+                          className="text-sm font-normal bg-white dark:bg-gray-800 transition-none"
+                        >
+                          <CalendarIcon className="w-3 h-3 mr-1" />
+                          {new Intl.DateTimeFormat("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            timeZone: "UTC",
+                          }).format(new Date(journal.createdAt))}
+                        </Badge>
 
-                      <span className="text-sm bg-muted p-2 rounded-full">
-                        {moodIcon[journal.sentiment.overallEmotion]}
-                      </span>
-                    </div>
-                    <p className="text-gray-700">
-                      {truncateContent(journal.plainText)}
-                    </p>
-                  </CardContent>
-                </Card>
+                        <span className="text-sm bg-muted p-2 rounded-full">
+                          {moodIcon[journal.sentiment.overallEmotion]}
+                        </span>
+                      </div>
+                      <p className="text-gray-700">
+                        {truncateContent(journal.plainText)}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </Link>
               ));
             })()}
