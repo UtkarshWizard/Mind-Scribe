@@ -94,7 +94,7 @@ export default function Hero() {
         <section id="features" className="py-20 border-t border-white/5">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-medium mb-4">
-              Why choose MindfulAI?
+              Why choose MindScribe?
             </h2>
             <p className="text-neutral-400">
               Everything you need to understand yourself better.
@@ -155,7 +155,7 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-neutral-500">
           <div className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-orange-500" />
-            <span className="text-white font-medium">MindfulAI</span>
+            <span className="text-white font-medium">MindScribe</span>
           </div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-white transition-colors">
@@ -168,7 +168,7 @@ export default function Hero() {
               Contact
             </a>
           </div>
-          <p>© 2024 MindfulAI Inc.</p>
+          <p>© {new Date().getFullYear()} MindScribe</p>
         </div>
       </footer>
     </div>
