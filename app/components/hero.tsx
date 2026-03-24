@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Brain, LineChart, Lock, Sparkles } from "lucide-react";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 const FeatureCard = ({
   icon: Icon,
@@ -40,53 +41,105 @@ export default function Hero() {
 
       <main className="relative pt-32 pb-20 px-4 md:px-6 max-w-7xl mx-auto">
         {/* Hero Section */}
-        <section className="text-center flex flex-col items-center mb-32">
+        <section className="flex flex-col lg:flex-row items-center justify-between gap-12 mb-32 relative">
+          <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
+            >
+              <Sparkles className="w-3 h-3 text-orange-400" />
+              <span className="text-xs font-medium text-neutral-300 tracking-wide uppercase">
+                Powered by Advanced AI
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500"
+            >
+              Journaling, <br />
+              <span className="italic font-serif text-white">Reimagined.</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-lg md:text-xl text-neutral-400 max-w-2xl mb-10 leading-relaxed"
+            >
+              Unlock deeper insights into your thoughts with our AI-powered
+              sentiment analysis. Track your mood, understand your patterns, and
+              grow every day.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center gap-4"
+            >
+              <button className="px-8 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-medium transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-900/20 flex items-center gap-2 group">
+                Get Started Free
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="px-8 py-4 rounded-full bg-transparent hover:bg-white/5 text-white font-medium transition-all border border-white/10 hover:border-white/20 flex items-center gap-2">
+                View Demo
+              </button>
+            </motion.div>
+          </div>
+
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex-1 w-full max-w-[500px] lg:max-w-none"
           >
-            <Sparkles className="w-3 h-3 text-orange-400" />
-            <span className="text-xs font-medium text-neutral-300 tracking-wide uppercase">
-              Powered by Advanced AI
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500"
-          >
-            Journaling, <br />
-            <span className="italic font-serif text-white">Reimagined.</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-neutral-400 max-w-2xl mb-10 leading-relaxed"
-          >
-            Unlock deeper insights into your thoughts with our AI-powered
-            sentiment analysis. Track your mood, understand your patterns, and
-            grow every day.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center gap-4"
-          >
-            <button className="px-8 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-medium transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-900/20 flex items-center gap-2 group">
-              Get Started Free
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="px-8 py-4 rounded-full bg-transparent hover:bg-white/5 text-white font-medium transition-all border border-white/10 hover:border-white/20 flex items-center gap-2">
-              View Demo
-            </button>
+            <CardContainer className="inter-var" containerClassName="py-12 lg:py-0">
+              <CardBody className="bg-white/5 relative group/card dark:hover:shadow-2xl dark:hover:shadow-orange-500/[0.1] dark:bg-neutral-900/50 dark:border-white/[0.1] border-black/[0.1] w-full h-auto rounded-3xl p-6 border backdrop-blur-sm transition-all">
+                <CardItem
+                  translateZ="50"
+                  className="text-xl font-bold text-white mb-2"
+                >
+                  Mindful Insights
+                </CardItem>
+                <CardItem
+                  as="p"
+                  translateZ="60"
+                  className="text-neutral-400 text-sm max-w-sm"
+                >
+                  Gently track your emotional landscape with subtle AI analysis.
+                </CardItem>
+                <CardItem translateZ="100" className="w-full mt-6">
+                  <img
+                    src="/images/journal-preview.png"
+                    height="1000"
+                    width="1000"
+                    className="h-full w-full object-cover rounded-2xl group-hover/card:shadow-2xl group-hover/card:shadow-orange-500/20 shadow-2xl transition-all duration-500"
+                    alt="AI sentiment dashboard preview"
+                  />
+                </CardItem>
+                <div className="flex justify-between items-center mt-12">
+                  <CardItem
+                    translateZ={20}
+                    as="button"
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-white bg-white/10 hover:bg-white/20 transition-colors"
+                  >
+                    View Reflection
+                  </CardItem>
+                  <CardItem
+                    translateZ={60}
+                    as="div"
+                    className="px-4 py-2 rounded-xl bg-white/10 text-neutral-300 text-xs font-medium backdrop-blur-md"
+                  >
+                    Calm & Focused
+                  </CardItem>
+                </div>
+              </CardBody>
+            </CardContainer>
           </motion.div>
         </section>
 
@@ -157,16 +210,17 @@ export default function Hero() {
             <Brain className="w-5 h-5 text-orange-500" />
             <span className="text-white font-medium">MindScribe</span>
           </div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              Terms
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              Contact
-            </a>
+          <div className="flex items-center gap-1.5">
+            <span>Made with ❤️ by</span>
+            <Link
+              href="https://utkarsh-five.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-orange-500 font-medium cursor-pointer transition-all duration-300 relative group"
+            >
+              Utkarsh
+              <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full" />
+            </Link>
           </div>
           <p>© {new Date().getFullYear()} MindScribe</p>
         </div>

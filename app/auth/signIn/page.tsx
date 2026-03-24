@@ -19,6 +19,7 @@ import Link from "next/link";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Header from "@/app/components/header";
 
 export default function SignIn() {
   const signInSchema = z.object({
@@ -94,7 +95,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 h-screen">
+    <div className="min-h-screen bg-neutral-900">
+      <Header />
+      <div className="grid grid-cols-1 sm:grid-cols-2 h-screen pt-20 md:pt-0">
       {/* Left Section */}
       <div className="relative hidden sm:block">
         <Image
@@ -190,10 +193,11 @@ export default function SignIn() {
         </Card>
       </div>
     </div>
+    </div>
   );
 }
 
-function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
+function GoogleIcon(props: React.ComponentProps<"svg">) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" {...props}>
       <path
