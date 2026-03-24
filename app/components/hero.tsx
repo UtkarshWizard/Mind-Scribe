@@ -62,7 +62,7 @@ export default function Hero() {
               className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500"
             >
               Journaling, <br />
-              <span className="italic font-serif text-white">Reimagined.</span>
+              <span className="font-serif text-white">Reimagined.</span>
             </motion.h1>
 
             <motion.p
@@ -82,10 +82,12 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center gap-4"
             >
-              <button className="px-8 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-medium transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-900/20 flex items-center gap-2 group">
-                Get Started Free
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <Link href="/auth/signUp">
+                <button className="px-8 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-medium transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-900/20 flex items-center gap-2 group">
+                  Get Started Free
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
               <button className="px-8 py-4 rounded-full bg-transparent hover:bg-white/5 text-white font-medium transition-all border border-white/10 hover:border-white/20 flex items-center gap-2">
                 View Demo
               </button>
@@ -96,10 +98,10 @@ export default function Hero() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex-1 w-full max-w-[500px] lg:max-w-none"
+            className="flex-1 w-full max-w-[450px]"
           >
             <CardContainer className="inter-var" containerClassName="py-12 lg:py-0">
-              <CardBody className="bg-white/5 relative group/card dark:hover:shadow-2xl dark:hover:shadow-orange-500/[0.1] dark:bg-neutral-900/50 dark:border-white/[0.1] border-black/[0.1] w-full h-auto rounded-3xl p-6 border backdrop-blur-sm transition-all">
+              <CardBody className="bg-white/5 relative group/card dark:hover:shadow-2xl dark:hover:shadow-orange-500/[0.1] dark:bg-neutral-900/50 dark:border-white/[0.1] border-black/[0.1] w-full h-auto rounded-2xl p-4 border backdrop-blur-sm transition-all">
                 <CardItem
                   translateZ="50"
                   className="text-xl font-bold text-white mb-2"
@@ -113,7 +115,7 @@ export default function Hero() {
                 >
                   Gently track your emotional landscape with subtle AI analysis.
                 </CardItem>
-                <CardItem translateZ="100" className="w-full mt-6">
+                <CardItem translateZ="100" className="w-full mt-4">
                   <img
                     src="/images/journal-preview.png"
                     height="1000"
@@ -122,22 +124,6 @@ export default function Hero() {
                     alt="AI sentiment dashboard preview"
                   />
                 </CardItem>
-                <div className="flex justify-between items-center mt-12">
-                  <CardItem
-                    translateZ={20}
-                    as="button"
-                    className="px-4 py-2 rounded-xl text-xs font-medium text-white bg-white/10 hover:bg-white/20 transition-colors"
-                  >
-                    View Reflection
-                  </CardItem>
-                  <CardItem
-                    translateZ={60}
-                    as="div"
-                    className="px-4 py-2 rounded-xl bg-white/10 text-neutral-300 text-xs font-medium backdrop-blur-md"
-                  >
-                    Calm & Focused
-                  </CardItem>
-                </div>
               </CardBody>
             </CardContainer>
           </motion.div>
@@ -164,13 +150,13 @@ export default function Hero() {
             <FeatureCard
               icon={LineChart}
               title="Mood Tracking"
-              description="Visualize your mood patterns with beautiful, interactive charts and weekly reports."
+              description="Track your mood patterns and maintain the streak for a better mental health"
               delay={0.2}
             />
             <FeatureCard
               icon={Lock}
               title="Private & Secure"
-              description="Your thoughts are yours alone. End-to-end encryption ensures your journal stays private."
+              description="Your thoughts are yours alone. Share your day without any hesitation"
               delay={0.3}
             />
           </div>
@@ -188,17 +174,18 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-transparent" />
 
             <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-medium mb-6">
+              <h2 className="text-xl md:text-5xl font-medium mb-6">
                 Start your journey to better mental clarity.
               </h2>
-              <p className="text-neutral-400 mb-10 text-lg">
-                Join thousands of users who have transformed their daily
-                journaling habit into a tool for growth.
+              <p className="text-neutral-400 mb-10 text-sm md:text-lg">
+                Join us on this journey to a better you and transform your life.
               </p>
 
-              <button className="px-10 py-5 rounded-full bg-white text-black font-medium text-lg transition-all hover:bg-neutral-200 hover:scale-105 active:scale-95 shadow-xl shadow-white/10 inline-flex items-center gap-2">
-                Download for iOS & Android
-              </button>
+              <Link href="/auth/signUp">
+                <button className="px-10 py-5 rounded-full bg-white text-black font-medium text-lg transition-all hover:bg-neutral-200 hover:scale-105 active:scale-95 shadow-xl shadow-white/10 inline-flex items-center gap-2">
+                  Get Started Now
+                </button>
+              </Link>
             </div>
           </motion.div>
         </section>
