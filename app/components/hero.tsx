@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Brain, LineChart, Lock, Sparkles } from "lucide-react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import Image from "next/image";
 
 const FeatureCard = ({
   icon: Icon,
@@ -10,7 +11,7 @@ const FeatureCard = ({
   description,
   delay,
 }: {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   description: string;
   delay: number;
@@ -115,13 +116,13 @@ export default function Hero() {
                 >
                   Gently track your emotional landscape with subtle AI analysis.
                 </CardItem>
-                <CardItem translateZ="100" className="w-full mt-4">
-                  <img
+                <CardItem translateZ="100" className="w-full mt-4 h-64 relative">
+                  <Image
                     src="/images/journal-preview.png"
-                    height="1000"
-                    width="1000"
-                    className="h-full w-full object-cover rounded-2xl group-hover/card:shadow-2xl group-hover/card:shadow-orange-500/20 shadow-2xl transition-all duration-500"
+                    fill
+                    className="object-cover rounded-2xl group-hover/card:shadow-2xl group-hover/card:shadow-orange-500/20 shadow-2xl transition-all duration-500"
                     alt="AI sentiment dashboard preview"
+                    priority
                   />
                 </CardItem>
               </CardBody>
