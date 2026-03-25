@@ -1,519 +1,115 @@
-'use client'
-
-import { useState } from "react";
+"use client";
+import { Brain, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const session = useSession();
-  const userName = session.data?.user?.name || "User"; 
-  const userImage = session.data?.user?.image || ""; 
-  // console.log(userImage)
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  const navLinks = [
+    { name: "Features", href: "/#features" },
+    { name: "How it works", href: "/#demo" }
+  ];
 
   return (
-    <header className="py-4 px-6 md:px-10 bg-gray-900 shadow-sm sticky top-0 z-50">
-      <div className="flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-white">
-          Mind Scribe
+    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center py-6 px-4">
+      <div className="bg-neutral-900/60 backdrop-blur-xl border border-white/5 rounded-2xl md:rounded-full px-6 py-3 flex items-center justify-between w-full max-w-5xl shadow-2xl shadow-black/50 relative">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 relative z-10">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+            <Brain className="text-white w-5 h-5" />
+          </div>
+          <span className="text-white font-medium text-lg tracking-tight">
+            Mind<span className="text-orange-500">Scribe</span>
+          </span>
         </Link>
-        <nav className="hidden md:block">
-          <ul className="flex space-x-4 gap-4 items-center">
-            <li>
-              <Link href="#features" className="text-gray-300 hover:text-white">
-                Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#how-it-works"
-                className="text-gray-300 hover:text-white"
-              >
-                How It Works
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#testimonials"
-                className="text-gray-300 hover:text-white"
-              >
-                Testimonials
-              </Link>
-            </li>
-            {!session.data?.user && (
-              <li>
-                <Button
-                  disabled={loading}
-                  variant="outline"
-                  className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
-                  onClick={() => {
-                    signIn()
-                    setLoading(true);
-                  }}
-                >
-                  {loading ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 200 200"
-                    >
-                      <radialGradient
-                        id="a11"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
-                      >
-                        <stop offset="0" stopColor="#FFFFFF"></stop>
-                        <stop
-                          offset=".3"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".9"
-                        ></stop>
-                        <stop
-                          offset=".6"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".6"
-                        ></stop>
-                        <stop
-                          offset=".8"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".3"
-                        ></stop>
-                        <stop
-                          offset="1"
-                          stopColor="#FFFFFF"
-                          stopOpacity="0"
-                        ></stop>
-                      </radialGradient>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        stroke="url(#a11)"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        strokeDasharray="200 1000"
-                        strokeDashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      >
-                        <animateTransform
-                          type="rotate"
-                          attributeName="transform"
-                          calcMode="spline"
-                          dur="2"
-                          values="360;0"
-                          keyTimes="0;1"
-                          keySplines="0 0 1 1"
-                          repeatCount="indefinite"
-                        ></animateTransform>
-                      </circle>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#FFFFFF"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      ></circle>
-                    </svg>
-                  ) : (
-                    "Log In"
-                  )}
-                </Button>
-              </li>
-            )}
-            {!session.data?.user && (
-              <li>
-                <Link href="/auth/signUp">
-                  <Button
-                    disabled={loading}
-                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
-                  >
-                    {loading ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 200 200"
-                      >
-                        <radialGradient
-                          id="a11"
-                          cx=".66"
-                          fx=".66"
-                          cy=".3125"
-                          fy=".3125"
-                          gradientTransform="scale(1.5)"
-                        >
-                          <stop offset="0" stopColor="#FFFFFF"></stop>
-                          <stop
-                            offset=".3"
-                            stopColor="#FFFFFF"
-                            stopOpacity=".9"
-                          ></stop>
-                          <stop
-                            offset=".6"
-                            stopColor="#FFFFFF"
-                            stopOpacity=".6"
-                          ></stop>
-                          <stop
-                            offset=".8"
-                            stopColor="#FFFFFF"
-                            stopOpacity=".3"
-                          ></stop>
-                          <stop
-                            offset="1"
-                            stopColor="#FFFFFF"
-                            stopOpacity="0"
-                          ></stop>
-                        </radialGradient>
-                        <circle
-                          transform="center"
-                          fill="none"
-                          stroke="url(#a11)"
-                          strokeWidth="13"
-                          strokeLinecap="round"
-                          strokeDasharray="200 1000"
-                          strokeDashoffset="0"
-                          cx="100"
-                          cy="100"
-                          r="70"
-                        >
-                          <animateTransform
-                            type="rotate"
-                            attributeName="transform"
-                            calcMode="spline"
-                            dur="2"
-                            values="360;0"
-                            keyTimes="0;1"
-                            keySplines="0 0 1 1"
-                            repeatCount="indefinite"
-                          ></animateTransform>
-                        </circle>
-                        <circle
-                          transform="center"
-                          fill="none"
-                          opacity=".2"
-                          stroke="#FFFFFF"
-                          strokeWidth="13"
-                          strokeLinecap="round"
-                          cx="100"
-                          cy="100"
-                          r="70"
-                        ></circle>
-                      </svg>
-                    ) : (
-                      "Sign Up"
-                    )}
-                  </Button>
-                </Link>
-              </li>
-            )}
-            {session.data?.user && (
-              <li>
-                <Avatar>
-                  <AvatarImage className="w-8 h-8 rounded-full"  src={userImage} />
-                    <AvatarFallback className="text-white p-2">
-                      {userName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                </Avatar>
-              </li>
-            )}
-            {session.data?.user && (
-              <li>
-                <Button
-                  disabled={loading}
-                  variant="outline"
-                  className="text-white border-white bg-black hover:bg-white hover:text-gray-900"
-                  onClick={() => {
-                    signOut({redirect: false, callbackUrl: '/auth/signIn'})
-                    setLoading(true);
-                  }}
-                >
-                  {loading ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 200 200"
-                    >
-                      <radialGradient
-                        id="a11"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
-                      >
-                        <stop offset="0" stopColor="#FFFFFF"></stop>
-                        <stop
-                          offset=".3"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".9"
-                        ></stop>
-                        <stop
-                          offset=".6"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".6"
-                        ></stop>
-                        <stop
-                          offset=".8"
-                          stopColor="#FFFFFF"
-                          stopOpacity=".3"
-                        ></stop>
-                        <stop
-                          offset="1"
-                          stopColor="#FFFFFF"
-                          stopOpacity="0"
-                        ></stop>
-                      </radialGradient>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        stroke="url(#a11)"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        strokeDasharray="200 1000"
-                        strokeDashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      >
-                        <animateTransform
-                          type="rotate"
-                          attributeName="transform"
-                          calcMode="spline"
-                          dur="2"
-                          values="360;0"
-                          keyTimes="0;1"
-                          keySplines="0 0 1 1"
-                          repeatCount="indefinite"
-                        ></animateTransform>
-                      </circle>
-                      <circle
-                        transform="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#FFFFFF"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                      ></circle>
-                    </svg>
-                  ) : (
-                    "Log Out"
-                  )}
-                </Button>
-              </li>
-            )}
-          </ul>
-        </nav>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8 text-neutral-400 text-sm font-medium">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="hover:text-white transition-colors relative group"
+            >
+              {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-orange-500 transition-all group-hover:w-full" />
+            </a>
+          ))}
+        </div>
+
+        {/* Auth Actions (Desktop) */}
+        <div className="hidden md:flex items-center gap-4">
+          <Link
+            href="/auth/signIn"
+            className="text-neutral-400 hover:text-white text-sm font-medium transition-colors"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/auth/signUp"
+            className="bg-white/10 hover:bg-white/20 text-white text-sm font-medium px-5 py-2 rounded-full transition-all border border-white/5 hover:border-white/10"
+          >
+            Get Started
+          </Link>
+        </div>
+
+        {/* Mobile Toggle */}
         <button
-          className="md:hidden text-white"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={toggleMenu}
+          className="md:hidden p-2 text-neutral-400 hover:text-white transition-colors relative z-10"
+          aria-label="Toggle menu"
         >
-          {isMenuOpen ? <X /> : <Menu />}
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="absolute top-full left-0 right-0 bg-neutral-900/95 backdrop-blur-2xl border-t border-white/5 md:hidden overflow-hidden flex flex-col p-6 gap-6"
+            >
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-neutral-400 hover:text-white text-lg font-medium transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+              <hr className="border-white/5" />
+              <div className="flex flex-col gap-4">
+                <Link
+                  href="/auth/signIn"
+                  onClick={() => setIsOpen(false)}
+                  className="text-neutral-400 hover:text-white text-lg font-medium transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/signUp"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-orange-600 hover:bg-orange-500 text-white text-center font-medium py-3 rounded-xl transition-all shadow-lg shadow-orange-900/20"
+                >
+                  Get Started Free
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      {isMenuOpen && (
-        <nav className="mt-4 md:hidden">
-          <ul className="flex flex-col space-y-2">
-            <li>
-              <Link
-                href="#features"
-                className="text-gray-300 hover:text-white"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#how-it-works"
-                className="text-gray-300 hover:text-white"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                How It Works
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#testimonials"
-                className="text-gray-300 hover:text-white"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Testimonials
-              </Link>
-            </li>
-            <li>
-              <Link href="/auth/signIn" className="w-full block" onClick={() => setIsMenuOpen(false)}>
-                <Button
-                  disabled={loading}
-                  variant="outline"
-                  className="w-full text-white bg-black border-white hover:bg-white hover:text-gray-900"
-                >
-                {loading ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-                    <radialGradient
-                      id="a11"
-                      cx=".66"
-                      fx=".66"
-                      cy=".3125"
-                      fy=".3125"
-                      gradientTransform="scale(1.5)"
-                    >
-                      <stop offset="0" stopColor="#FFFFFF"></stop>
-                      <stop
-                        offset=".3"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".9"
-                      ></stop>
-                      <stop
-                        offset=".6"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".6"
-                      ></stop>
-                      <stop
-                        offset=".8"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".3"
-                      ></stop>
-                      <stop
-                        offset="1"
-                        stopColor="#FFFFFF"
-                        stopOpacity="0"
-                      ></stop>
-                    </radialGradient>
-                    <circle
-                      transform="center"
-                      fill="none"
-                      stroke="url(#a11)"
-                      strokeWidth="13"
-                      strokeLinecap="round"
-                      strokeDasharray="200 1000"
-                      strokeDashoffset="0"
-                      cx="100"
-                      cy="100"
-                      r="70"
-                    >
-                      <animateTransform
-                        type="rotate"
-                        attributeName="transform"
-                        calcMode="spline"
-                        dur="2"
-                        values="360;0"
-                        keyTimes="0;1"
-                        keySplines="0 0 1 1"
-                        repeatCount="indefinite"
-                      ></animateTransform>
-                    </circle>
-                    <circle
-                      transform="center"
-                      fill="none"
-                      opacity=".2"
-                      stroke="#FFFFFF"
-                      strokeWidth="13"
-                      strokeLinecap="round"
-                      cx="100"
-                      cy="100"
-                      r="70"
-                    ></circle>
-                  </svg>
-                ) : (
-                  "Log In"
-                )}
-                </Button>
-              </Link>
-            </li>
-            <li>
-              <Link href="/auth/signUp" className="w-full block" onClick={() => setIsMenuOpen(false)}>
-                <Button
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
-                >
-                {loading ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-                    <radialGradient
-                      id="a11"
-                      cx=".66"
-                      fx=".66"
-                      cy=".3125"
-                      fy=".3125"
-                      gradientTransform="scale(1.5)"
-                    >
-                      <stop offset="0" stopColor="#FFFFFF"></stop>
-                      <stop
-                        offset=".3"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".9"
-                      ></stop>
-                      <stop
-                        offset=".6"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".6"
-                      ></stop>
-                      <stop
-                        offset=".8"
-                        stopColor="#FFFFFF"
-                        stopOpacity=".3"
-                      ></stop>
-                      <stop
-                        offset="1"
-                        stopColor="#FFFFFF"
-                        stopOpacity="0"
-                      ></stop>
-                    </radialGradient>
-                    <circle
-                      transform="center"
-                      fill="none"
-                      stroke="url(#a11)"
-                      strokeWidth="13"
-                      strokeLinecap="round"
-                      strokeDasharray="200 1000"
-                      strokeDashoffset="0"
-                      cx="100"
-                      cy="100"
-                      r="70"
-                    >
-                      <animateTransform
-                        type="rotate"
-                        attributeName="transform"
-                        calcMode="spline"
-                        dur="2"
-                        values="360;0"
-                        keyTimes="0;1"
-                        keySplines="0 0 1 1"
-                        repeatCount="indefinite"
-                      ></animateTransform>
-                    </circle>
-                    <circle
-                      transform="center"
-                      fill="none"
-                      opacity=".2"
-                      stroke="#FFFFFF"
-                      strokeWidth="13"
-                      strokeLinecap="round"
-                      cx="100"
-                      cy="100"
-                      r="70"
-                    ></circle>
-                  </svg>
-                ) : (
-                  "Sign Up"
-                )}
-                </Button>
-              </Link>
-              <div onClick={() => setIsMenuOpen(false)} />
-            </li>
-          </ul>
-        </nav>
-      )}
-    </header>
+    </nav>
   );
 }
+
