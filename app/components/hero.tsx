@@ -1,9 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Brain, LineChart, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, Brain, LineChart, Lock, Sparkles, Play } from "lucide-react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import Image from "next/image";
+import { useState } from "react";
+import VideoModal from "./video-modal";
 
 const FeatureCard = ({
   icon: Icon,
@@ -32,6 +34,8 @@ const FeatureCard = ({
 );
 
 export default function Hero() {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const VIDEO_ID = "MxbK_mGva10";
   return (
     <div className="min-h-screen bg-neutral-950 text-white selection:bg-orange-500/30 overflow-x-hidden">
       {/* Background Gradients */}
@@ -89,7 +93,13 @@ export default function Hero() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
-              <button className="px-8 py-4 rounded-full bg-transparent hover:bg-white/5 text-white font-medium transition-all border border-white/10 hover:border-white/20 flex items-center gap-2">
+              <button 
+                onClick={() => setIsVideoModalOpen(true)}
+                className="px-8 py-4 rounded-full bg-transparent hover:bg-white/5 text-white font-medium transition-all border border-white/10 hover:border-white/20 flex items-center gap-3 group/demo"
+              >
+                <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover/demo:bg-orange-500/20 transition-colors">
+                  <Play className="w-3 h-3 text-white group-hover/demo:text-orange-400 fill-white/20 group-hover/demo:fill-orange-400 transition-all" />
+                </div>
                 View Demo
               </button>
             </motion.div>
@@ -213,6 +223,11 @@ export default function Hero() {
           <p>© {new Date().getFullYear()} MindScribe</p>
         </div>
       </footer>
+      <VideoModal 
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        videoId={VIDEO_ID}
+      />
     </div>
   );
 }
