@@ -11,7 +11,7 @@ export default function Header() {
 
   const navLinks = [
     { name: "Features", href: "/#features" },
-    { name: "How it works", href: "/#demo" }
+    { name: "How it works", href: "/#demo", isDemoLink: true }
   ];
 
   return (
@@ -33,6 +33,12 @@ export default function Header() {
             <a
               key={link.name}
               href={link.href}
+              onClick={(e) => {
+                if ("isDemoLink" in link && link.isDemoLink) {
+                  e.preventDefault();
+                  window.dispatchEvent(new Event("open-demo-video"));
+                }
+              }}
               className="hover:text-white transition-colors relative group"
             >
               {link.name}
@@ -81,7 +87,13 @@ export default function Header() {
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => {
+                      setIsOpen(false);
+                      if ("isDemoLink" in link && link.isDemoLink) {
+                        e.preventDefault();
+                        window.dispatchEvent(new Event("open-demo-video"));
+                      }
+                    }}
                     className="text-neutral-400 hover:text-white text-lg font-medium transition-colors"
                   >
                     {link.name}

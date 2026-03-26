@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Brain, LineChart, Lock, Sparkles, Play } from "lucide-react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import VideoModal from "./video-modal";
 
 const FeatureCard = ({
@@ -36,6 +36,20 @@ const FeatureCard = ({
 export default function Hero() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const VIDEO_ID = "MxbK_mGva10";
+
+  useEffect(() => {
+    const handleOpenVideo = () => setIsVideoModalOpen(true);
+    
+    window.addEventListener("open-demo-video", handleOpenVideo);
+    
+    // Also handle initial load with hash just in case
+    if (window.location.hash === "#demo") {
+      setIsVideoModalOpen(true);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+    
+    return () => window.removeEventListener("open-demo-video", handleOpenVideo);
+  }, []);
   return (
     <div className="min-h-screen bg-neutral-950 text-white selection:bg-orange-500/30 overflow-x-hidden">
       {/* Background Gradients */}
